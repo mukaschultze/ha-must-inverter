@@ -181,6 +181,8 @@ class MustInverter:
                     response = await self._client.read_holding_registers(address=register[0], count=register[1], slave=0x04)
                 if response.isError():
                     _LOGGER.error("error reading modbus data at address %s: %s", register[0], response)
+                elif len(response.registers) != register[1]:
+                    _LOGGER.warn("error reading modbus data at address %s: expected %s registers, got %s", register[0], register[1], len(response.registers))
                 else:
                     self.data.update(register[2](response.registers))
             except asyncio.exceptions.CancelledError:
