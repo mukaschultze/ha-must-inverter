@@ -30,7 +30,6 @@ class MustInverterNumber(NumberEntity):
     def __init__(self, inverter, entry_id, sensor_info):
         """Initialize the sensor."""
         self._inverter = inverter
-        self._identifier = self._inverter.data["InverterMachineType"]
         self._key = sensor_info.name
         self._address = sensor_info.address
         self._coeff = sensor_info.coeff
@@ -68,13 +67,4 @@ class MustInverterNumber(NumberEntity):
 
     @property
     def device_info(self) -> Optional[Dict[str, Any]]:
-        device_info = {
-            "identifiers": {(DOMAIN, self._identifier)},
-            "name": self._inverter.data["InverterMachineType"],
-            "model": self._inverter.data["InverterMachineType"],
-            "manufacturer": "Must Solar",
-            "hw_version": self._inverter.data["InverterHardwareVersion"],
-            "sw_version": self._inverter.data["InverterSoftwareVersion"],
-            "serial_number": self._inverter.data["InverterSerialNumber"],
-        }
-        return device_info
+        return self._inverter._device_info()
