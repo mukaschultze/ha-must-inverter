@@ -1,0 +1,14 @@
+{
+  "domain": "must_inverter",
+  "name": "Must Inverter",
+  "codeowners": ["@mukaschultze"],
+  "config_flow": true,
+  "dependencies": [],
+  "documentation": "https://github.com/mukaschultze/ha-must-inverter",
+  "integration_type": "device",
+  "iot_class": "local_polling",
+  "issue_tracker": "https://github.com/mukaschultze/ha-must-inverter/issues",
+  "requirements": ["pymodbus==3.6.2"],
+  "version": "0.0.1",
+  "usb": [{ "vid": "1a86", "pid": "7523" }]
+}
