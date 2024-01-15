@@ -39,7 +39,7 @@ SENSORS_ARRAY = [
     Sensor(10108, "MaxChargerCurrent",               0.1,     "A",      Platform.SENSOR,               SensorDeviceClass.CURRENT,         True,    "mdi:current-dc",            None,                    None,  None,  None),
     Sensor(10109, "AbsorbChargerCurrent",            0.1,     "A",      Platform.SENSOR,               SensorDeviceClass.CURRENT,         True,    "mdi:current-dc",            None,                    None,  None,  None),
     Sensor(10110, "BatteryType",                     None,    None,     Platform.SELECT,               None,                              True,    "mdi:car-battery",           BATTERY_TYPE,            None,  None,  None),
-    Sensor(10111, "BatteryAh",                       None,    "Ah",     Platform.SENSOR,               None,                              True,    "mdi:car-battery",           None,                    None,  None,  None),
+    Sensor(10111, "BatteryAh",                       1,       "Ah",     Platform.NUMBER,               None,                              True,    "mdi:car-battery",           None,                    1,     1000,  1   ),
     Sensor(10112, "RemoveTheAccumulatedData",        None,    None,     Platform.SENSOR,               None,                              False,   None,                        None,                    None,  None,  None),
     # 3
     Sensor(15201, "ChargerWorkstate",                None,    None,     Platform.SENSOR,               SensorDeviceClass.ENUM,            True,    None,                        CHR_WORKSTATE_NO,        None,  None,  None),
