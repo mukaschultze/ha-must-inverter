@@ -2,8 +2,10 @@ import logging
 
 _LOGGER = logging.getLogger(__name__)
 
-def twos_complement(value):
-    return value
+def twos_complement(val, bits = 16):
+    if (val & (1 << (bits - 1))) != 0: # if sign bit is set e.g., 8bit: 128-255
+        val = val - (1 << bits)        # compute negative value
+    return val                         # return positive value as is
 
 #not implemented/needed
 def convert_partArr1(partArr1):
