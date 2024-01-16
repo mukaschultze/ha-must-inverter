@@ -9,7 +9,7 @@ from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.event import async_track_time_interval
 from pymodbus.client import AsyncModbusSerialClient
 
-from .const import CONF_DEVICE, DEFAULT_SCAN_INTERVAL, DOMAIN
+from .const import DEFAULT_SCAN_INTERVAL, DOMAIN
 from .mapper import *
 
 PLATFORMS = [Platform.SENSOR, Platform.BINARY_SENSOR, Platform.NUMBER, Platform.SELECT, Platform.SWITCH]
@@ -20,7 +20,7 @@ async def async_setup(hass, config):
     return True # Return boolean to indicate that initialization was successful.
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
-    serial_port = entry.data[CONF_DEVICE]
+    serial_port = entry.data["device"]
     inverter = MustInverter(hass, serial_port)
 
     await inverter._async_refresh_modbus_data()
