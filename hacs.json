@@ -1,0 +1,6 @@
+{
+  "name": "Must Inverter",
+  "content_in_root": true,
+  "homeassistant": "2024.1.3",
+  "render_readme": true
+}
