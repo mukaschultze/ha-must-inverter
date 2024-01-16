@@ -12,10 +12,7 @@ _LOGGER = logging.getLogger(__name__)
 
 async def async_setup_entry(hass, entry, async_add_entities):
     entry_id = entry.entry_id
-
-    inverter_name = "must_inverter_name"
-    inverter = hass.data[DOMAIN][inverter_name]
-
+    inverter = hass.data[DOMAIN]
     entities = []
     
     for sensor_info in SENSORS_ARRAY:

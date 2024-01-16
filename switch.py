@@ -16,9 +16,7 @@ _system_settings_lock = asyncio.Lock()
 
 async def async_setup_entry(hass, entry, async_add_entities):
     entry_id = entry.entry_id
-
-    inverter_name = "must_inverter_name"
-    inverter = hass.data[DOMAIN][inverter_name]
+    inverter = hass.data[DOMAIN]
 
     Setting = namedtuple('Setting', ['bit', 'name', 'flip', 'enabled', 'icon'])
 

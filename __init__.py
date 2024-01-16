@@ -20,13 +20,12 @@ async def async_setup(hass, config):
     return True # Return boolean to indicate that initialization was successful.
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
-    name = "must_inverter_name"
     serial_port = entry.data[CONF_DEVICE]
-    inverter = MustInverter(hass, name, serial_port)
+    inverter = MustInverter(hass, serial_port)
 
     await inverter._async_refresh_modbus_data()
 
-    hass.data[DOMAIN][name] = inverter
+    hass.data[DOMAIN] = inverter
 
     for component in PLATFORMS:
         hass.async_create_task(
@@ -48,14 +47,13 @@ async def async_unload_entry(hass, entry):
     if not unload_ok:
         return False
 
-    hass.data[DOMAIN]
+    hass.data[DOMAIN] = None
     return True
 
 class MustInverter:
     def __init__(
         self,
         hass,
-        name,
         serial_port
     ):
         self._hass = hass
@@ -70,7 +68,6 @@ class MustInverter:
         )
         self._client.rts = False
         self._client.dtr = False
-        self._name = name
         self._lock = asyncio.Lock()
         self._scan_interval = timedelta(seconds=DEFAULT_SCAN_INTERVAL)
         self._sensors = []
@@ -114,10 +111,6 @@ class MustInverter:
             update_result = False
 
         return update_result
-
-    @property
-    def name(self):
-        return self._name
 
     def close(self):
         _LOGGER.info("closing modbus client")
