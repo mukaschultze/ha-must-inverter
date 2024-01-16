@@ -1,0 +1,42 @@
+{
+  "title": "Must Inverter",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Select the connection type",
+        "menu_options": {
+          "serial": "USB or Serial",
+          "tcp": "TCP",
+          "tls": "TLS",
+          "udp": "UDP"
+        }
+      },
+      "serial": {
+        "title": "USB or serial",
+        "data": {
+          "device": "USB or Serial device path"
+        }
+      },
+      "tcp": {
+        "title": "TCP",
+        "data": {
+          "host": "Host",
+          "port": "Port"
+        }
+      },
+      "udp": {
+        "title": "UDP",
+        "data": {
+          "host": "Host",
+          "port": "Port"
+        }
+      }
+    },
+    "error": {
+      "already_configured": "Device is already configured"
+    },
+    "abort": {
+      "already_configured": "Device is already configured"
+    }
+  }
+}
