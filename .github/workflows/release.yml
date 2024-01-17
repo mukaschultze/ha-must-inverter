@@ -20,7 +20,8 @@ jobs:
       - name: "Adjust version number"
         shell: "bash"
         run: |
-          yq -i -o json '.version="${{ github.event.release.tag_name:1 }}"' \
+          TAG=${{ github.event.release.tag_name }}
+          yq -i -o json '.version="${TAG#v}"' \
             "${{ github.workspace }}/custom_components/must_inverter/manifest.json"
 
       - name: "ZIP the integration directory"
