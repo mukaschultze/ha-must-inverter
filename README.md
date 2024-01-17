@@ -22,8 +22,8 @@ power production, battery status, and more, directly from your Must solar invert
 - **Integration with Home Assistant**: Seamlessly integrate Must solar inverter data into your Home Assistant setup.
 - **Control Functionality**: Control certain aspects of your Must solar inverter directly through Home Assistant.
 
-![image](https://github.com/mukaschultze/ha-must-inverter/assets/13923364/1cc55f7e-dc07-4a83-886c-77b83c2845b8)
-![image](https://github.com/mukaschultze/ha-must-inverter/assets/13923364/0533e262-d9da-4494-ac8d-51298d216e90)
+| ![image](https://github.com/mukaschultze/ha-must-inverter/assets/13923364/1cc55f7e-dc07-4a83-886c-77b83c2845b8) | ![image](https://github.com/mukaschultze/ha-must-inverter/assets/13923364/0533e262-d9da-4494-ac8d-51298d216e90) |
+| :-------------------------------------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------------------------------------: |
 
 ## Installation
 
