@@ -22,8 +22,8 @@ power production, battery status, and more, directly from your Must solar invert
 - **Integration with Home Assistant**: Seamlessly integrate Must solar inverter data into your Home Assistant setup.
 - **Control Functionality**: Control certain aspects of your Must solar inverter directly through Home Assistant.
 
-![image](https://gist.github.com/assets/13923364/5bfa1053-c0e7-4e59-b9a8-d94005783263)
-![image](https://gist.github.com/assets/13923364/42cae6d8-f903-4d2b-be65-062c89c8fdfb)
+![image](https://github.com/mukaschultze/ha-must-inverter/assets/13923364/1cc55f7e-dc07-4a83-886c-77b83c2845b8)
+![image](https://github.com/mukaschultze/ha-must-inverter/assets/13923364/0533e262-d9da-4494-ac8d-51298d216e90)
 
 ## Installation
 
@@ -60,7 +60,7 @@ After a correct installation, your configuration directory should look like this
 4. Search for "Must Inverter" and select it.
 5. Enter the required configuration for your serial setup (USB, TCP, or UDP).
 
-![image](https://gist.github.com/assets/13923364/bbad3388-2441-4e01-b377-22e200783777)
+![image](https://github.com/mukaschultze/ha-must-inverter/assets/13923364/92fa79ea-9e4a-4028-8563-9a4fa88a2cfa)
 
 <!---->
 
