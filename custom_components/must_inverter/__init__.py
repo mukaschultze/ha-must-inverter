@@ -1,13 +1,12 @@
 import asyncio
 import logging
 from datetime import timedelta
-from typing import Optional
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.event import async_track_time_interval
-from pymodbus.client import AsyncModbusSerialClient
+from pymodbus.client import AsyncModbusSerialClient, AsyncModbusTcpClient, AsyncModbusUdpClient
 
 from .const import DEFAULT_SCAN_INTERVAL, DOMAIN
 from .mapper import *
@@ -20,8 +19,7 @@ async def async_setup(hass, config):
     return True # Return boolean to indicate that initialization was successful.
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
-    serial_port = entry.data["device"]
-    inverter = MustInverter(hass, serial_port)
+    inverter = MustInverter(hass, entry)
 
     await inverter._async_refresh_modbus_data()
 
@@ -51,21 +49,46 @@ async def async_unload_entry(hass, entry):
     return True
 
 class MustInverter:
+
     def __init__(
         self,
         hass,
-        serial_port
+        entry: ConfigEntry
     ):
         self._hass = hass
-        self._serial_port = serial_port
-        self._client = AsyncModbusSerialClient(serial_port,
-            baudrate=19200,
-            stopbits=1,
-            timeout=2,
-            retries=3,
-            reconnect_delay=0.3,
-            reconnect_delay_max=1,
-        )
+
+        common = {
+            'timeout': entry.data["timeout"],
+            'retries': entry.data["retries"],
+            'reconnect_delay': entry.data["reconnect_delay"],
+            'reconnect_delay_max': entry.data["reconnect_delay_max"],
+        }
+
+        match entry.data["mode"]:
+            case "serial":
+                self._client = AsyncModbusSerialClient(
+                    entry.data["device"],
+                    baudrate=entry.data["baudrate"],
+                    stopbits=entry.data["stopbits"],
+                    bytesize=entry.data["bytesize"],
+                    parity=entry.data["parity"],
+                    **common
+                )
+            case "tcp":
+                self._client = AsyncModbusTcpClient(
+                    entry.data["host"],
+                    port=entry.data["port"],
+                    **common
+                )
+            case "udp":
+                self._client = AsyncModbusUdpClient(
+                    entry.data["host"],
+                    port=entry.data["port"],
+                    **common
+                )
+            case _:
+                raise Exception("Invalid mode")
+
         self._client.rts = False
         self._client.dtr = False
         self._lock = asyncio.Lock()
@@ -127,7 +150,7 @@ class MustInverter:
         result = False
 
         _LOGGER.debug("connecting to %s:%s", self._client.comm_params.host, self._client.comm_params.port)
-    
+
         async with self._lock:
             _LOGGER.debug("lock acquired")
             result = await self._client.connect()
@@ -156,7 +179,7 @@ class MustInverter:
 
     async def read_modbus_data(self):
         _LOGGER.debug("reading modbus data")
-        
+
         registersAddresses = [
           # (10001, 10, convert_partArr1),
             (10101, 12, convert_partArr2),

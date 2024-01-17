@@ -14,7 +14,11 @@
       "serial": {
         "title": "USB or serial",
         "data": {
-          "device": "USB or Serial device path"
+          "device": "USB or Serial device path",
+          "baudrate": "Baud rate",
+          "parity": "Parity (‘E’ven, ‘O’dd or ‘N’one)",
+          "stopbits": "Stop bits (1, 1.5, 2)",
+          "bytesize": "Byte size (7, 8)"
         }
       },
       "tcp": {
@@ -29,6 +33,15 @@
         "data": {
           "host": "Host",
           "port": "Port"
+        }
+      },
+      "common": {
+        "title": "Configuration",
+        "data": {
+          "timeout": "Timeout (seconds)",
+          "retries": "Retries",
+          "reconnect_delay": "Reconnect Delay (seconds)",
+          "reconnect_delay_max": "Max Reconnect Delay (seconds)"
         }
       }
     },
