@@ -21,7 +21,7 @@ WORK_STATE_NO = ["PowerOn", "SelfTest", "OffGrid", "Grid-Tie", "ByPass", "Stop",
 BATTERY_TYPE = ["", "User defined", "Lithium", "Sealed Lead", "Agm", "Gel", "Flooded"]
 CHR_WORKSTATE_NO = ["Initialization", "Selftest", "Work", "Stop"]
 MPPT_STATE_NO = ["Stop", "MPPT", "Current limiting"]
-CHARGING_STATE_NO = ["Stop", "Absorb charge", "Float charge", "Equalization Charge"]
+CHARGING_STATE_NO = ["Stop", "Absorb charge", "Float charge", "Equalization charge"]
 
 Sensor = namedtuple("Sensor", ["address", "name", "coeff", "unit", "platform", "device_class", "enabled", "icon", "options", "min", "max", "step"])
 
