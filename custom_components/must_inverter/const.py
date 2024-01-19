@@ -21,7 +21,7 @@ WORK_STATE_NO = ["PowerOn", "SelfTest", "OffGrid", "Grid-Tie", "ByPass", "Stop",
 BATTERY_TYPE = ["", "User defined", "Lithium", "Sealed Lead", "Agm", "Gel", "Flooded"]
 CHR_WORKSTATE_NO = ["Initialization", "Selftest", "Work", "Stop"]
 MPPT_STATE_NO = ["Stop", "MPPT", "Current limiting"]
-CHARGING_STATE_NO = ["Stop", "Absorb charge", "Float charge"]
+CHARGING_STATE_NO = ["Stop", "Absorb charge", "Float charge", "Equalization Charge"]
 
 Sensor = namedtuple("Sensor", ["address", "name", "coeff", "unit", "platform", "device_class", "enabled", "icon", "options", "min", "max", "step"])
 
@@ -39,6 +39,12 @@ SENSORS_ARRAY = [
     Sensor(10110, "BatteryType",                     None,    None,     Platform.SELECT,               None,                              True,    "mdi:car-battery",           BATTERY_TYPE,            None,  None,  None),
     Sensor(10111, "BatteryAh",                       1,       "Ah",     Platform.NUMBER,               None,                              True,    "mdi:car-battery",           None,                    1,     1000,  1   ),
     Sensor(10112, "RemoveTheAccumulatedData",        None,    None,     Platform.SENSOR,               None,                              False,   None,                        None,                    None,  None,  None),
+    Sensor(10118, "BatteryEqualizationEnable",       None,    None,     Platform.SENSOR,               None,                              True,    "mdi:equalizer",             None,                    None,  None,  None),
+    Sensor(10119, "BatteryEqualizationVoltage",      0.1,     "V",      Platform.NUMBER,               NumberDeviceClass.VOLTAGE,         True,    "mdi:equalizer",             None,                    24,    29.2,  0.1 ),
+    Sensor(10121, "BatteryEqualizationTime",         1,       "min",    Platform.NUMBER,               None,                              True,    "mdi:equalizer",             None,                    5,     900,   5   ),
+    Sensor(10122, "BatteryEqualizationTimeout",      1,       "min",    Platform.NUMBER,               None,                              True,    "mdi:equalizer",             None,                    5,     900,   5   ),
+    Sensor(10123, "BatteryEqualizationInterval",     1,       "day",    Platform.NUMBER,               None,                              True,    "mdi:equalizer",             None,                    0,     90,    1   ),
+    Sensor(10124, "BatteryEqualizationImmediately",  None,    None,     Platform.SENSOR,               None,                              False,   "mdi:equalizer",             None,                    None,  None,  None),
     # 3
     Sensor(15201, "ChargerWorkstate",                None,    None,     Platform.SENSOR,               SensorDeviceClass.ENUM,            True,    None,                        CHR_WORKSTATE_NO,        None,  None,  None),
     Sensor(15202, "MpptState",                       None,    None,     Platform.SENSOR,               SensorDeviceClass.ENUM,            True,    "mdi:solar-power",           MPPT_STATE_NO,           None,  None,  None),

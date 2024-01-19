@@ -19,17 +19,23 @@ def convert_partArr2(partArr2):
         return None
     
     result = {}
-    result["ChargerWorkEnable"] =         twos_complement(partArr2[0])
-    result["AbsorbVoltage"] =             twos_complement(partArr2[1]) * 0.1
-    result["FloatVoltage"] =              twos_complement(partArr2[2]) * 0.1
-    result["AbsorptionVoltage"] =         twos_complement(partArr2[3]) * 0.1
-    result["BatteryLowVoltage"] =         twos_complement(partArr2[4]) * 0.1
-    result["BatteryHighVoltage"] =        twos_complement(partArr2[6]) * 0.1
-    result["MaxChargerCurrent"] =         twos_complement(partArr2[7]) * 0.1
-    result["AbsorbChargerCurrent"] =      twos_complement(partArr2[8]) * 0.1
-    result["BatteryType"] =               twos_complement(partArr2[9])
-    result["BatteryAh"] =                 twos_complement(partArr2[10])
-    result["RemoveTheAccumulatedData"] =  twos_complement(partArr2[11])
+    result["ChargerWorkEnable"] =              twos_complement(partArr2[0])
+    result["AbsorbVoltage"] =                  twos_complement(partArr2[1]) * 0.1
+    result["FloatVoltage"] =                   twos_complement(partArr2[2]) * 0.1
+    result["AbsorptionVoltage"] =              twos_complement(partArr2[3]) * 0.1
+    result["BatteryLowVoltage"] =              twos_complement(partArr2[4]) * 0.1
+    result["BatteryHighVoltage"] =             twos_complement(partArr2[6]) * 0.1
+    result["MaxChargerCurrent"] =              twos_complement(partArr2[7]) * 0.1
+    result["AbsorbChargerCurrent"] =           twos_complement(partArr2[8]) * 0.1
+    result["BatteryType"] =                    twos_complement(partArr2[9])
+    result["BatteryAh"] =                      twos_complement(partArr2[10])
+    result["RemoveTheAccumulatedData"] =       twos_complement(partArr2[11])
+    result["BatteryEqualizationEnable"] =      twos_complement(partArr2[17])
+    result["BatteryEqualizationVoltage"] =     twos_complement(partArr2[18]) * 0.1
+    result["BatteryEqualizationTime"] =        twos_complement(partArr2[20])
+    result["BatteryEqualizationTimeout"] =     twos_complement(partArr2[21])
+    result["BatteryEqualizationInterval"] =    twos_complement(partArr2[22])
+    result["BatteryEqualizationImmediately"] = twos_complement(partArr2[23])
 
     return result
 
