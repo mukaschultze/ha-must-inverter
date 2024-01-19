@@ -182,7 +182,7 @@ class MustInverter:
 
         registersAddresses = [
           # (10001, 10, convert_partArr1),
-            (10101, 12, convert_partArr2),
+            (10101, 24, convert_partArr2),
             (15201, 21, convert_partArr3),
             (20001, 16, convert_partArr4),
             (20101, 43, convert_partArr5),
