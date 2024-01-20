@@ -11,7 +11,7 @@ from pymodbus.client import AsyncModbusSerialClient, AsyncModbusTcpClient, Async
 from .const import DEFAULT_SCAN_INTERVAL, DOMAIN
 from .mapper import *
 
-PLATFORMS = [Platform.SENSOR, Platform.BINARY_SENSOR, Platform.NUMBER, Platform.SELECT, Platform.SWITCH]
+PLATFORMS = [Platform.SENSOR, Platform.BINARY_SENSOR, Platform.NUMBER, Platform.SELECT, Platform.SWITCH, Platform.BUTTON]
 _LOGGER = logging.getLogger(__name__)
 
 async def async_setup(hass, config):
