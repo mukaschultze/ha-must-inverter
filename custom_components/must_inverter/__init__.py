@@ -33,7 +33,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
         if not successReading:
             raise ConfigEntryNotReady(f"Unable to read from modbus device")
 
-        hass.data[DOMAIN] = inverter
+        hass.data[DOMAIN][entry.entry_id] = inverter
 
         for component in PLATFORMS:
             hass.async_create_task(
@@ -59,7 +59,7 @@ async def async_unload_entry(hass, entry):
     if not unload_ok:
         return False
 
-    hass.data[DOMAIN] = None
+    hass.data[DOMAIN][entry.entry_id] = None
     return True
 
 class MustInverter:

@@ -29,7 +29,7 @@ async def async_setup_entry(hass, entry, async_add_entities):
         Setting(7, "RecordFault",      True,  True,  'mdi:alert'),
     ]
 
-    inverter = hass.data[DOMAIN]
+    inverter = hass.data[DOMAIN][entry.entry_id]
     entities = []
 
     for setting in settings:

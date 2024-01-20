@@ -10,7 +10,7 @@ from .const import DOMAIN, SENSORS_ARRAY
 _LOGGER = logging.getLogger(__name__)
 
 async def async_setup_entry(hass, entry, async_add_entities):
-    inverter = hass.data[DOMAIN]
+    inverter = hass.data[DOMAIN][entry.entry_id]
     entities = []
 
     for sensor_info in SENSORS_ARRAY:
