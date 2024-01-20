@@ -27,8 +27,8 @@ Sensor = namedtuple("Sensor", ["address", "name", "coeff", "unit", "platform", "
 
 SENSORS_ARRAY = [
     #      addr    name                              coeff    unit      platform                       device_class                       enabled  icon                         options                  min    max    step
-    # 2
-    Sensor(10101, "ChargerWorkEnable",               None,    None,     Platform.BINARY_SENSOR,        None,                              True,    None,                        None,                    None,  None,  None),
+    # Charger Control Messages
+    Sensor(10101, "ChargerWorkEnable",               None,    None,     Platform.SWITCH,               None,                              True,    None,                        None,                    None,  None,  None),
     Sensor(10102, "AbsorbVoltage",                   0.1,     "V",      Platform.SENSOR,               SensorDeviceClass.VOLTAGE,         True,    None,                        None,                    None,  None,  None),
     Sensor(10103, "FloatVoltage",                    0.1,     "V",      Platform.NUMBER,               NumberDeviceClass.VOLTAGE,         True,    None,                        None,                    24.0,  29.2,  0.1 ),
     Sensor(10104, "AbsorptionVoltage",               0.1,     "V",      Platform.NUMBER,               NumberDeviceClass.VOLTAGE,         True,    None,                        None,                    24.0,  29.2,  0.1 ),
@@ -39,13 +39,13 @@ SENSORS_ARRAY = [
     Sensor(10110, "BatteryType",                     None,    None,     Platform.SELECT,               None,                              True,    "mdi:car-battery",           BATTERY_TYPE,            None,  None,  None),
     Sensor(10111, "BatteryAh",                       1,       "Ah",     Platform.NUMBER,               None,                              True,    "mdi:car-battery",           None,                    1,     1000,  1   ),
     Sensor(10112, "RemoveTheAccumulatedData",        None,    None,     Platform.SENSOR,               None,                              False,   None,                        None,                    None,  None,  None),
-    Sensor(10118, "BatteryEqualizationEnable",       None,    None,     Platform.SENSOR,               None,                              True,    "mdi:equalizer",             None,                    None,  None,  None),
+    Sensor(10118, "BatteryEqualizationEnable",       None,    None,     Platform.SWITCH,               None,                              True,    "mdi:equalizer",             None,                    None,  None,  None),
     Sensor(10119, "BatteryEqualizationVoltage",      0.1,     "V",      Platform.NUMBER,               NumberDeviceClass.VOLTAGE,         True,    "mdi:equalizer",             None,                    24,    29.2,  0.1 ),
     Sensor(10121, "BatteryEqualizationTime",         1,       "min",    Platform.NUMBER,               None,                              True,    "mdi:equalizer",             None,                    5,     900,   5   ),
     Sensor(10122, "BatteryEqualizationTimeout",      1,       "min",    Platform.NUMBER,               None,                              True,    "mdi:equalizer",             None,                    5,     900,   5   ),
     Sensor(10123, "BatteryEqualizationInterval",     1,       "day",    Platform.NUMBER,               None,                              True,    "mdi:equalizer",             None,                    0,     90,    1   ),
-    Sensor(10124, "BatteryEqualizationImmediately",  None,    None,     Platform.SENSOR,               None,                              False,   "mdi:equalizer",             None,                    None,  None,  None),
-    # 3
+    Sensor(10124, "BatteryEqualizationImmediately",  None,    None,     Platform.SWITCH,               None,                              True,    "mdi:equalizer",             None,                    None,  None,  None),
+    # Charger Display Messages
     Sensor(15201, "ChargerWorkstate",                None,    None,     Platform.SENSOR,               SensorDeviceClass.ENUM,            True,    None,                        CHR_WORKSTATE_NO,        None,  None,  None),
     Sensor(15202, "MpptState",                       None,    None,     Platform.SENSOR,               SensorDeviceClass.ENUM,            True,    "mdi:solar-power",           MPPT_STATE_NO,           None,  None,  None),
     Sensor(15203, "ChargingState",                   None,    None,     Platform.SENSOR,               SensorDeviceClass.ENUM,            True,    None,                        CHARGING_STATE_NO,       None,  None,  None),
@@ -63,7 +63,7 @@ SENSORS_ARRAY = [
     Sensor(15216, "RatedCurrent",                    0.1,     "A",      Platform.SENSOR,               SensorDeviceClass.CURRENT,         False,   "mdi:current-dc",            None,                    None,  None,  None),
     Sensor(15217, "AccumulatedPower",                None,    "kWh",    Platform.SENSOR,               SensorDeviceClass.ENERGY,          True,    None,                        None,                    None,  None,  None),
     Sensor(15219, "AccumulatedTime",                 None,    "s",      Platform.SENSOR,               SensorDeviceClass.DURATION,        False,   "mdi:clock-outline",         None,                    None,  None,  None),
-    # 4
+    # Inverter Control Messages
     Sensor(20000, "InverterMachineType",             None,    None,     Platform.SENSOR,               None,                              False,   None,                        None,                    None,  None,  None),
     Sensor(20002, "InverterSerialNumber",            None,    None,     Platform.SENSOR,               None,                              False,   None,                        None,                    None,  None,  None),
     Sensor(20004, "InverterHardwareVersion",         None,    None,     Platform.SENSOR,               None,                              False,   None,                        None,                    None,  None,  None),
@@ -76,12 +76,11 @@ SENSORS_ARRAY = [
     Sensor(20014, "InverterCurrentC",                None,    "A",      Platform.SENSOR,               SensorDeviceClass.CURRENT,         False,   "mdi:current-ac",            None,                    None,  None,  None),
     Sensor(20015, "GridCurrentC",                    None,    "A",      Platform.SENSOR,               SensorDeviceClass.CURRENT,         False,   "mdi:current-ac",            None,                    None,  None,  None),
     Sensor(20016, "LoadCurrentC",                    None,    "A",      Platform.SENSOR,               SensorDeviceClass.CURRENT,         False,   "mdi:current-ac",            None,                    None,  None,  None),
-    # 5
-    Sensor(20101, "InverterOffgridWorkEnable",       None,    None,     Platform.BINARY_SENSOR,        None,                              False,   None,                        None,                    None,  None,  None),
+    Sensor(20101, "InverterOffgridWorkEnable",       None,    None,     Platform.SWITCH,               None,                              True,    None,                        None,                    None,  None,  None),
     Sensor(20102, "InverterOutputVoltageSet",        0.1,     "V",      Platform.NUMBER,               NumberDeviceClass.VOLTAGE,         True,    None,                        None,                    220,   240,   1   ),
     Sensor(20103, "InverterOutputFrequencySet",      0.01,    "Hz",     Platform.NUMBER,               NumberDeviceClass.FREQUENCY,       True,    None,                        None,                    50,    60,    10  ),
-    Sensor(20104, "InverterSearchModeEnable",        None,    None,     Platform.BINARY_SENSOR,        None,                              False,   None,                        None,                    None,  None,  None),
-    Sensor(20108, "InverterDischargerToGridEnable",  None,    None,     Platform.BINARY_SENSOR,        None,                              False,   None,                        None,                    None,  None,  None),
+    Sensor(20104, "InverterSearchModeEnable",        None,    None,     Platform.SWITCH,               None,                              True,    None,                        None,                    None,  None,  None),
+    Sensor(20108, "InverterDischargerToGridEnable",  None,    None,     Platform.SWITCH,               None,                              True,    None,                        None,                    None,  None,  None),
     Sensor(20109, "EnergyUseMode",                   None,    None,     Platform.SELECT,               None,                              True,    "mdi:lightning-bolt",        ENERGY_USE_MODE,         None,  None,  None),
     Sensor(20111, "GridProtectStandard",             None,    None,     Platform.SELECT,               None,                              True,    "mdi:lightning-bolt",        GRID_PROTECT_STANDARD,   None,  None,  None),
     Sensor(20112, "SolarUseAim",                     None,    None,     Platform.SELECT,               None,                              True,    "mdi:lightning-bolt",        SOLAR_USE_AIM,           None,  None,  None),
@@ -94,7 +93,7 @@ SENSORS_ARRAY = [
     Sensor(20132, "MaxCombineChargerCurrent",        0.1,     "A",      Platform.NUMBER,               NumberDeviceClass.CURRENT,         True,    "mdi:current-dc",            None,                    1,     80,    1   ),
     Sensor(20142, "SystemSetting",                   None,    None,     Platform.SENSOR,               None,                              False,   None,                        None,                    None,  None,  None),
     Sensor(20143, "ChargerSourcePriority",           None,    None,     Platform.SELECT,               None,                              True,    "mdi:battery-charging-high", CHARGER_SOURCE_PRIORITY, None,  None,  None),
-    # 6
+    # Inverter Display Messages
     Sensor(25201, "WorkState",                       None,    None,     Platform.SENSOR,               SensorDeviceClass.ENUM,            True,    None,                        WORK_STATE_NO,           None,  None,  None),
     Sensor(25202, "AcVoltageGrade",                  None,    "V",      Platform.SENSOR,               SensorDeviceClass.VOLTAGE,         False,   None,                        None,                    None,  None,  None),
     Sensor(25203, "RatedPower",                      None,    "VA",     Platform.SENSOR,               SensorDeviceClass.APPARENT_POWER,  False,   None,                        None,                    None,  None,  None),

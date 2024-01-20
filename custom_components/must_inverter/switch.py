@@ -5,9 +5,10 @@ from collections import namedtuple
 from typing import Any, Dict, Optional
 
 from homeassistant.components.switch import SwitchEntity
+from homeassistant.const import Platform
 from homeassistant.core import callback
 
-from .const import DOMAIN
+from .const import DOMAIN, SENSORS_ARRAY
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -36,8 +37,58 @@ async def async_setup_entry(hass, entry, async_add_entities):
     for setting in settings:
         entities.append(MustInverterSettingsSwitch(inverter, entry_id, setting))
 
+    for sensor_info in SENSORS_ARRAY:
+        if sensor_info.platform == Platform.SWITCH:
+            sensor = MustInverterSwitch(inverter, entry_id, sensor_info)
+            entities.append(sensor)
+
     async_add_entities(entities)
     return True
+
+class MustInverterSwitch(SwitchEntity):
+    def __init__(self, inverter, entry_id, sensor_info):
+        """Initialize the sensor."""
+        self._inverter = inverter
+        self._key = sensor_info.name
+        self._address = sensor_info.address
+
+        self._attr_has_entity_name = True
+        self._attr_unique_id = self._key
+        self._attr_name = re.sub(r'(?<=[a-z])(?=[A-Z])', ' ', self._key).capitalize()
+        self._attr_device_class = sensor_info.device_class
+        self._attr_entity_registry_enabled_default = sensor_info.enabled
+        self._attr_icon = sensor_info.icon
+
+    async def async_added_to_hass(self):
+        self._inverter.async_add_must_inverter_sensor(self._inverter_data_updated)
+
+    async def async_will_remove_from_hass(self) -> None:
+        self._inverter.async_remove_must_inverter_sensor(self._inverter_data_updated)
+
+    @callback
+    def _inverter_data_updated(self):
+        self.async_write_ha_state()
+
+    @property
+    def is_on(self):
+        if self._key in self._inverter.data:
+            return self._inverter.data[self._key] == 1
+
+    async def _async_set_value(self, set):
+        value = set and 1 or 0
+        await self._inverter.write_modbus_data(self._address, value)
+        if self._key in self._inverter.data:
+            self._inverter.data[self._key] = value # optmiistic update
+
+    async def async_turn_on(self, **kwargs):
+        return await self._async_set_value(True)
+
+    async def async_turn_off(self, **kwargs):
+        return await self._async_set_value(False)
+
+    @property
+    def device_info(self) -> Optional[Dict[str, Any]]:
+        return self._inverter._device_info()
 
 class MustInverterSettingsSwitch(SwitchEntity):
     def __init__(self, inverter, entry_id, setting_config):
@@ -68,7 +119,7 @@ class MustInverterSettingsSwitch(SwitchEntity):
     def is_on(self):
         if "SystemSetting" not in self._inverter.data:
             return None
-        
+
         current_settings = self._inverter.data["SystemSetting"]
         set = (current_settings & (1 << self._bit) != 0)
         return set != self._flip
@@ -93,7 +144,7 @@ class MustInverterSettingsSwitch(SwitchEntity):
 
             await self._inverter.write_modbus_data(ADDRESS, int(new_value))
             self._inverter.data[KEY] = new_value # optmiistic update
-    
+
     async def async_turn_on(self, **kwargs):
         return await self._async_set_value(True)
 
