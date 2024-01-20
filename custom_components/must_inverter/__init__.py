@@ -5,6 +5,7 @@ from datetime import timedelta
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant, callback
+from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers.event import async_track_time_interval
 from pymodbus.client import AsyncModbusSerialClient, AsyncModbusTcpClient, AsyncModbusUdpClient
 
@@ -19,18 +20,31 @@ async def async_setup(hass, config):
     return True # Return boolean to indicate that initialization was successful.
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
-    inverter = MustInverter(hass, entry)
+    try:
+        inverter = MustInverter(hass, entry)
 
-    await inverter._async_refresh_modbus_data()
+        successConnecting = await inverter.connect()
 
-    hass.data[DOMAIN] = inverter
+        if not successConnecting:
+            raise ConfigEntryNotReady(f"Unable to connect to modbus device")
 
-    for component in PLATFORMS:
-        hass.async_create_task(
-            hass.config_entries.async_forward_entry_setup(entry, component)
-        )
+        successReading = await inverter._async_refresh_modbus_data()
 
-    return True
+        if not successReading:
+            raise ConfigEntryNotReady(f"Unable to read from modbus device")
+
+        hass.data[DOMAIN] = inverter
+
+        for component in PLATFORMS:
+            hass.async_create_task(
+                hass.config_entries.async_forward_entry_setup(entry, component)
+            )
+
+        return True
+    except ConfigEntryNotReady as ex:
+        raise ex
+    except Exception as ex:
+        raise ConfigEntryNotReady(f"Unknown error connecting to modbus device") from ex
 
 async def async_unload_entry(hass, entry):
     unload_ok = all(
