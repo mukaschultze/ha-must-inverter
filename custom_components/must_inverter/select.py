@@ -11,20 +11,19 @@ from .const import DOMAIN, SENSORS_ARRAY
 _LOGGER = logging.getLogger(__name__)
 
 async def async_setup_entry(hass, entry, async_add_entities):
-    entry_id = entry.entry_id
     inverter = hass.data[DOMAIN]
     entities = []
-    
+
     for sensor_info in SENSORS_ARRAY:
         if sensor_info.platform == Platform.SELECT:
-            sensor = MustInverterSelect(inverter, entry_id, sensor_info)
+            sensor = MustInverterSelect(inverter, sensor_info)
             entities.append(sensor)
 
     async_add_entities(entities)
     return True
 
 class MustInverterSelect(SelectEntity):
-    def __init__(self, inverter, entry_id, sensor_info):
+    def __init__(self, inverter, sensor_info):
         """Initialize the sensor."""
         self._inverter = inverter
         self._key = sensor_info.name

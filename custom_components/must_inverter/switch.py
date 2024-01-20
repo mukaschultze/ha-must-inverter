@@ -16,9 +16,6 @@ _LOGGER = logging.getLogger(__name__)
 _system_settings_lock = asyncio.Lock()
 
 async def async_setup_entry(hass, entry, async_add_entities):
-    entry_id = entry.entry_id
-    inverter = hass.data[DOMAIN]
-
     Setting = namedtuple('Setting', ['bit', 'name', 'flip', 'enabled', 'icon'])
 
     settings = [
@@ -32,21 +29,22 @@ async def async_setup_entry(hass, entry, async_add_entities):
         Setting(7, "RecordFault",      True,  True,  'mdi:alert'),
     ]
 
+    inverter = hass.data[DOMAIN]
     entities = []
 
     for setting in settings:
-        entities.append(MustInverterSettingsSwitch(inverter, entry_id, setting))
+        entities.append(MustInverterSettingsSwitch(inverter, setting))
 
     for sensor_info in SENSORS_ARRAY:
         if sensor_info.platform == Platform.SWITCH:
-            sensor = MustInverterSwitch(inverter, entry_id, sensor_info)
+            sensor = MustInverterSwitch(inverter, sensor_info)
             entities.append(sensor)
 
     async_add_entities(entities)
     return True
 
 class MustInverterSwitch(SwitchEntity):
-    def __init__(self, inverter, entry_id, sensor_info):
+    def __init__(self, inverter, sensor_info):
         """Initialize the sensor."""
         self._inverter = inverter
         self._key = sensor_info.name
@@ -91,7 +89,7 @@ class MustInverterSwitch(SwitchEntity):
         return self._inverter._device_info()
 
 class MustInverterSettingsSwitch(SwitchEntity):
-    def __init__(self, inverter, entry_id, setting_config):
+    def __init__(self, inverter, setting_config):
         """Initialize the sensor."""
         self._inverter = inverter
         self._name = setting_config.name
