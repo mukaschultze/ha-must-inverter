@@ -17,7 +17,7 @@ def convert_partArr1(partArr1):
 def convert_partArr2(partArr2):
     if partArr2 is None:
         return None
-    
+
     result = {}
     result["ChargerWorkEnable"] =              twos_complement(partArr2[0])
     result["AbsorbVoltage"] =                  twos_complement(partArr2[1]) * 0.1
@@ -178,6 +178,9 @@ def convert_partArr5(partArr5):
     result["InverterOutputVoltageSet"] =         twos_complement(partArr5[1]) * 0.1
     result["InverterOutputFrequencySet"] =       twos_complement(partArr5[2]) * 0.01
     result["InverterSearchModeEnable"] =         twos_complement(partArr5[3])
+    result["InverterOngridWorkEnable"] =         twos_complement(partArr5[4])
+    result["InverterChargerFromGridEnable"] =    twos_complement(partArr5[5])
+    result["InverterDischargerEnable"] =         twos_complement(partArr5[6])
     result["InverterDischargerToGridEnable"] =   twos_complement(partArr5[7])
     result["EnergyUseMode"] =                    twos_complement(partArr5[8])
     result["GridProtectStandard"] =              twos_complement(partArr5[10])
