@@ -57,7 +57,7 @@ class MustInverterNumber(NumberEntity):
             return self._inverter.data[self._key]
 
     async def async_set_native_value(self, value: float) -> None:
-        await self._inverter.write_modbus_data(self._address, int(value / self._coeff))
+        await self._inverter.write_modbus_data(self._address, int(round(value / self._coeff)))
         if self._key in self._inverter.data:
             self._inverter.data[self._key] = value # optmiistic update
 
