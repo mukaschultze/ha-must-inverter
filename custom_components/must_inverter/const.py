@@ -7,11 +7,7 @@ from homeassistant.const import Platform
 
 DOMAIN = "must_inverter"
 
-DEFAULT_NAME = "must_inverter"
 DEFAULT_SCAN_INTERVAL = 15
-
-ATTR_STATUS_DESCRIPTION = "status_description"
-ATTR_MANUFACTURER = "Must Inverter"
 
 ENERGY_USE_MODE = ["", "SBU", "SUB", "UTI", "SOL"]
 GRID_PROTECT_STANDARD = ["VDE4105", "UPS", "APL", "GEN"]
