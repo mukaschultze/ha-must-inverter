@@ -2,40 +2,55 @@ import logging
 
 _LOGGER = logging.getLogger(__name__)
 
-def twos_complement(val, bits = 16):
+def int16(address, registers):
+    val = registers[address]
+    bits = 16
     if (val & (1 << (bits - 1))) != 0: # if sign bit is set e.g., 8bit: 128-255
         val = val - (1 << bits)        # compute negative value
     return val                         # return positive value as is
 
-#not implemented/needed
-def convert_partArr1(partArr1):
-    if partArr1 is None:
-        return None
+def uint16(address, registers):
+    return registers[address]
 
-    return None
+def version(address, registers):
+    return f"{registers[address] // 10000}.{(registers[address] // 100) % 100}.{registers[address] % 100}"
+
+def accumulated_kwh(address, registers):
+    return registers[address] * 1000 + registers[address + 1] * 0.1
+
+def time(address, registers):
+    return int(registers[address]) * 60 * 60 + int(registers[address+1]) * 60 + int(registers[address+2])
+
+def serial(address, registers):
+    return hex(registers[address] << 16 | registers[address+1])
+
+def model(address, registers):
+    a = chr(registers[address] >> 8 & 0xFF)
+    b = chr(registers[address] & 0xFF)
+    return f"{a}{b}{registers[address + 1]}"
 
 def convert_partArr2(partArr2):
     if partArr2 is None:
         return None
 
     result = {}
-    result["ChargerWorkEnable"] =              twos_complement(partArr2[0])
-    result["AbsorbVoltage"] =                  twos_complement(partArr2[1]) * 0.1
-    result["FloatVoltage"] =                   twos_complement(partArr2[2]) * 0.1
-    result["AbsorptionVoltage"] =              twos_complement(partArr2[3]) * 0.1
-    result["BatteryLowVoltage"] =              twos_complement(partArr2[4]) * 0.1
-    result["BatteryHighVoltage"] =             twos_complement(partArr2[6]) * 0.1
-    result["MaxChargerCurrent"] =              twos_complement(partArr2[7]) * 0.1
-    result["AbsorbChargerCurrent"] =           twos_complement(partArr2[8]) * 0.1
-    result["BatteryType"] =                    twos_complement(partArr2[9])
-    result["BatteryAh"] =                      twos_complement(partArr2[10])
-    result["RemoveTheAccumulatedData"] =       twos_complement(partArr2[11])
-    result["BatteryEqualizationEnable"] =      twos_complement(partArr2[17])
-    result["BatteryEqualizationVoltage"] =     twos_complement(partArr2[18]) * 0.1
-    result["BatteryEqualizationTime"] =        twos_complement(partArr2[20])
-    result["BatteryEqualizationTimeout"] =     twos_complement(partArr2[21])
-    result["BatteryEqualizationInterval"] =    twos_complement(partArr2[22])
-    result["BatteryEqualizationImmediately"] = twos_complement(partArr2[23])
+    result["ChargerWorkEnable"] =              int16(10101, partArr2)
+    result["AbsorbVoltage"] =                  int16(10102, partArr2)
+    result["FloatVoltage"] =                   int16(10103, partArr2)
+    result["AbsorptionVoltage"] =              int16(10104, partArr2)
+    result["BatteryLowVoltage"] =              int16(10105, partArr2)
+    result["BatteryHighVoltage"] =             int16(10107, partArr2)
+    result["MaxChargerCurrent"] =              int16(10108, partArr2)
+    result["AbsorbChargerCurrent"] =           int16(10109, partArr2)
+    result["BatteryType"] =                    int16(10110, partArr2)
+    result["BatteryAh"] =                      int16(10111, partArr2)
+    result["RemoveTheAccumulatedData"] =       int16(10112, partArr2)
+    result["BatteryEqualizationEnable"] =      int16(10118, partArr2)
+    result["BatteryEqualizationVoltage"] =     int16(10119, partArr2)
+    result["BatteryEqualizationTime"] =        int16(10121, partArr2)
+    result["BatteryEqualizationTimeout"] =     int16(10122, partArr2)
+    result["BatteryEqualizationInterval"] =    int16(10123, partArr2)
+    result["BatteryEqualizationImmediately"] = int16(10124, partArr2)
 
     return result
 
@@ -44,72 +59,74 @@ def convert_partArr3(partArr3):
         return None
 
     result = {}
-    result["ChargerWorkstate"] =     twos_complement(partArr3[0])
-    result["MpptState"] =            twos_complement(partArr3[1])
-    result["ChargingState"] =        twos_complement(partArr3[2])
-    result["PvVoltage"] =            twos_complement(partArr3[4]) * 0.1
-    result["BatteryVoltage"] =       twos_complement(partArr3[5]) * 0.1
-    result["ChargerCurrent"] =       twos_complement(partArr3[6]) * 0.1
-    result["ChargerPower"] =         twos_complement(partArr3[7])
-    result["RadiatorTemperature"] =  twos_complement(partArr3[8])
-    result["ExternalTemperature"] =  twos_complement(partArr3[9])
-    result["BatteryRelay"] =         twos_complement(partArr3[10])
-    result["PvRelay"] =              twos_complement(partArr3[11])
-    result["ErrorMessage"] =         twos_complement(partArr3[12])
-    result["WarningMessage"] =       twos_complement(partArr3[13])
-    result["BattVolGrade"] =         twos_complement(partArr3[14])
-    result["RatedCurrent"] =         twos_complement(partArr3[15]) * 0.1
-    result["AccumulatedPower"] =     twos_complement(partArr3[16]) * 1000 + twos_complement(partArr3[17]) * 0.1
-    result["AccumulatedTime"] =      int(partArr3[18]) * 60 * 60 + int(partArr3[19]) * 60 + int(partArr3[20])
+    result["ChargerWorkstate"] =     int16(15201, partArr3)
+    result["MpptState"] =            int16(15202, partArr3)
+    result["ChargingState"] =        int16(15203, partArr3)
+    result["PvVoltage"] =            int16(15205, partArr3)
+    result["BatteryVoltage"] =       int16(15206, partArr3)
+    result["ChargerCurrent"] =       int16(15207, partArr3)
+    result["ChargerPower"] =         int16(15208, partArr3)
+    result["RadiatorTemperature"] =  int16(15209, partArr3)
+    result["ExternalTemperature"] =  int16(15210, partArr3)
+    result["BatteryRelay"] =         int16(15211, partArr3)
+    result["PvRelay"] =              int16(15212, partArr3)
+    result["ErrorMessage"] =         int16(15213, partArr3)
+    result["WarningMessage"] =       int16(15214, partArr3)
+    result["BattVolGrade"] =         int16(15215, partArr3)
+    result["RatedCurrent"] =         int16(15216, partArr3)
+    result["AccumulatedPower"] =     accumulated_kwh(15217, partArr3)
+    result["AccumulatedTime"] =      time(15219, partArr3)
     return result
 
 def convert_partArr4(partArr4):
     if partArr4 is None:
         return None
 
-    int16_4 = twos_complement(partArr4[4])
-    int16_5 = twos_complement(partArr4[0])
-    str1 = ""
+    # int16_4 = twos_complement(partArr4[4])
+    # int16_5 = twos_complement(partArr4[0])
+    # str1 = ""
 
-    # Map int16_5 to InverterMachineType
-    if int16_5 == 1600:
-        str1 = "PC1600"
-    elif int16_5 == 1800:
-        str1 = "PV1800" if int16_4 > 20000 else "PH1800"
-    elif int16_5 == 3000:
-        str1 = "PH3000"
-    elif int16_5 == 3500:
-        str1 = "PV3500"
+    # # Map int16_5 to InverterMachineType
+    # if int16_5 == 1600:
+    #     str1 = "PC1600"
+    # elif int16_5 == 1800:
+    #     str1 = "PV1800" if int16_4 > 20000 else "PH1800"
+    # elif int16_5 == 3000:
+    #     str1 = "PH3000"
+    # elif int16_5 == 3500:
+    #     str1 = "PV3500"
 
-    int16_6 = twos_complement(partArr4[3])
+    # int16_6 = twos_complement(partArr4[3])
 
-    # Map int16_6 to InverterHardwareVersion
-    if partArr4[3] != 0 and int16_6 != 0:
-        str2 = f"{int16_6 // 10000}.{(int16_6 // 100) % 100}.{int16_6 % 100}"
-    else:
-        str2 = "1.00.00"
+    # # Map int16_6 to InverterHardwareVersion
+    # if partArr4[3] != 0 and int16_6 != 0:
+    #     str2 = f"{int16_6 // 10000}.{(int16_6 // 100) % 100}.{int16_6 % 100}"
+    # else:
+    #     str2 = "1.00.00"
 
-    int16_7 = twos_complement(partArr4[4])
+    # int16_7 = twos_complement(partArr4[4])
 
-    # Map int16_7 to InverterSoftwareVersion
-    if partArr4[4] != 0 and int16_7 != 0:
-        str3 = f"{int16_7 // 10000}.{(int16_7 // 100) % 100}.{int16_7 % 100}"
-    else:
-        str3 = "1.00.00"
+    # # Map int16_7 to InverterSoftwareVersion
+    # if partArr4[4] != 0 and int16_7 != 0:
+    #     str3 = f"{int16_7 // 10000}.{(int16_7 // 100) % 100}.{int16_7 % 100}"
+    # else:
+    #     str3 = "1.00.00"
 
     result = {}
-    result["InverterMachineType"] =       str1
-    result["InverterSerialNumber"] =      hex(partArr4[1] << 16 | partArr4[2])
-    result["InverterHardwareVersion"] =   str2
-    result["InverterSoftwareVersion"] =   str3
-    result["InverterBatteryVoltageC"] =   partArr4[8]
-    result["InverterVoltageC"] =          partArr4[9]
-    result["GridVoltageC"] =              partArr4[10]
-    result["BusVoltageC"] =               partArr4[11]
-    result["ControlCurrentC"] =           partArr4[12]
-    result["InverterCurrentC"] =          partArr4[13]
-    result["GridCurrentC"] =              partArr4[14]
-    result["LoadCurrentC"] =              partArr4[15]
+    result["InverterMachineType"] =       model(20000, partArr4)
+    result["InverterSerialNumber"] =      serial(20002, partArr4)
+    result["InverterHardwareVersion"] =   version(20004, partArr4)
+    result["InverterSoftwareVersion"] =   version(20005, partArr4)
+
+    # Calibration registers
+    result["InverterBatteryVoltageC"] =   int16(20009, partArr4)
+    result["InverterVoltageC"] =          int16(20010, partArr4)
+    result["GridVoltageC"] =              int16(20011, partArr4)
+    result["BusVoltageC"] =               int16(20012, partArr4)
+    result["ControlCurrentC"] =           int16(20013, partArr4)
+    result["InverterCurrentC"] =          int16(20014, partArr4)
+    result["GridCurrentC"] =              int16(20015, partArr4)
+    result["LoadCurrentC"] =              int16(20016, partArr4)
 
     return result
 
@@ -118,54 +135,54 @@ def convert_partArr6(partArr6):
         return None
 
     result = {}
-    result["WorkState"] =                       twos_complement(partArr6[0])
-    result["AcVoltageGrade"] =                  twos_complement(partArr6[1])
-    result["RatedPower"] =                      twos_complement(partArr6[2])
-    result["InverterBatteryVoltage"] =          twos_complement(partArr6[4]) * 0.1
-    result["InverterVoltage"] =                 twos_complement(partArr6[5]) * 0.1
-    result["GridVoltage"] =                     twos_complement(partArr6[6]) * 0.1
-    result["BusVoltage"] =                      twos_complement(partArr6[7]) * 0.1
-    result["ControlCurrent"] =                  twos_complement(partArr6[8]) * 0.1
-    result["InverterCurrent"] =                 twos_complement(partArr6[9]) * 0.1
-    result["GridCurrent"] =                     twos_complement(partArr6[10]) * 0.1
-    result["LoadCurrent"] =                     twos_complement(partArr6[11]) * 0.1
-    result["PInverter"] =                       twos_complement(partArr6[12])
-    result["PGrid"] =                           twos_complement(partArr6[13])
-    result["PLoad"] =                           twos_complement(partArr6[14])
-    result["LoadPercent"] =                     twos_complement(partArr6[15])
-    result["SInverter"] =                       twos_complement(partArr6[16])
-    result["SGrid"] =                           twos_complement(partArr6[17])
-    result["Sload"] =                           twos_complement(partArr6[18])
-    result["Qinverter"] =                       twos_complement(partArr6[20])
-    result["Qgrid"] =                           twos_complement(partArr6[21])
-    result["Qload"] =                           twos_complement(partArr6[22])
-    result["InverterFrequency"] =               twos_complement(partArr6[24]) * 0.01
-    result["GridFrequency"] =                   twos_complement(partArr6[25]) * 0.01
-    result["InverterMaxNumber"] =               partArr6[28]
-    result["CombineType"] =                     partArr6[29]
-    result["InverterNumber"] =                  partArr6[30]
-    result["AcRadiatorTemperature"] =           twos_complement(partArr6[32])
-    result["TransformerTemperature"] =          twos_complement(partArr6[33])
-    result["DcRadiatorTemperature"] =           twos_complement(partArr6[34])
-    result["InverterRelayState"] =              twos_complement(partArr6[36])
-    result["GridRelayState"] =                  twos_complement(partArr6[37])
-    result["LoadRelayState"] =                  twos_complement(partArr6[38])
-    result["N_LineRelayState"] =                twos_complement(partArr6[39])
-    result["DCRelayState"] =                    twos_complement(partArr6[40])
-    result["EarthRelayState"] =                 twos_complement(partArr6[41])
-    result["AccumulatedChargerPower"] =         twos_complement(partArr6[44]) * 1000 + twos_complement(partArr6[45]) * 0.1
-    result["AccumulatedDischargerPower"] =      twos_complement(partArr6[46]) * 1000 + twos_complement(partArr6[47]) * 0.1
-    result["AccumulatedBuyPower"] =             twos_complement(partArr6[48]) * 1000 + twos_complement(partArr6[49]) * 0.1
-    result["AccumulatedSellPower"] =            twos_complement(partArr6[50]) * 1000 + twos_complement(partArr6[51]) * 0.1
-    result["AccumulatedLoadPower"] =            twos_complement(partArr6[52]) * 1000 + twos_complement(partArr6[53]) * 0.1
-    result["AccumulatedSelfUsePower"] =         twos_complement(partArr6[54]) * 1000 + twos_complement(partArr6[55]) * 0.1
-    result["AccumulatedPvSellPower"] =          twos_complement(partArr6[56]) * 1000 + twos_complement(partArr6[57]) * 0.1
-    result["AccumulatedGridChargerPower"] =     twos_complement(partArr6[58]) * 1000 + twos_complement(partArr6[59]) * 0.1
+    result["WorkState"] =                       int16(25201, partArr6)
+    result["AcVoltageGrade"] =                  int16(25202, partArr6)
+    result["RatedPower"] =                      int16(25203, partArr6)
+    result["InverterBatteryVoltage"] =          int16(25205, partArr6)
+    result["InverterVoltage"] =                 int16(25206, partArr6)
+    result["GridVoltage"] =                     int16(25207, partArr6)
+    result["BusVoltage"] =                      int16(25208, partArr6)
+    result["ControlCurrent"] =                  int16(25209, partArr6)
+    result["InverterCurrent"] =                 int16(25210, partArr6)
+    result["GridCurrent"] =                     int16(25211, partArr6)
+    result["LoadCurrent"] =                     int16(25212, partArr6)
+    result["PInverter"] =                       int16(25213, partArr6)
+    result["PGrid"] =                           int16(25214, partArr6)
+    result["PLoad"] =                           int16(25215, partArr6)
+    result["LoadPercent"] =                     int16(25216, partArr6)
+    result["SInverter"] =                       int16(25217, partArr6)
+    result["SGrid"] =                           int16(25218, partArr6)
+    result["Sload"] =                           int16(25219, partArr6)
+    result["Qinverter"] =                       int16(25221, partArr6)
+    result["Qgrid"] =                           int16(25222, partArr6)
+    result["Qload"] =                           int16(25223, partArr6)
+    result["InverterFrequency"] =               int16(25225, partArr6)
+    result["GridFrequency"] =                   int16(25226, partArr6)
+    result["InverterMaxNumber"] =               uint16(25229, partArr6)
+    result["CombineType"] =                     uint16(25230, partArr6)
+    result["InverterNumber"] =                  uint16(25231, partArr6)
+    result["AcRadiatorTemperature"] =           int16(25233, partArr6)
+    result["TransformerTemperature"] =          int16(25234, partArr6)
+    result["DcRadiatorTemperature"] =           int16(25235, partArr6)
+    result["InverterRelayState"] =              int16(25237, partArr6)
+    result["GridRelayState"] =                  int16(25238, partArr6)
+    result["LoadRelayState"] =                  int16(25239, partArr6)
+    result["N_LineRelayState"] =                int16(25240, partArr6)
+    result["DCRelayState"] =                    int16(25241, partArr6)
+    result["EarthRelayState"] =                 int16(25242, partArr6)
+    result["AccumulatedChargerPower"] =         accumulated_kwh(25245, partArr6)
+    result["AccumulatedDischargerPower"] =      accumulated_kwh(25247, partArr6)
+    result["AccumulatedBuyPower"] =             accumulated_kwh(25249, partArr6)
+    result["AccumulatedSellPower"] =            accumulated_kwh(25251, partArr6)
+    result["AccumulatedLoadPower"] =            accumulated_kwh(25253, partArr6)
+    result["AccumulatedSelfUsePower"] =         accumulated_kwh(25255, partArr6)
+    result["AccumulatedPvSellPower"] =          accumulated_kwh(25257, partArr6)
+    result["AccumulatedGridChargerPower"] =     accumulated_kwh(25259, partArr6)
     #"InverterErrorMessage": Rs485ComServer.Operator.AnalyBitMessage(partArr6[60], Rs485Parse.InverterError1) + Rs485ComServer.Operator.AnalyBitMessage(partArr6[61], Rs485Parse.InverterError2),
     #"InverterWarningMessage": Rs485ComServer.Operator.AnalyBitMessage(partArr6[64], Rs485Parse.InverterWarning)
-    result["BattPower"] =                       twos_complement(partArr6[72])
-    result["BattCurrent"] =                     twos_complement(partArr6[73])
-    result["RatedPowerW"] =                     twos_complement(partArr6[76])
+    result["BattPower"] =                       int16(25273, partArr6)
+    result["BattCurrent"] =                     int16(25274, partArr6)
+    result["RatedPowerW"] =                     int16(25277, partArr6)
 
     return result
 
@@ -174,24 +191,24 @@ def convert_partArr5(partArr5):
         return None
 
     result = {}
-    result["InverterOffgridWorkEnable"] =        twos_complement(partArr5[0])
-    result["InverterOutputVoltageSet"] =         twos_complement(partArr5[1]) * 0.1
-    result["InverterOutputFrequencySet"] =       twos_complement(partArr5[2]) * 0.01
-    result["InverterSearchModeEnable"] =         twos_complement(partArr5[3])
-    result["InverterOngridWorkEnable"] =         twos_complement(partArr5[4])
-    result["InverterChargerFromGridEnable"] =    twos_complement(partArr5[5])
-    result["InverterDischargerEnable"] =         twos_complement(partArr5[6])
-    result["InverterDischargerToGridEnable"] =   twos_complement(partArr5[7])
-    result["EnergyUseMode"] =                    twos_complement(partArr5[8])
-    result["GridProtectStandard"] =              twos_complement(partArr5[10])
-    result["SolarUseAim"] =                      twos_complement(partArr5[11])
-    result["InverterMaxDischargerCurrent"] =     twos_complement(partArr5[12]) * 0.1
-    result["BatteryStopDischargingVoltage"] =    twos_complement(partArr5[17]) * 0.1
-    result["BatteryStopChargingVoltage"] =       twos_complement(partArr5[18]) * 0.1
-    result["GridMaxChargerCurrentSet"] =         twos_complement(partArr5[24]) * 0.1
-    result["InverterBatteryLowVoltage"] =        twos_complement(partArr5[26]) * 0.1
-    result["InverterBatteryHighVoltage"] =       twos_complement(partArr5[27]) * 0.1
-    result["MaxCombineChargerCurrent"] =         twos_complement(partArr5[31]) * 0.1
-    result["SystemSetting"] =                    partArr5[41]
-    result["ChargerSourcePriority"] =            twos_complement(partArr5[42])
+    result["InverterOffgridWorkEnable"] =        int16(20101, partArr5)
+    result["InverterOutputVoltageSet"] =         int16(20102, partArr5)
+    result["InverterOutputFrequencySet"] =       int16(20103, partArr5)
+    result["InverterSearchModeEnable"] =         int16(20104, partArr5)
+    result["InverterOngridWorkEnable"] =         int16(20105, partArr5)
+    result["InverterChargerFromGridEnable"] =    int16(20106, partArr5)
+    result["InverterDischargerEnable"] =         int16(20107, partArr5)
+    result["InverterDischargerToGridEnable"] =   int16(20108, partArr5)
+    result["EnergyUseMode"] =                    int16(20109, partArr5)
+    result["GridProtectStandard"] =              int16(20111, partArr5)
+    result["SolarUseAim"] =                      int16(20112, partArr5)
+    result["InverterMaxDischargerCurrent"] =     int16(20113, partArr5)
+    result["BatteryStopDischargingVoltage"] =    int16(20118, partArr5)
+    result["BatteryStopChargingVoltage"] =       int16(20119, partArr5)
+    result["GridMaxChargerCurrentSet"] =         int16(20125, partArr5)
+    result["InverterBatteryLowVoltage"] =        int16(20127, partArr5)
+    result["InverterBatteryHighVoltage"] =       int16(20128, partArr5)
+    result["MaxCombineChargerCurrent"] =         int16(20132, partArr5)
+    result["SystemSetting"] =                    uint16(20142, partArr5)
+    result["ChargerSourcePriority"] =            int16(20143, partArr5)
     return result

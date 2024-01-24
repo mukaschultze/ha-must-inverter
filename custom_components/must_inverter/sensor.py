@@ -27,6 +27,7 @@ class MustInverterSensor(SensorEntity):
         """Initialize the sensor."""
         self._inverter = inverter
         self._key = sensor_info.name
+        self._coeff = sensor_info.coeff or 1
 
         self._attr_has_entity_name = True
         self._attr_unique_id = self._key
@@ -58,7 +59,7 @@ class MustInverterSensor(SensorEntity):
             if self._attr_options is not None:
                 return self._attr_options[self._inverter.data[self._key]]
             else:
-                return self._inverter.data[self._key]
+                return self._inverter.data[self._key]  * self._coeff
 
     @property
     def device_info(self) -> Optional[Dict[str, Any]]:

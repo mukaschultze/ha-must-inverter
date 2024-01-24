@@ -166,7 +166,6 @@ class MustInverter:
         _LOGGER.debug("connecting to %s:%s", self._client.comm_params.host, self._client.comm_params.port)
 
         async with self._lock:
-            _LOGGER.debug("lock acquired")
             result = await self._client.connect()
 
         if result:
@@ -180,7 +179,6 @@ class MustInverter:
 
         _LOGGER.debug("writing modbus data: %s %s", address, value)
         async with self._lock:
-            _LOGGER.debug("lock acquired")
             response = await self._client.write_register(address, value, 0x04)
 
         if response.isError():
@@ -194,34 +192,46 @@ class MustInverter:
     async def read_modbus_data(self):
         _LOGGER.debug("reading modbus data")
 
+        # Reading all the control messages at once (ranges 20016-20100 and/or
+        # 10009-10100 are problematic) causes the inverter to shut down
+        # immediately and the charger stops working afterwards (all registers
+        # return zeroes). Requires the grid/batteries/PV to be disconnected and
+        # the inverter restarted for it to come back online.
         registersAddresses = [
-          # (10001, 10, convert_partArr1),
-            (10101, 24, convert_partArr2),
-            (15201, 21, convert_partArr3),
-            (20001, 16, convert_partArr4),
-            (20101, 43, convert_partArr5),
-            (25201, 77, convert_partArr6),
+          # (10000, 10008, convert_partArr1), # Charger Control Messages
+            (10101, 10124, convert_partArr2), # Charger Control Messages
+            (15201, 15221, convert_partArr3), # Charger Display Messages
+            (20000, 20016, convert_partArr4), # Inverter Control Messages
+            (20101, 20214, convert_partArr5), # Inverter Control Messages
+            (25201, 25279, convert_partArr6), # Inverter Display Messages
         ]
 
+        read = dict()
+
         for register in registersAddresses:
+            start = register[0]
+            end = register[1]
+            count = end - start + 1
+
             try:
-                _LOGGER.debug("reading modbus data at address %s", register[0])
+                _LOGGER.debug("reading modbus data from %s to %s (%s)", start, end, count)
                 async with self._lock:
-                    _LOGGER.debug("lock acquired")
-                    response = await self._client.read_holding_registers(address=register[0], count=register[1], slave=0x04)
+                    response = await self._client.read_holding_registers(address=start, count=count, slave=0x04)
                 if response.isError():
                     _LOGGER.error("error reading modbus data at address %s: %s", register[0], response)
-                elif len(response.registers) != register[1]:
-                    _LOGGER.warn("error reading modbus data at address %s: expected %s registers, got %s", register[0], register[1], len(response.registers))
+                elif len(response.registers) != count:
+                    _LOGGER.warn("wrong number of registers read at address %s, expected %s, got %s", register[0], register[1], len(response.registers))
                 else:
-                    self.data.update(register[2](response.registers))
+                    for i in range(count):
+                        read[start + i] = response.registers[i]
+                    self.data.update(register[2](read))
             except asyncio.exceptions.CancelledError:
                 _LOGGER.warn("cancelled modbus read")
                 raise
             except:
                 _LOGGER.error("error reading modbus data at address %s", register[0], exc_info=True)
 
-        _LOGGER.debug("finished reading modbus data")
+        _LOGGER.debug("finished reading modbus data, %s", read)
         # _LOGGER.debug("Data: %s", self.data)
 
         return True

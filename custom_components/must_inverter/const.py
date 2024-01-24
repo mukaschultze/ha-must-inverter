@@ -26,7 +26,7 @@ SENSORS_ARRAY = [
     # Charger Control Messages
     Sensor(10101, "ChargerWorkEnable",               None,    None,     Platform.SWITCH,               None,                              True,    None,                        None,                    None,  None,  None),
     Sensor(10102, "AbsorbVoltage",                   0.1,     "V",      Platform.SENSOR,               SensorDeviceClass.VOLTAGE,         True,    None,                        None,                    None,  None,  None),
-    Sensor(20122, "FloatVoltage",                    0.1,     "V",      Platform.NUMBER,               NumberDeviceClass.VOLTAGE,         True,    None,                        None,                    24.0,  29.2,  0.1 ),
+    Sensor(10103, "FloatVoltage",                    0.1,     "V",      Platform.NUMBER,               NumberDeviceClass.VOLTAGE,         True,    None,                        None,                    24.0,  29.2,  0.1 ),
     Sensor(10104, "AbsorptionVoltage",               0.1,     "V",      Platform.NUMBER,               NumberDeviceClass.VOLTAGE,         True,    None,                        None,                    24.0,  29.2,  0.1 ),
     Sensor(10105, "BatteryLowVoltage",               0.1,     "V",      Platform.NUMBER,               NumberDeviceClass.VOLTAGE,         True,    None,                        None,                    20.0,  24.0,  0.1 ),
     Sensor(10107, "BatteryHighVoltage",              0.1,     "V",      Platform.SENSOR,               SensorDeviceClass.VOLTAGE,         True,    None,                        None,                    None,  None,  None),

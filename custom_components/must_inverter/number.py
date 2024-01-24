@@ -28,7 +28,7 @@ class MustInverterNumber(NumberEntity):
         self._inverter = inverter
         self._key = sensor_info.name
         self._address = sensor_info.address
-        self._coeff = sensor_info.coeff
+        self._coeff = sensor_info.coeff or 1
 
         self._attr_has_entity_name = True
         self._attr_unique_id = self._key
@@ -54,7 +54,7 @@ class MustInverterNumber(NumberEntity):
     @property
     def state(self):
         if self._key in self._inverter.data:
-            return self._inverter.data[self._key]
+            return self._inverter.data[self._key] * self._coeff
 
     async def async_set_native_value(self, value: float) -> None:
         await self._inverter.write_modbus_data(self._address, int(round(value / self._coeff)))
