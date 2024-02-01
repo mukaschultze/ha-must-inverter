@@ -211,4 +211,5 @@ def convert_partArr5(partArr5):
     result["MaxCombineChargerCurrent"] =         int16(20132, partArr5)
     result["SystemSetting"] =                    uint16(20142, partArr5)
     result["ChargerSourcePriority"] =            int16(20143, partArr5)
+    result["SolarPowerBalance"] =                int16(20144, partArr5)
     return result
