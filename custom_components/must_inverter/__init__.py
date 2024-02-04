@@ -20,7 +20,10 @@ async def async_setup(hass, config):
     return True # Return boolean to indicate that initialization was successful.
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
+    """Set up the must inverter component."""
     try:
+        entry.async_on_unload(entry.add_update_listener(async_reload_entry))
+
         inverter = MustInverter(hass, entry)
 
         successConnecting = await inverter.connect()
@@ -44,9 +47,11 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     except ConfigEntryNotReady as ex:
         raise ex
     except Exception as ex:
+        _LOGGER.exception("Error setting up modbus device", exc_info=True)
         raise ConfigEntryNotReady(f"Unknown error connecting to modbus device") from ex
 
 async def async_unload_entry(hass, entry):
+    """Unload a config entry."""
     unload_ok = all(
         await asyncio.gather(
             *[
@@ -62,6 +67,10 @@ async def async_unload_entry(hass, entry):
     hass.data[DOMAIN][entry.entry_id] = None
     return True
 
+async def async_reload_entry(hass: HomeAssistant, entry: ConfigEntry) -> None:
+    """Update listener, called when the config entry options are changed."""
+    await hass.config_entries.async_reload(entry.entry_id)
+
 class MustInverter:
 
     def __init__(
@@ -72,32 +81,32 @@ class MustInverter:
         self._hass = hass
 
         common = {
-            'timeout': entry.data["timeout"],
-            'retries': entry.data["retries"],
-            'reconnect_delay': entry.data["reconnect_delay"],
-            'reconnect_delay_max': entry.data["reconnect_delay_max"],
+            'timeout': entry.options["timeout"],
+            'retries': entry.options["retries"],
+            'reconnect_delay': entry.options["reconnect_delay"],
+            'reconnect_delay_max': entry.options["reconnect_delay_max"],
         }
 
-        match entry.data["mode"]:
+        match entry.options["mode"]:
             case "serial":
                 self._client = AsyncModbusSerialClient(
-                    entry.data["device"],
-                    baudrate=entry.data["baudrate"],
-                    stopbits=entry.data["stopbits"],
-                    bytesize=entry.data["bytesize"],
-                    parity=entry.data["parity"],
+                    entry.options["device"],
+                    baudrate = entry.options["baudrate"],
+                    stopbits = entry.options["stopbits"],
+                    bytesize = entry.options["bytesize"],
+                    parity = entry.options["parity"],
                     **common
                 )
             case "tcp":
                 self._client = AsyncModbusTcpClient(
-                    entry.data["host"],
-                    port=entry.data["port"],
+                    entry.options["host"],
+                    port = entry.options["port"],
                     **common
                 )
             case "udp":
                 self._client = AsyncModbusUdpClient(
-                    entry.data["host"],
-                    port=entry.data["port"],
+                    entry.options["host"],
+                    port = entry.options["port"],
                     **common
                 )
             case _:

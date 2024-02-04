@@ -1,9 +1,14 @@
 import logging
+from collections.abc import Mapping
 
 import voluptuous as vol
 from typing import Any
-from homeassistant import config_entries
-from homeassistant.data_entry_flow import FlowResult
+from homeassistant.helpers.schema_config_entry_flow import (
+    SchemaConfigFlowHandler,
+    SchemaFlowFormStep,
+    SchemaFlowMenuStep,
+    SchemaCommonFlowHandler,
+)
 
 from .const import DOMAIN
 
@@ -35,59 +40,51 @@ COMMON_SCHEMA = vol.Schema({
     vol.Required("reconnect_delay_max", default=1.0): vol.Coerce(float),
 })
 
-class MustInverterConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
-    """Must Inverter config flow."""
-    # The schema version of the entries that it creates
-    # Home Assistant will call your migrate method if the version changes
-    VERSION = 1
-    MINOR_VERSION = 1
+async def validate_serial_config(handler: SchemaCommonFlowHandler, user_input: dict[str, Any]) -> dict[str, Any]:
+    user_input["mode"] = "serial"
+    return user_input
 
-    data = {}
+async def validate_tcp_config(handler: SchemaCommonFlowHandler, user_input: dict[str, Any]) -> dict[str, Any]:
+    user_input["mode"] = "tcp"
+    return user_input
 
-    async def async_step_user(self, info: dict[str, Any] | None = None) -> FlowResult:
-        _LOGGER.debug("async_step_user: %s", info)
+async def validate_udp_config(handler: SchemaCommonFlowHandler, user_input: dict[str, Any]) -> dict[str, Any]:
+    user_input["mode"] = "udp"
+    return user_input
 
-        await self.async_set_unique_id(DEVICE_UNIQUE_ID)
-        self._abort_if_unique_id_configured()
+CONFIG_FLOW = {
+    "user": SchemaFlowMenuStep(["serial", "tcp", "udp"]),
+    "serial": SchemaFlowFormStep(
+        schema=SERIAL_SCHEMA,
+        next_step="common",
+        validate_user_input=validate_serial_config,
+    ),
+    "tcp": SchemaFlowFormStep(
+        schema=TCP_SCHEMA,
+        next_step="common",
+        validate_user_input=validate_tcp_config,
+    ),
+    "udp": SchemaFlowFormStep(
+        schema=UDP_SCHEMA,
+        validate_user_input=validate_udp_config,
+        next_step="common",
+    ),
+    "common": SchemaFlowFormStep(
+        schema=COMMON_SCHEMA,
+    ),
+}
 
-        return self.async_show_menu(
-            step_id="user",
-            menu_options=["serial", "tcp", "udp"]
-        )
+OPTIONS_FLOW = {
+    "init": CONFIG_FLOW["user"],
+    **CONFIG_FLOW,
+}
 
-    async def async_step_common(self, info: dict[str, Any] | None = None) -> FlowResult:
-        _LOGGER.debug("async_step_common: %s", info)
+class MustInverterConfigFlow(SchemaConfigFlowHandler, domain=DOMAIN):
+    """Handle a config flow for Scrape."""
 
-        if info is not None:
-            self.data.update(info)
-            return await self.async_step_finish()
+    config_flow = CONFIG_FLOW
+    options_flow = OPTIONS_FLOW
 
-        return self.async_show_form(step_id="common", data_schema=COMMON_SCHEMA, last_step=True)
-
-    async def async_step_finish(self, info: dict[str, Any] | None = None) -> FlowResult:
-        _LOGGER.debug("async_step_finish: %s", info)
-        return self.async_create_entry(title="Must Inverter", data=self.data)
-
-    async def async_step_serial(self, info: dict[str, Any] | None = None) -> FlowResult:
-        if info is not None:
-            self.data.update(info)
-            self.data["mode"] = "serial"
-            return await self.async_step_common()
-
-        return self.async_show_form(step_id="serial", data_schema=SERIAL_SCHEMA)
-
-    async def async_step_tcp(self, info: dict[str, Any] | None = None) -> FlowResult:
-        if info is not None:
-            self.data.update(info)
-            self.data["mode"] = "tcp"
-            return await self.async_step_common()
-
-        return self.async_show_form(step_id="tcp", data_schema=TCP_SCHEMA)
-
-    async def async_step_udp(self, info: dict[str, Any] | None = None) -> FlowResult:
-        if info is not None:
-            self.data.update(info)
-            self.data["mode"] = "udp"
-            return await self.async_step_common()
-
-        return self.async_show_form(step_id="udp", data_schema=UDP_SCHEMA)
+    def async_config_entry_title(self, options: Mapping[str, Any]) -> str:
+        """Return config entry title."""
+        return "Must Inverter"
