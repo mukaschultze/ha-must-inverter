@@ -25,6 +25,15 @@ power production, battery status, and more, directly from your Must solar invert
 | ![image](https://github.com/mukaschultze/ha-must-inverter/assets/13923364/1cc55f7e-dc07-4a83-886c-77b83c2845b8) | ![image](https://github.com/mukaschultze/ha-must-inverter/assets/13923364/0533e262-d9da-4494-ac8d-51298d216e90) |
 | :-------------------------------------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------------------------------------: |
 
+## Supported Devices
+
+This integration is tested using a Must Solar PV18-3024 VPM (aka PV1800). However, it should work with other models that
+use the same communication protocol, such as the PH1800 and EP1800 series.
+
+This integration will have the wrong min and max range for writable voltages when using it with 12v or 48v inverters
+(mostly because my model is 24v and I don't own other models to reverse engineer). If you see some values that don't
+make sense for your inverter, please open an issue or a pull request.
+
 ## Installation
 
 ### HACS (Home Assistant Community Store)
