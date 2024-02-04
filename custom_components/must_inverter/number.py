@@ -66,3 +66,7 @@ class MustInverterNumber(NumberEntity):
     @property
     def device_info(self) -> Optional[Dict[str, Any]]:
         return self._inverter._device_info()
+
+    @property
+    def available(self) -> Optional[Dict[str, Any]]:
+        return self._key in self._inverter.data

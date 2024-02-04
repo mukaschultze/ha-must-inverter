@@ -88,6 +88,10 @@ class MustInverterSwitch(SwitchEntity):
     def device_info(self) -> Optional[Dict[str, Any]]:
         return self._inverter._device_info()
 
+    @property
+    def available(self) -> Optional[Dict[str, Any]]:
+        return self._key in self._inverter.data
+
 class MustInverterSettingsSwitch(SwitchEntity):
     def __init__(self, inverter, setting_config):
         """Initialize the sensor."""
@@ -152,3 +156,7 @@ class MustInverterSettingsSwitch(SwitchEntity):
     @property
     def device_info(self) -> Optional[Dict[str, Any]]:
         return self._inverter._device_info()
+
+    @property
+    def available(self) -> Optional[Dict[str, Any]]:
+        return "SystemSetting" in self._inverter.data
