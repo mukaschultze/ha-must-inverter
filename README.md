@@ -34,6 +34,18 @@ This integration will have the wrong min and max range for writable voltages whe
 (mostly because my model is 24v and I don't own other models to reverse engineer). If you see some values that don't
 make sense for your inverter, please open an issue or a pull request.
 
+## Disclaimer
+
+This integration is not officially supported by Must Solar, I'm not affiliated with Must Solar in any way. This
+integration is based on reverse engineering the communication protocol used by the Must Solar inverters and by resources
+found online. Use it at your own risk.
+
+> [!CAUTION]
+> There are some modbus registers that cannot be reversed to their original value after being written and can have a
+> huge effect on the inverter operation, such as the calibration coefficients (these entities are disabled by default).
+> I'm not a 100% sure how they work but I suspect they are 16bit float values. This integration **DOES NOT** write any
+> information to the device via modbus unless you manually change an entity value.
+
 ## Installation
 
 ### HACS (Home Assistant Community Store)
