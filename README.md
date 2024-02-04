@@ -43,8 +43,7 @@ found online. Use it at your own risk.
 > [!CAUTION]
 > There are some modbus registers that cannot be reversed to their original value after being written and can have a
 > huge effect on the inverter operation, such as the calibration coefficients (these entities are disabled by default).
-> I'm not a 100% sure how they work but I suspect they are 16bit float values. This integration **DOES NOT** write any
-> information to the device via modbus unless you manually change an entity value.
+> This integration **DOES NOT** write any information to the device via modbus unless you manually change an entity value.
 
 ## Installation
 
