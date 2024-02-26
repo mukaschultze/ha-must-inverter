@@ -82,36 +82,6 @@ def convert_partArr4(partArr4):
     if partArr4 is None:
         return None
 
-    # int16_4 = twos_complement(partArr4[4])
-    # int16_5 = twos_complement(partArr4[0])
-    # str1 = ""
-
-    # # Map int16_5 to InverterMachineType
-    # if int16_5 == 1600:
-    #     str1 = "PC1600"
-    # elif int16_5 == 1800:
-    #     str1 = "PV1800" if int16_4 > 20000 else "PH1800"
-    # elif int16_5 == 3000:
-    #     str1 = "PH3000"
-    # elif int16_5 == 3500:
-    #     str1 = "PV3500"
-
-    # int16_6 = twos_complement(partArr4[3])
-
-    # # Map int16_6 to InverterHardwareVersion
-    # if partArr4[3] != 0 and int16_6 != 0:
-    #     str2 = f"{int16_6 // 10000}.{(int16_6 // 100) % 100}.{int16_6 % 100}"
-    # else:
-    #     str2 = "1.00.00"
-
-    # int16_7 = twos_complement(partArr4[4])
-
-    # # Map int16_7 to InverterSoftwareVersion
-    # if partArr4[4] != 0 and int16_7 != 0:
-    #     str3 = f"{int16_7 // 10000}.{(int16_7 // 100) % 100}.{int16_7 % 100}"
-    # else:
-    #     str3 = "1.00.00"
-
     result = {}
     result["InverterMachineType"] =       model(20000, partArr4)
     result["InverterSerialNumber"] =      serial(20002, partArr4)
