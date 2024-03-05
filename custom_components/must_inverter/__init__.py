@@ -224,10 +224,11 @@ class MustInverter:
 
             try:
                 _LOGGER.debug("reading modbus data from %s to %s (%s)", start, end, count)
-                async with self._lock:
-                    if not await self._check_and_reopen():
-                        break
 
+                if not await self._check_and_reopen():
+                    break
+
+                async with self._lock:
                     response = await self._client.read_holding_registers(address=start, count=count, slave=0x04)
                 if response.isError():
                     _LOGGER.error("error reading modbus data at address %s: %s", start, response)
