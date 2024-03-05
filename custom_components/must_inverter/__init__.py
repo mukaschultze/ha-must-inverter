@@ -230,9 +230,9 @@ class MustInverter:
 
                     response = await self._client.read_holding_registers(address=start, count=count, slave=0x04)
                 if response.isError():
-                    _LOGGER.error("error reading modbus data at address %s: %s", register[0], response)
+                    _LOGGER.error("error reading modbus data at address %s: %s", start, response)
                 elif len(response.registers) != count:
-                    _LOGGER.warn("wrong number of registers read at address %s, expected %s, got %s", register[0], register[1], len(response.registers))
+                    _LOGGER.warn("wrong number of registers read at address %s, expected %s, got %s", start, count, len(response.registers))
                 else:
                     for i in range(count):
                         read[start + i] = response.registers[i]
@@ -241,7 +241,7 @@ class MustInverter:
                 _LOGGER.warn("cancelled modbus read")
                 raise
             except:
-                _LOGGER.error("error reading modbus data at address %s", register[0], exc_info=True)
+                _LOGGER.error("error reading modbus data at address %s", start, exc_info=True)
 
         _LOGGER.debug("finished reading modbus data, %s", read)
         # _LOGGER.debug("Data: %s", self.data)
