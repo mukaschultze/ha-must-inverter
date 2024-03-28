@@ -7,7 +7,7 @@
 
 [![Buy me a coffee!](https://www.buymeacoffee.com/assets/img/custom_images/black_img.png)][buymecoffee]
 
-[![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=mukaschultze&repository=ha-must-inverter)
+[![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=mukaschultze&repository=ha-must-inverter&category=integration)
 
 <!-- [![Discord][discord-shield]][discord] -->
 <!-- [![Community Forum][forum-shield]][forum] -->
@@ -49,7 +49,7 @@ found online. Use it at your own risk.
 
 ### HACS (Home Assistant Community Store)
 
-If you have HACS just search for `Must Inverter` and install it from there. Or alternatively, [click here](https://my.home-assistant.io/redirect/hacs_repository/?owner=mukaschultze&repository=ha-must-inverter).
+If you have HACS just search for `Must Inverter` and install it from there. Or alternatively, [click here](https://my.home-assistant.io/redirect/hacs_repository/?owner=mukaschultze&repository=ha-must-inverter&category=integration).
 
 ### Manual Installation
 
