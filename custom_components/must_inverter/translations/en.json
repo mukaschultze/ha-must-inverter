@@ -38,6 +38,7 @@
       "common": {
         "title": "Configuration",
         "data": {
+          "scan_interval": "Scan Interval (seconds)",
           "timeout": "Timeout (seconds)",
           "retries": "Retries",
           "reconnect_delay": "Reconnect Delay (seconds)",
@@ -84,6 +85,7 @@
       "common": {
         "title": "Configuration",
         "data": {
+          "scan_interval": "Scan Interval (seconds)",
           "timeout": "Timeout (seconds)",
           "retries": "Retries",
           "reconnect_delay": "Reconnect Delay (seconds)",

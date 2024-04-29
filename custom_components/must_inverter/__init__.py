@@ -115,8 +115,9 @@ class MustInverter:
         self._client.rts = False
         self._client.dtr = False
         self._lock = asyncio.Lock()
-        self._scan_interval = timedelta(seconds=DEFAULT_SCAN_INTERVAL)
+        self._scan_interval = timedelta(seconds=entry.options.get("scan_interval", DEFAULT_SCAN_INTERVAL))
         self._sensors = []
+        self._reading = False
         self.data = {}
 
     @callback
@@ -201,6 +202,11 @@ class MustInverter:
     async def read_modbus_data(self):
         _LOGGER.debug("reading modbus data")
 
+        if self._reading:
+            _LOGGER.warning("skipping reading modbus data, previous read still in progress, make sure your scan interval is not too low")
+            return False
+        self._reading = True
+
         # Reading all the control messages at once (ranges 20016-20100 and/or
         # 10009-10100 are problematic) causes the inverter to shut down
         # immediately and the charger stops working afterwards (all registers
@@ -245,6 +251,7 @@ class MustInverter:
                 _LOGGER.error("error reading modbus data at address %s", start, exc_info=True)
 
         _LOGGER.debug("finished reading modbus data, %s", read)
+        self._reading = False
         # _LOGGER.debug("Data: %s", self.data)
 
         return True

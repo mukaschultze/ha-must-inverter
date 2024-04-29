@@ -10,7 +10,7 @@ from homeassistant.helpers.schema_config_entry_flow import (
     SchemaCommonFlowHandler,
 )
 
-from .const import DOMAIN
+from .const import DOMAIN, DEFAULT_SCAN_INTERVAL
 
 _LOGGER = logging.getLogger(__name__)
 DEVICE_UNIQUE_ID = "must_inverter"
@@ -34,6 +34,7 @@ UDP_SCHEMA =vol.Schema({
 })
 
 COMMON_SCHEMA = vol.Schema({
+    vol.Required("scan_interval", default=DEFAULT_SCAN_INTERVAL): vol.Coerce(float),
     vol.Required("timeout", default=2.0): vol.Coerce(float),
     vol.Required("retries", default=3): int,
     vol.Required("reconnect_delay", default=0.3): vol.Coerce(float),
