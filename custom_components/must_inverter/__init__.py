@@ -118,6 +118,7 @@ class MustInverter:
         self._scan_interval = timedelta(seconds=entry.options.get("scan_interval", DEFAULT_SCAN_INTERVAL))
         self._sensors = []
         self._reading = False
+        self.registers = dict()
         self.data = {}
 
     @callback
@@ -251,6 +252,7 @@ class MustInverter:
                 _LOGGER.error("error reading modbus data at address %s", start, exc_info=True)
 
         _LOGGER.debug("finished reading modbus data, %s", read)
+        self.registers = read
         self._reading = False
         # _LOGGER.debug("Data: %s", self.data)
 
