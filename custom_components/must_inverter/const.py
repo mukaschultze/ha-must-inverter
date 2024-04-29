@@ -93,6 +93,7 @@ SENSORS_ARRAY = [
     Sensor(20142, "SystemSetting",                   None,    None,     Platform.SENSOR,               None,                              False,   None,                        None,                    None,  None,  None),
     Sensor(20143, "ChargerSourcePriority",           None,    None,     Platform.SELECT,               None,                              True,    "mdi:battery-charging-high", CHARGER_SOURCE_PRIORITY, None,  None,  None),
     Sensor(20144, "SolarPowerBalance",               None,    None,     Platform.SWITCH,               None,                              True,    "mdi:solar-power",           None,                    None,  None,  None),
+    Sensor(20213, "InverterRemoveTheAccumulatedData",None,    None,     Platform.BUTTON,               None,                              False,   None,                        None,                    None,  None,  None),
     # Inverter Display Messages
     Sensor(25201, "WorkState",                       None,    None,     Platform.SENSOR,               SensorDeviceClass.ENUM,            True,    None,                        WORK_STATE_NO,           None,  None,  None),
     Sensor(25202, "AcVoltageGrade",                  None,    "V",      Platform.SENSOR,               SensorDeviceClass.VOLTAGE,         False,   None,                        None,                    None,  None,  None),

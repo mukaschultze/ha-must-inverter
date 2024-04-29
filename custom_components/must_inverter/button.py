@@ -44,4 +44,5 @@ class MustInverterButton(ButtonEntity):
 
     @property
     def available(self) -> Optional[Dict[str, Any]]:
-        return self._key in self._inverter.data
+        return True
+        # return self._key in self._inverter.data
