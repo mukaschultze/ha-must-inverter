@@ -16,7 +16,7 @@ _LOGGER = logging.getLogger(__name__)
 DEVICE_UNIQUE_ID = "must_inverter"
 
 SERIAL_SCHEMA =vol.Schema({
-    vol.Required("device"): str,
+    vol.Required("device", default="/dev/ttyUSB0"): str,
     vol.Required("baudrate", default=19200): int,
     vol.Required("parity", default="N"): str,
     vol.Required("stopbits", default=1): int,
