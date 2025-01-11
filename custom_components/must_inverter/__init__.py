@@ -9,7 +9,7 @@ from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers.event import async_track_time_interval
 from pymodbus.client import AsyncModbusSerialClient, AsyncModbusTcpClient, AsyncModbusUdpClient
 
-from .const import DEFAULT_SCAN_INTERVAL, DOMAIN
+from .const import DEFAULT_SCAN_INTERVAL, DOMAIN, get_sensors_for_model, MODEL_PV1800, MODEL_PV1900
 from .mapper import *
 
 PLATFORMS = [Platform.SENSOR, Platform.BINARY_SENSOR, Platform.NUMBER, Platform.SELECT, Platform.SWITCH, Platform.BUTTON]
@@ -24,7 +24,14 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     try:
         entry.async_on_unload(entry.add_update_listener(async_reload_entry))
 
-        inverter = MustInverter(hass, entry)
+        # Get model from config entry, default to PV1800
+        model = entry.data.get("model", MODEL_PV1800)
+        
+        # Get model-specific sensors
+        sensors = get_sensors_for_model(model)
+        
+        # Initialize inverter with model-specific sensors
+        inverter = MustInverter(hass, entry, sensors)
 
         successConnecting = await inverter.connect()
 
@@ -36,7 +43,12 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
         if not successReading:
             raise ConfigEntryNotReady(f"Unable to read from modbus device")
 
-        hass.data[DOMAIN][entry.entry_id] = inverter
+        # Store both inverter instance and model info
+        hass.data[DOMAIN][entry.entry_id] = {
+            "inverter": inverter,
+            "model": model,
+            "sensors": sensors
+        }
 
         await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
 
@@ -65,10 +77,13 @@ class MustInverter:
     def __init__(
         self,
         hass,
-        entry: ConfigEntry
+        entry: ConfigEntry,
+        sensors: list
     ):
         self._hass = hass
-
+        self._sensors = sensors # Store model-specific sensors
+        self._model = entry.data.get("model", MODEL_PV1800)  # Store the model
+        
         common = {
             'timeout': entry.options["timeout"],
             'retries': entry.options["retries"],
@@ -105,7 +120,6 @@ class MustInverter:
         self._client.dtr = False
         self._lock = asyncio.Lock()
         self._scan_interval = timedelta(seconds=entry.options.get("scan_interval", DEFAULT_SCAN_INTERVAL))
-        self._sensors = []
         self._reading = False
         self.registers = dict()
         self.data = {}
@@ -202,6 +216,7 @@ class MustInverter:
         # immediately and the charger stops working afterwards (all registers
         # return zeroes). Requires the grid/batteries/PV to be disconnected and
         # the inverter restarted for it to come back online.
+        # Base register ranges for all models
         registersAddresses = [
           # (10000, 10008, convert_partArr1), # Charger Control Messages
             (10101, 10124, convert_partArr2), # Charger Control Messages
@@ -211,9 +226,24 @@ class MustInverter:
             (25201, 25279, convert_partArr6), # Inverter Display Messages
         ]
 
+        # Add PV19-specific register ranges if needed
+        if self._model == MODEL_PV1900:
+            registersAddresses.extend([
+                (113, 113, convert_battery_status),     # Battery Status (SoC)
+                (16205, 16208, convert_pv2_data),       # PV2 Data (Voltage, Current, Power)
+            ])
+
         read = dict()
 
         for register in registersAddresses:
+            if self._model == MODEL_PV1900:
+                # Add a small delay between reading standard and PV19-specific registers
+                # to prevent any potential issues
+                await asyncio.sleep(0.1)
+            
+                # Log when reading PV19-specific registers
+                _LOGGER.debug("Reading PV19-specific registers")
+
             start = register[0]
             end = register[1]
             count = end - start + 1

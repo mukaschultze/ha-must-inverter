@@ -183,3 +183,30 @@ def convert_partArr5(partArr5):
     result["ChargerSourcePriority"] =            int16(20143, partArr5)
     result["SolarPowerBalance"] =                int16(20144, partArr5)
     return result
+
+
+# used for PV1900
+def convert_battery_status(registers):
+    """Convert battery status registers"""
+    result = {}
+    try:
+        if 113 in registers:
+            result["StateOfCharge"] = registers[113]
+    except Exception as e:
+        _LOGGER.debug("Battery status not available: %s", e)
+    return result
+
+# used for PV1900
+def convert_pv2_data(registers):
+    """Convert PV2-specific registers."""
+    result = {}
+    try:
+        if 16205 in registers:
+            result["PV2Voltage"] = registers[16205]
+        if 16207 in registers:
+            result["PV2ChargerCurrent"] = registers[16207]
+        if 16208 in registers:
+            result["PV2ChargerPower"] = registers[16208]
+    except Exception as e:
+        _LOGGER.debug("PV2 data not available: %s", e)
+    return result

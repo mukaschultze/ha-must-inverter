@@ -8,7 +8,7 @@ from homeassistant.components.switch import SwitchEntity
 from homeassistant.const import Platform
 from homeassistant.core import callback
 
-from .const import DOMAIN, SENSORS_ARRAY
+from .const import DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -29,13 +29,15 @@ async def async_setup_entry(hass, entry, async_add_entities):
         Setting(7, "RecordFault",      True,  True,  'mdi:alert'),
     ]
 
-    inverter = hass.data[DOMAIN][entry.entry_id]
+    inverter_data = hass.data[DOMAIN][entry.entry_id]
+    inverter = inverter_data["inverter"]
+    sensors = inverter_data["sensors"]
     entities = []
 
     for setting in settings:
         entities.append(MustInverterSettingsSwitch(inverter, setting))
 
-    for sensor_info in SENSORS_ARRAY:
+    for sensor_info in sensors:
         if sensor_info.platform == Platform.SWITCH:
             sensor = MustInverterSwitch(inverter, sensor_info)
             entities.append(sensor)

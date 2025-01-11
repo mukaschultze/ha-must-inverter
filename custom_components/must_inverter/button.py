@@ -5,15 +5,17 @@ from typing import Any, Dict, Optional
 from homeassistant.components.button import ButtonEntity
 from homeassistant.const import Platform
 
-from .const import DOMAIN, SENSORS_ARRAY
+from .const import DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
 
 async def async_setup_entry(hass, entry, async_add_entities):
-    inverter = hass.data[DOMAIN][entry.entry_id]
+    inverter_data = hass.data[DOMAIN][entry.entry_id]
+    inverter = inverter_data["inverter"]
+    sensors = inverter_data["sensors"]
     entities = []
 
-    for sensor_info in SENSORS_ARRAY:
+    for sensor_info in sensors:
         if sensor_info.platform == Platform.BUTTON:
             sensor = MustInverterButton(inverter, sensor_info)
             entities.append(sensor)

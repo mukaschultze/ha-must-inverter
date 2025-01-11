@@ -9,6 +9,12 @@ DOMAIN = "must_inverter"
 
 DEFAULT_SCAN_INTERVAL = 15
 
+# model constants
+MODEL_PV1800 = "PV1800" # Base model
+MODEL_PV1900 = "PV1900"
+
+SUPPORTED_MODELS = [MODEL_PV1800, MODEL_PV1900]
+
 ENERGY_USE_MODE = ["", "SBU", "SUB", "UTI", "SOL"]
 GRID_PROTECT_STANDARD = ["VDE4105", "UPS", "APL", "GEN"]
 SOLAR_USE_AIM = ["LBU", "BLU"]
@@ -21,6 +27,7 @@ CHARGING_STATE_NO = ["Stop", "Absorb charge", "Float charge", "Equalization char
 
 Sensor = namedtuple("Sensor", ["address", "name", "coeff", "unit", "platform", "device_class", "enabled", "icon", "options", "min", "max", "step"])
 
+# Base sensors, valid for all models
 SENSORS_ARRAY = [
     #      addr    name                              coeff    unit      platform                       device_class                       enabled  icon                         options                  min    max    step
     # Charger Control Messages
@@ -144,3 +151,24 @@ SENSORS_ARRAY = [
     Sensor(25274, "BattCurrent",                     None,    "A",      Platform.SENSOR,               SensorDeviceClass.CURRENT,         True,    "mdi:current-dc",            None,                    None,  None,  None),
     Sensor(25277, "RatedPowerW",                     None,    "W",      Platform.SENSOR,               SensorDeviceClass.POWER,           False,   None,                        None,                    None,  None,  None),
 ]
+
+PV1900_SENSORS = [
+    # Additional sensors for PV19 series
+    Sensor(113,   "StateOfCharge",                    None,    "%",      Platform.SENSOR,               None,                              True,    "mdi:battery",               None,                    None,  None,  None),
+    Sensor(16205, "PV2Voltage",                       0.1,     "V",      Platform.SENSOR,               SensorDeviceClass.VOLTAGE,         True,    None,                        None,                    None,  None,  None),
+    Sensor(16207, "PV2ChargerCurrent",                0.1,     "A",      Platform.SENSOR,               SensorDeviceClass.CURRENT,         True,    "mdi:current-dc",            None,                    None,  None,  None),
+    Sensor(16208, "PV2ChargerPower",                  None,    "W",      Platform.SENSOR,               SensorDeviceClass.POWER,           True,    None,                        None,                    None,  None,  None),
+    Sensor(25263, "InverterErrorMessage3",            None,    None,     Platform.SENSOR,               None,                              True,    "mdi:alert-circle-outline",  None,                    None,  None,  None),
+    Sensor(25266, "InverterWarningMessage2",          None,    None,     Platform.SENSOR,               None,                              True,    "mdi:alert-outline",         None,                    None,  None,  None),
+]
+
+
+def get_sensors_for_model(model: str) -> list:
+    """Return sensors based on inverter model.
+    
+    PV1800: Base sensors only
+    PV1900: Base sensors + PV2 and extended battery monitoring
+    """
+    if model == MODEL_PV1900:
+        return SENSORS_ARRAY + PV1900_SENSORS
+    return SENSORS_ARRAY
