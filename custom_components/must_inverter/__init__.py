@@ -81,8 +81,9 @@ class MustInverter:
         sensors: list
     ):
         self._hass = hass
-        self._sensors = sensors # Store model-specific sensors
-        self._model = entry.data.get("model", MODEL_PV1800)  # Store the model
+        self._sensor_defs = sensors  # Store sensor definitions
+        self._callbacks = []         # Store callbacks separately
+        self._model = entry.data.get("model", MODEL_PV1800)
         
         common = {
             'timeout': entry.options["timeout"],
@@ -127,23 +128,22 @@ class MustInverter:
     @callback
     def async_add_must_inverter_sensor(self, update_callback):
         # This is the first sensor, set up interval.
-        if not self._sensors:
+        if not self._callbacks:
             self._unsub_interval_method = async_track_time_interval(
                 self._hass, self._async_refresh_modbus_data, self._scan_interval
             )
 
-        self._sensors.append(update_callback)
+        self._callbacks.append(update_callback)
 
     @callback
     def async_remove_must_inverter_sensor(self, update_callback):
-        self._sensors.remove(update_callback)
+        self._callbacks.remove(update_callback)
 
-        if not self._sensors:
+        if not self._callbacks:
             """stop the interval timer upon removal of last sensor"""
             self._unsub_interval_method()
             self._unsub_interval_method = None
             self.close()
-
 
     async def _async_refresh_modbus_data(self, now=None):
         if not await self._check_and_reopen():
@@ -155,7 +155,7 @@ class MustInverter:
             update_result = await self.read_modbus_data()
 
             if update_result:
-                for update_callback in self._sensors:
+                for update_callback in self._callbacks:
                     update_callback()
         except Exception as e:
             _LOGGER.exception("error reading inverter data", exc_info=True)
