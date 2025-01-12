@@ -53,8 +53,8 @@ class MustInverterSwitch(SwitchEntity):
         self._address = sensor_info.address
 
         self._attr_has_entity_name = True
-        self._attr_unique_id = self._key
-        self._attr_name = re.sub(r'(?<=[a-z])(?=[A-Z])', ' ', self._key).capitalize()
+        self._attr_unique_id = f"{self._inverter._model}_{self._inverter.data['InverterSerialNumber']}_{self._key}"
+        self._attr_name = re.sub(r'(?<=[a-z])(?=[A-Z])', ' ', self._key)
         self._attr_device_class = sensor_info.device_class
         self._attr_entity_registry_enabled_default = sensor_info.enabled
         self._attr_icon = sensor_info.icon
@@ -103,9 +103,8 @@ class MustInverterSettingsSwitch(SwitchEntity):
         self._flip = setting_config.flip
 
         self._attr_has_entity_name = True
-        self._attr_unique_id = self._name
-        self._attr_name = re.sub(r'(?<=[a-z])(?=[A-Z])', ' ', self._name).capitalize()
-        # self._attr_device_class = sensor_info.device_class
+        self._attr_unique_id = f"{self._inverter._model}_{self._inverter.data['InverterSerialNumber']}_{self._name}"
+        self._attr_name = re.sub(r'(?<=[a-z])(?=[A-Z])', ' ', self._name)
         self._attr_entity_registry_enabled_default = setting_config.enabled
         self._attr_icon = setting_config.icon
 

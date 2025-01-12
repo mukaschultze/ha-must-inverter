@@ -32,8 +32,8 @@ class MustInverterSensor(SensorEntity):
         self._coeff = sensor_info.coeff or 1
 
         self._attr_has_entity_name = True
-        self._attr_unique_id = self._key
-        self._attr_name = re.sub(r'(?<=[a-z])(?=[A-Z])', ' ', self._key).capitalize()
+        self._attr_unique_id = f"{self._inverter._model}_{self._inverter.data['InverterSerialNumber']}_{self._key}"
+        self._attr_name = re.sub(r'(?<=[a-z])(?=[A-Z])', ' ', self._key)
         self._attr_native_unit_of_measurement = sensor_info.unit
         self._attr_device_class = sensor_info.device_class
         self._attr_entity_registry_enabled_default = sensor_info.enabled

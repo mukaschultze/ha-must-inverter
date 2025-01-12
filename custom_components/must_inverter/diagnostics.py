@@ -8,16 +8,36 @@ from homeassistant.helpers import device_registry as dr, entity_registry as er
 from .const import DOMAIN
 from .__init__ import MustInverter
 
-TO_REDACT = { }
-TO_REDACT_DEV = { }
+# Add more fields that might contain sensitive information
+TO_REDACT = {
+    "host",
+    "port",
+    "serial_number",
+    "InverterSerialNumber",
+    "mac_address",
+    "unique_id",
+    "identifiers",
+}
+
+TO_REDACT_DEV = {
+    "serial_number",
+    "identifiers",
+}
 
 async def async_get_config_entry_diagnostics(
     hass: HomeAssistant, entry: ConfigEntry
 ) -> dict:
-    diag_data = {"entry": async_redact_data(entry.as_dict(), TO_REDACT)}
+    """Return diagnostics for a config entry."""
+    diag_data = {
+        "entry": async_redact_data(entry.as_dict(), TO_REDACT),
+        "entry_id": entry.entry_id,
+        "version": entry.version,
+        "minor_version": entry.minor_version,
+    }
 
+    # Get device data
     devs_data = _async_devices_as_dict(hass, entry)
-    diag_data['devices'] = devs_data
+    diag_data["devices"] = devs_data
 
     return diag_data
 
@@ -25,23 +45,28 @@ async def async_get_config_entry_diagnostics(
 def _async_devices_as_dict(
     hass: HomeAssistant, entry: ConfigEntry
 ) -> dict:
+    """Gather device information."""
     devs_data = {}
     device: MustInverter = hass.data[DOMAIN].get(entry.entry_id, {})
-    device_info = device._device_info()
+    
+    if not device:
+        return {"error": "No device data found"}
 
+    device_info = device._device_info()
+    
     devs_data[entry.entry_id] = {
+        "model": device._model,
         "device_info": async_redact_data(device_info, TO_REDACT_DEV),
-        "data": device.data,
+        "data": async_redact_data(device.data, TO_REDACT),
         "registers": device.registers,
         "home_assistant": _async_device_ha_info(hass, device_info["identifiers"]),
     }
 
     return devs_data
 
-
 @callback
 def _async_device_ha_info(hass: HomeAssistant, identifiers: set[tuple[str, str]]) -> dict | None:
-    """Gather information how this ThinQ device is represented in Home Assistant."""
+    """Gather information how this device is represented in Home Assistant."""
 
     device_registry = dr.async_get(hass)
     entity_registry = er.async_get(hass)
@@ -55,6 +80,7 @@ def _async_device_ha_info(hass: HomeAssistant, identifiers: set[tuple[str, str]]
         "model": hass_device.model,
         "manufacturer": hass_device.manufacturer,
         "sw_version": hass_device.sw_version,
+        "hw_version": hass_device.hw_version,
         "disabled": hass_device.disabled,
         "disabled_by": hass_device.disabled_by,
         "entities": {},
@@ -69,13 +95,13 @@ def _async_device_ha_info(hass: HomeAssistant, identifiers: set[tuple[str, str]]
     for entity_entry in hass_entities:
         if entity_entry.platform != DOMAIN:
             continue
+        
         state = hass.states.get(entity_entry.entity_id)
         state_dict = None
         if state:
             state_dict = dict(state.as_dict())
-            # The entity_id is already provided at root level.
+            # Remove redundant or sensitive information
             state_dict.pop("entity_id", None)
-            # The context doesn't provide useful information in this case.
             state_dict.pop("context", None)
 
         data["entities"][entity_entry.entity_id] = {

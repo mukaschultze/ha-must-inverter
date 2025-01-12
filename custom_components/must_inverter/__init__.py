@@ -281,10 +281,10 @@ class MustInverter:
         return True
 
     def _device_info(self):
-        return  {
-            "identifiers": {(DOMAIN, self.data["InverterMachineType"])},
-            "name": self.data["InverterMachineType"],
-            "model": self.data["InverterMachineType"],
+        return {
+            "identifiers": {(DOMAIN, f"{self._model}_{self.data['InverterSerialNumber']}")},
+            "name": f"Must Solar {self._model}",  # Include model in device name
+            "model": self._model,
             "manufacturer": "Must Solar",
             "hw_version": self.data["InverterHardwareVersion"],
             "sw_version": self.data["InverterSoftwareVersion"],

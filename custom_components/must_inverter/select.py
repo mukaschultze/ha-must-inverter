@@ -33,8 +33,8 @@ class MustInverterSelect(SelectEntity):
         self._address = sensor_info.address
 
         self._attr_has_entity_name = True
-        self._attr_unique_id = self._key
-        self._attr_name = re.sub(r'(?<=[a-z])(?=[A-Z])', ' ', self._key).capitalize()
+        self._attr_unique_id = f"{self._inverter._model}_{self._inverter.data['InverterSerialNumber']}_{self._key}"
+        self._attr_name = re.sub(r'(?<=[a-z])(?=[A-Z])', ' ', self._key)
         self._attr_entity_registry_enabled_default = sensor_info.enabled
         self._attr_icon = sensor_info.icon
         self._attr_options = list(filter(len, sensor_info.options))
