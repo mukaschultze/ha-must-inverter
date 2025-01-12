@@ -25,7 +25,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
         entry.async_on_unload(entry.add_update_listener(async_reload_entry))
 
         # Get model from config entry, default to PV1800
-        model = entry.data.get("model", MODEL_PV1800)
+        model = entry.data.get("model") or entry.options.get("model", MODEL_PV1800)
+        _LOGGER.debug("Setting up Must Inverter with model: %s", model)
         
         # Get model-specific sensors
         sensors = get_sensors_for_model(model)
@@ -83,7 +84,9 @@ class MustInverter:
         self._hass = hass
         self._sensor_defs = sensors  # Store sensor definitions
         self._callbacks = []         # Store callbacks separately
-        self._model = entry.data.get("model", MODEL_PV1800)
+        # Check both data and options
+        self._model = entry.data.get("model") or entry.options.get("model", MODEL_PV1800)
+        _LOGGER.debug("Initializing MustInverter with model: %s", self._model)
         
         common = {
             'timeout': entry.options["timeout"],
