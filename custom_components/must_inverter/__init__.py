@@ -57,20 +57,23 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         # Adding register monitor to help us discover unknown registers
         # We can remove it on production or make optional in settings later
         monitor = RegisterMonitor(hass)
-        async def monitor_registers(*args):
-            """Monitor register values periodically."""
-            await monitor.scan_ranges(inverter)
         
         # Add monitoring to the update cycle, but at a slower rate
         async def delayed_monitor():
             """Run monitor at a slower rate to avoid overwhelming the device."""
-            while True:
-                await monitor_registers()
-                await asyncio.sleep(300)  # Run every 5 minutes
+            try:
+                while True:
+                    await monitor.scan_ranges(inverter)
+                    await asyncio.sleep(300)  # Run every 5 minutes
+            except asyncio.CancelledError:
+                _LOGGER.debug("Register monitor task cancelled")
+                raise
         
-        # Start register monitor
-        hass.async_create_task(delayed_monitor())
-
+        monitor_task = asyncio.create_task(delayed_monitor())
+        
+        # Store the task so we can cancel it later
+        hass.data[DOMAIN][entry.entry_id]["monitor_task"] = monitor_task
+        
         return True
     except ConfigEntryNotReady as ex:
         raise ex
@@ -78,14 +81,22 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         _LOGGER.exception("Error setting up modbus device", exc_info=True)
         raise ConfigEntryNotReady(f"Unknown error connecting to modbus device") from ex
 
-async def async_unload_entry(hass, entry):
+async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
+    """Unload a config entry."""
     unload_ok = await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
+    
+    if unload_ok:
+        # Cancel the monitor task
+        if monitor_task := hass.data[DOMAIN][entry.entry_id].get("monitor_task"):
+            monitor_task.cancel()
+            try:
+                await monitor_task
+            except asyncio.CancelledError:
+                pass
+            
+        hass.data[DOMAIN].pop(entry.entry_id)
 
-    if not unload_ok:
-        return False
-
-    hass.data[DOMAIN][entry.entry_id] = None
-    return True
+    return unload_ok
 
 async def async_reload_entry(hass: HomeAssistant, entry: ConfigEntry) -> None:
     """Update listener, called when the config entry options are changed."""
