@@ -18,16 +18,12 @@ class RegisterMonitor:
         
         # Define register ranges to monitor
         self.register_ranges = [
-            # Known interesting range
-            (25275, 25279, None),  # Contains RatedPowerW and unknown values
+            # Main ranges with unknown values we're investigating
+            (25269, 25290, None),  # Contains status codes, RatedPowerW, and new unknown values
             
-            # PV related ranges - keep these as they're most likely to contain PV data
+            # PV related ranges - keep these as they might reveal PV data
             (16200, 16210, None),  # Around existing PV2 registers
             (16100, 16110, None),  # Potential PV1 specific registers
-            
-            # Add potentially interesting ranges
-            (25280, 25290, None),  # Extended range after our findings
-            (25200, 25274, None),  # Range before our findings
         ]
         _LOGGER.info(f"Register monitor initialized with {len(self.register_ranges)} ranges to scan")
         _LOGGER.debug(f"Will monitor these ranges: {self.register_ranges}")
