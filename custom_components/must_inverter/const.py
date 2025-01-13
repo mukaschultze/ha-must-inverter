@@ -149,7 +149,7 @@ SENSORS_ARRAY = [
     Sensor(25265, "InverterWarningMessage",          None,    None,     Platform.SENSOR,               None,                              True,    "mdi:alert-outline",         None,                    None,  None,  None),
     Sensor(25273, "BattPower",                       None,    "W",      Platform.SENSOR,               SensorDeviceClass.POWER,           True,    "mdi:home-battery-outline",  None,                    None,  None,  None),
     Sensor(25274, "BattCurrent",                     None,    "A",      Platform.SENSOR,               SensorDeviceClass.CURRENT,         True,    "mdi:current-dc",            None,                    None,  None,  None),
-    Sensor(25277, "RatedPowerW",                     None,    "W",      Platform.SENSOR,               SensorDeviceClass.POWER,           False,   None,                        None,                    None,  None,  None),
+    Sensor(25277, "RatedPowerW",                     None,    "W",      Platform.SENSOR,               SensorDeviceClass.POWER,           False,   None,                        None,                    None,  None,  None)
 ]
 
 PV1900_SENSORS = [
@@ -159,7 +159,7 @@ PV1900_SENSORS = [
     Sensor(16207, "PV2ChargerCurrent",                0.1,     "A",      Platform.SENSOR,               SensorDeviceClass.CURRENT,         True,    "mdi:current-dc",            None,                    None,  None,  None),
     Sensor(16208, "PV2ChargerPower",                  None,    "W",      Platform.SENSOR,               SensorDeviceClass.POWER,           True,    None,                        None,                    None,  None,  None),
     Sensor(25263, "InverterErrorMessage3",            None,    None,     Platform.SENSOR,               None,                              True,    "mdi:alert-circle-outline",  None,                    None,  None,  None),
-    Sensor(25266, "InverterWarningMessage2",          None,    None,     Platform.SENSOR,               None,                              True,    "mdi:alert-outline",         None,                    None,  None,  None),
+    Sensor(25266, "InverterWarningMessage2",          None,    None,     Platform.SENSOR,               None,                              True,    "mdi:alert-outline",         None,                    None,  None,  None)
 ]
 
 

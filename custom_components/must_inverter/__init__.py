@@ -11,6 +11,7 @@ from pymodbus.client import AsyncModbusSerialClient, AsyncModbusTcpClient, Async
 
 from .const import DEFAULT_SCAN_INTERVAL, DOMAIN, get_sensors_for_model, MODEL_PV1800, MODEL_PV1900
 from .mapper import *
+from .utils.register_monitor import RegisterMonitor
 
 PLATFORMS = [Platform.SENSOR, Platform.BINARY_SENSOR, Platform.NUMBER, Platform.SELECT, Platform.SWITCH, Platform.BUTTON]
 _LOGGER = logging.getLogger(__name__)
@@ -19,7 +20,7 @@ async def async_setup(hass, config):
     hass.data[DOMAIN] = {}
     return True # Return boolean to indicate that initialization was successful.
 
-async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
+async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up the must inverter component."""
     try:
         entry.async_on_unload(entry.add_update_listener(async_reload_entry))
@@ -52,6 +53,23 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
         }
 
         await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
+
+        # Adding register monitor to help us discover unknown registers
+        # We can remove it on production or make optional in settings later
+        monitor = RegisterMonitor(hass)
+        async def monitor_registers(*args):
+            """Monitor register values periodically."""
+            await monitor.scan_ranges(inverter)
+        
+        # Add monitoring to the update cycle, but at a slower rate
+        async def delayed_monitor():
+            """Run monitor at a slower rate to avoid overwhelming the device."""
+            while True:
+                await monitor_registers()
+                await asyncio.sleep(300)  # Run every 5 minutes
+        
+        # Start register monitor
+        hass.async_create_task(delayed_monitor())
 
         return True
     except ConfigEntryNotReady as ex:
