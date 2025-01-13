@@ -4,6 +4,8 @@ import csv
 import os
 from typing import Dict, Any
 import asyncio
+import aiofiles
+import io
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -120,16 +122,26 @@ class RegisterMonitor:
         }
 
     async def _write_to_csv(self, values: Dict[str, Any]):
-        """Write values to CSV file."""
+        """Write values to CSV file asynchronously."""
         try:
             file_exists = os.path.exists(self.log_file)
             
-            with open(self.log_file, 'a', newline='') as f:
-                writer = csv.DictWriter(f, fieldnames=values.keys())
+            async with aiofiles.open(self.log_file, 'a', newline='') as f:
+                # Convert to CSV string
+                fieldnames = list(values.keys())
+                output = io.StringIO()
+                writer = csv.DictWriter(output, fieldnames=fieldnames)
+                
                 if not file_exists:
                     writer.writeheader()
                     _LOGGER.info(f"Created new log file at {self.log_file}")
+                
                 writer.writerow(values)
-                _LOGGER.debug(f"Wrote {len(values)} values to log file")
+                csv_string = output.getvalue()
+                
+                # Write asynchronously
+                await f.write(csv_string)
+                
+            _LOGGER.debug(f"Wrote {len(values)} values to log file")
         except Exception as e:
             _LOGGER.error(f"Error writing to CSV: {str(e)}") 
