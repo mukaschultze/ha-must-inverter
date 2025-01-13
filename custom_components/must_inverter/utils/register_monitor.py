@@ -18,17 +18,16 @@ class RegisterMonitor:
         
         # Define register ranges to monitor
         self.register_ranges = [
-            # Unknown registers near existing ones
-            (25275, 25279, None),  # Unknown registers we found
+            # Known interesting range
+            (25275, 25279, None),  # Contains RatedPowerW and unknown values
             
-            # PV related ranges
+            # PV related ranges - keep these as they're most likely to contain PV data
             (16200, 16210, None),  # Around existing PV2 registers
             (16100, 16110, None),  # Potential PV1 specific registers
-            (16300, 16310, None),  # Potential PV3 specific registers
             
-            # Potential cumulative/total values
-            (16400, 16410, None),  # Potential total PV generation range
-            (16500, 16510, None),  # Potential PV statistics range
+            # Add potentially interesting ranges
+            (25280, 25290, None),  # Extended range after our findings
+            (25200, 25274, None),  # Range before our findings
         ]
         _LOGGER.info(f"Register monitor initialized with {len(self.register_ranges)} ranges to scan")
         _LOGGER.debug(f"Will monitor these ranges: {self.register_ranges}")
@@ -110,6 +109,10 @@ class RegisterMonitor:
             "Load_Power": inverter.data.get("PLoad", 0),
             "Battery_Voltage": inverter.data.get("BatteryVoltage", 0),
             "Grid_Power": inverter.data.get("PGrid", 0),
+            "ChargerWorkstate": inverter.data.get("ChargerWorkstate", ""),
+            "ChargingState": inverter.data.get("ChargingState", ""),
+            "MpptState": inverter.data.get("MpptState", ""),
+            "Time": datetime.now().strftime("%H:%M:%S"),  # Time of day might be relevant
         }
 
     def _get_value_context(self, inverter, values: Dict[int, Any]) -> Dict[str, Any]:
