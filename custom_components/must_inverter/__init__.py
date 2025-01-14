@@ -11,7 +11,7 @@ from pymodbus.client import AsyncModbusSerialClient, AsyncModbusTcpClient, Async
 
 from .const import DEFAULT_SCAN_INTERVAL, DOMAIN, get_sensors_for_model, MODEL_PV1800, MODEL_PV1900
 from .mapper import *
-from .utils.register_monitor import RegisterMonitor
+# from .utils.register_monitor import RegisterMonitor
 
 PLATFORMS = [Platform.SENSOR, Platform.BINARY_SENSOR, Platform.NUMBER, Platform.SELECT, Platform.SWITCH, Platform.BUTTON]
 _LOGGER = logging.getLogger(__name__)
@@ -54,25 +54,25 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
         await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
 
-        # Adding register monitor to help us discover unknown registers
-        # We can remove it on production or make optional in settings later
-        monitor = RegisterMonitor(hass)
+        # Removing register monitor as we've found all needed registers
+        # If you need to add it back, uncomment the following lines and set the ranges to scan in register_monitor.py
+        # monitor = RegisterMonitor(hass)
         
         # Add monitoring to the update cycle, but at a slower rate
-        async def delayed_monitor():
-            """Run monitor at a slower rate to avoid overwhelming the device."""
-            try:
-                while True:
-                    await monitor.scan_ranges(inverter)
-                    await asyncio.sleep(300)  # Run every 5 minutes
-            except asyncio.CancelledError:
-                _LOGGER.debug("Register monitor task cancelled")
-                raise
+        # async def delayed_monitor():
+        #     """Run monitor at a slower rate to avoid overwhelming the device."""
+        #     try:
+        #         while True:
+        #             await monitor.scan_ranges(inverter)
+        #             await asyncio.sleep(300)  # Run every 5 minutes
+        #     except asyncio.CancelledError:
+        #         _LOGGER.debug("Register monitor task cancelled")
+        #         raise
         
-        monitor_task = asyncio.create_task(delayed_monitor())
+        # monitor_task = asyncio.create_task(delayed_monitor())
         
         # Store the task so we can cancel it later
-        hass.data[DOMAIN][entry.entry_id]["monitor_task"] = monitor_task
+        # hass.data[DOMAIN][entry.entry_id]["monitor_task"] = monitor_task
         
         return True
     except ConfigEntryNotReady as ex:
@@ -259,10 +259,12 @@ class MustInverter:
         ]
 
         # Add PV19-specific register ranges if needed
+        # Keep register ranges for pv separate to not overload the inverter
         if self._model == MODEL_PV1900:
             registersAddresses.extend([
-                (113, 113, convert_battery_status),     # Battery Status (SoC)
-                (16205, 16208, convert_pv2_data),       # PV2 Data (Voltage, Current, Power)
+                (113, 114, convert_battery_status),     # Battery Status (SoC, SoH)
+                (15207, 15208, convert_pv_data),        # PV1 Data (Current, Power)
+                (16205, 16208, convert_pv_data),        # PV2 Data (Voltage, Current, Power)
             ])
 
         read = dict()

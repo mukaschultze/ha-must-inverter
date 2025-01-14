@@ -154,12 +154,17 @@ SENSORS_ARRAY = [
 
 PV1900_SENSORS = [
     # Additional sensors for PV19 series
-    Sensor(113,   "StateOfCharge",                    None,    "%",      Platform.SENSOR,               None,                              True,    "mdi:battery",               None,                    None,  None,  None),
-    Sensor(16205, "PV2Voltage",                       0.1,     "V",      Platform.SENSOR,               SensorDeviceClass.VOLTAGE,         True,    None,                        None,                    None,  None,  None),
-    Sensor(16207, "PV2ChargerCurrent",                0.1,     "A",      Platform.SENSOR,               SensorDeviceClass.CURRENT,         True,    "mdi:current-dc",            None,                    None,  None,  None),
-    Sensor(16208, "PV2ChargerPower",                  None,    "W",      Platform.SENSOR,               SensorDeviceClass.POWER,           True,    None,                        None,                    None,  None,  None),
-    Sensor(25263, "InverterErrorMessage3",            None,    None,     Platform.SENSOR,               None,                              True,    "mdi:alert-circle-outline",  None,                    None,  None,  None),
-    Sensor(25266, "InverterWarningMessage2",          None,    None,     Platform.SENSOR,               None,                              True,    "mdi:alert-outline",         None,                    None,  None,  None)
+    Sensor(113,   "StateOfCharge",                   None,    "%",      Platform.SENSOR,               None,                              True,    "mdi:battery",               None,                    None,  None,  None),
+    Sensor(114,   "BatteryStateOfHealth",            None,    "%",      Platform.SENSOR,               None,                              True,    "mdi:battery-heart-variant", None,                    None,  None,  None),
+    # PV1 Charger data
+    Sensor(15207, "PV1ChargerCurrent",               0.1,     "A",      Platform.SENSOR,               SensorDeviceClass.CURRENT,         True,    "mdi:current-dc",            None,                    None,  None,  None),
+    Sensor(15208, "PV1ChargerPower",                 None,    "W",      Platform.SENSOR,               SensorDeviceClass.POWER,           True,    None,                        None,                    None,  None,  None),
+    # PV2 Charger data
+    Sensor(16207, "PV2ChargerCurrent",               0.1,     "A",      Platform.SENSOR,               SensorDeviceClass.CURRENT,         True,    "mdi:current-dc",            None,                    None,  None,  None),
+    Sensor(16208, "PV2ChargerPower",                 None,    "W",      Platform.SENSOR,               SensorDeviceClass.POWER,           True,    None,                        None,                    None,  None,  None),
+    # Error and warning messages
+    Sensor(25263, "InverterErrorMessage3",           None,    None,     Platform.SENSOR,               None,                              True,    "mdi:alert-circle-outline",  None,                    None,  None,  None),
+    Sensor(25266, "InverterWarningMessage2",         None,    None,     Platform.SENSOR,               None,                              True,    "mdi:alert-outline",         None,                    None,  None,  None)
 ]
 
 

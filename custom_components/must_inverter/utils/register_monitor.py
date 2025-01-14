@@ -99,8 +99,10 @@ class RegisterMonitor:
         """Get context values for logging."""
         return {
             "timestamp": datetime.now().isoformat(),
-            "PV_Power": inverter.data.get("ChargerPower", 0),
-            "PV2_Power": inverter.data.get("PV2ChargerPower", 0),
+            "Charger_Power": inverter.data.get("ChargerPower", 0),
+            "ChargerCurrent": inverter.data.get("ChargerCurrent", 0),
+            "PV_Voltage": inverter.data.get("PvVoltage", 0),
+            "AccumulatedPvSellPower": inverter.data.get("AccumulatedPvSellPower", 0),
             "Battery_Power": inverter.data.get("BattPower", 0),
             "Load_Power": inverter.data.get("PLoad", 0),
             "Battery_Voltage": inverter.data.get("BatteryVoltage", 0),
@@ -108,13 +110,12 @@ class RegisterMonitor:
             "ChargerWorkstate": inverter.data.get("ChargerWorkstate", ""),
             "ChargingState": inverter.data.get("ChargingState", ""),
             "MpptState": inverter.data.get("MpptState", ""),
-            "Time": datetime.now().strftime("%H:%M:%S"),  # Time of day might be relevant
         }
 
     def _get_value_context(self, inverter, values: Dict[int, Any]) -> Dict[str, Any]:
         """Get relevant context for the values found."""
         return {
-            "PV_Active": bool(inverter.data.get("ChargerPower", 0)),
+            "PV_Active": bool(inverter.data.get("MpptState", 0)),
             "Battery_Charging": bool(inverter.data.get("BattPower", 0) > 0),
             "Grid_Connected": bool(inverter.data.get("GridVoltage", 0)),
             "Values": values
