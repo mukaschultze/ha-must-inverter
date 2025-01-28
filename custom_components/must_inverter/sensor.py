@@ -6,15 +6,17 @@ from homeassistant.components.sensor import SensorEntity, SensorStateClass
 from homeassistant.const import Platform, UnitOfEnergy
 from homeassistant.core import callback
 
-from .const import DOMAIN, SENSORS_ARRAY
+from .const import DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
 
 async def async_setup_entry(hass, entry, async_add_entities):
-    inverter = hass.data[DOMAIN][entry.entry_id]
+    inverter_data = hass.data[DOMAIN][entry.entry_id]
+    inverter = inverter_data["inverter"]
+    sensors = inverter_data["sensors"]
     entities = []
 
-    for sensor_info in SENSORS_ARRAY:
+    for sensor_info in sensors:
         if sensor_info.platform == Platform.SENSOR:
             sensor = MustInverterSensor(inverter, sensor_info)
             entities.append(sensor)
@@ -30,8 +32,8 @@ class MustInverterSensor(SensorEntity):
         self._coeff = sensor_info.coeff or 1
 
         self._attr_has_entity_name = True
-        self._attr_unique_id = self._key
-        self._attr_name = re.sub(r'(?<=[a-z])(?=[A-Z])', ' ', self._key).capitalize()
+        self._attr_unique_id = f"{self._inverter._model}_{self._inverter.data['InverterSerialNumber']}_{self._key}"
+        self._attr_name = re.sub(r'(?<=[a-z])(?=[A-Z])', ' ', self._key)
         self._attr_native_unit_of_measurement = sensor_info.unit
         self._attr_device_class = sensor_info.device_class
         self._attr_entity_registry_enabled_default = sensor_info.enabled

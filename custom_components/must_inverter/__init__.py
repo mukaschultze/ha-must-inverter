@@ -9,8 +9,9 @@ from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers.event import async_track_time_interval
 from pymodbus.client import AsyncModbusSerialClient, AsyncModbusTcpClient, AsyncModbusUdpClient
 
-from .const import DEFAULT_SCAN_INTERVAL, DOMAIN
+from .const import DEFAULT_SCAN_INTERVAL, DOMAIN, get_sensors_for_model, MODEL_PV1800, MODEL_PV1900
 from .mapper import *
+# from .utils.register_monitor import RegisterMonitor
 
 PLATFORMS = [Platform.SENSOR, Platform.BINARY_SENSOR, Platform.NUMBER, Platform.SELECT, Platform.SWITCH, Platform.BUTTON]
 _LOGGER = logging.getLogger(__name__)
@@ -19,12 +20,20 @@ async def async_setup(hass, config):
     hass.data[DOMAIN] = {}
     return True # Return boolean to indicate that initialization was successful.
 
-async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
+async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up the must inverter component."""
     try:
         entry.async_on_unload(entry.add_update_listener(async_reload_entry))
 
-        inverter = MustInverter(hass, entry)
+        # Get model from config entry, default to PV1800
+        model = entry.data.get("model") or entry.options.get("model", MODEL_PV1800)
+        _LOGGER.debug("Setting up Must Inverter with model: %s", model)
+        
+        # Get model-specific sensors
+        sensors = get_sensors_for_model(model)
+        
+        # Initialize inverter with model-specific sensors
+        inverter = MustInverter(hass, entry, sensors)
 
         successConnecting = await inverter.connect()
 
@@ -36,10 +45,35 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
         if not successReading:
             raise ConfigEntryNotReady(f"Unable to read from modbus device")
 
-        hass.data[DOMAIN][entry.entry_id] = inverter
+        # Store both inverter instance and model info
+        hass.data[DOMAIN][entry.entry_id] = {
+            "inverter": inverter,
+            "model": model,
+            "sensors": sensors
+        }
 
         await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
 
+        # Removing register monitor as we've found all needed registers
+        # If you need to add it back, uncomment the following lines and set the ranges to scan in register_monitor.py
+        # monitor = RegisterMonitor(hass)
+        
+        # Add monitoring to the update cycle, but at a slower rate
+        # async def delayed_monitor():
+        #     """Run monitor at a slower rate to avoid overwhelming the device."""
+        #     try:
+        #         while True:
+        #             await monitor.scan_ranges(inverter)
+        #             await asyncio.sleep(300)  # Run every 5 minutes
+        #     except asyncio.CancelledError:
+        #         _LOGGER.debug("Register monitor task cancelled")
+        #         raise
+        
+        # monitor_task = asyncio.create_task(delayed_monitor())
+        
+        # Store the task so we can cancel it later
+        # hass.data[DOMAIN][entry.entry_id]["monitor_task"] = monitor_task
+        
         return True
     except ConfigEntryNotReady as ex:
         raise ex
@@ -47,14 +81,22 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
         _LOGGER.exception("Error setting up modbus device", exc_info=True)
         raise ConfigEntryNotReady(f"Unknown error connecting to modbus device") from ex
 
-async def async_unload_entry(hass, entry):
+async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
+    """Unload a config entry."""
     unload_ok = await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
+    
+    if unload_ok:
+        # Cancel the monitor task
+        if monitor_task := hass.data[DOMAIN][entry.entry_id].get("monitor_task"):
+            monitor_task.cancel()
+            try:
+                await monitor_task
+            except asyncio.CancelledError:
+                pass
+            
+        hass.data[DOMAIN].pop(entry.entry_id)
 
-    if not unload_ok:
-        return False
-
-    hass.data[DOMAIN][entry.entry_id] = None
-    return True
+    return unload_ok
 
 async def async_reload_entry(hass: HomeAssistant, entry: ConfigEntry) -> None:
     """Update listener, called when the config entry options are changed."""
@@ -65,10 +107,16 @@ class MustInverter:
     def __init__(
         self,
         hass,
-        entry: ConfigEntry
+        entry: ConfigEntry,
+        sensors: list
     ):
         self._hass = hass
-
+        self._sensor_defs = sensors  # Store sensor definitions
+        self._callbacks = []         # Store callbacks separately
+        # Check both data and options
+        self._model = entry.data.get("model") or entry.options.get("model", MODEL_PV1800)
+        _LOGGER.debug("Initializing MustInverter with model: %s", self._model)
+        
         common = {
             'timeout': entry.options["timeout"],
             'retries': entry.options["retries"],
@@ -105,7 +153,6 @@ class MustInverter:
         self._client.dtr = False
         self._lock = asyncio.Lock()
         self._scan_interval = timedelta(seconds=entry.options.get("scan_interval", DEFAULT_SCAN_INTERVAL))
-        self._sensors = []
         self._reading = False
         self.registers = dict()
         self.data = {}
@@ -113,23 +160,22 @@ class MustInverter:
     @callback
     def async_add_must_inverter_sensor(self, update_callback):
         # This is the first sensor, set up interval.
-        if not self._sensors:
+        if not self._callbacks:
             self._unsub_interval_method = async_track_time_interval(
                 self._hass, self._async_refresh_modbus_data, self._scan_interval
             )
 
-        self._sensors.append(update_callback)
+        self._callbacks.append(update_callback)
 
     @callback
     def async_remove_must_inverter_sensor(self, update_callback):
-        self._sensors.remove(update_callback)
+        self._callbacks.remove(update_callback)
 
-        if not self._sensors:
+        if not self._callbacks:
             """stop the interval timer upon removal of last sensor"""
             self._unsub_interval_method()
             self._unsub_interval_method = None
             self.close()
-
 
     async def _async_refresh_modbus_data(self, now=None):
         if not await self._check_and_reopen():
@@ -141,7 +187,7 @@ class MustInverter:
             update_result = await self.read_modbus_data()
 
             if update_result:
-                for update_callback in self._sensors:
+                for update_callback in self._callbacks:
                     update_callback()
         except Exception as e:
             _LOGGER.exception("error reading inverter data", exc_info=True)
@@ -202,6 +248,7 @@ class MustInverter:
         # immediately and the charger stops working afterwards (all registers
         # return zeroes). Requires the grid/batteries/PV to be disconnected and
         # the inverter restarted for it to come back online.
+        # Base register ranges for all models
         registersAddresses = [
           # (10000, 10008, convert_partArr1), # Charger Control Messages
             (10101, 10124, convert_partArr2), # Charger Control Messages
@@ -211,9 +258,26 @@ class MustInverter:
             (25201, 25279, convert_partArr6), # Inverter Display Messages
         ]
 
+        # Add PV19-specific register ranges if needed
+        # Keep register ranges for pv separate to not overload the inverter
+        if self._model == MODEL_PV1900:
+            registersAddresses.extend([
+                (113, 114, convert_battery_status),     # Battery Status (SoC, SoH)
+                (15207, 15208, convert_pv_data),        # PV1 Data (Current, Power)
+                (16205, 16208, convert_pv_data),        # PV2 Data (Voltage, Current, Power)
+            ])
+
         read = dict()
 
         for register in registersAddresses:
+            if self._model == MODEL_PV1900:
+                # Add a small delay between reading standard and PV19-specific registers
+                # to prevent any potential issues
+                await asyncio.sleep(0.1)
+            
+                # Log when reading PV19-specific registers
+                _LOGGER.debug("Reading PV19-specific registers")
+
             start = register[0]
             end = register[1]
             count = end - start + 1
@@ -248,10 +312,10 @@ class MustInverter:
         return True
 
     def _device_info(self):
-        return  {
-            "identifiers": {(DOMAIN, self.data["InverterMachineType"])},
-            "name": self.data["InverterMachineType"],
-            "model": self.data["InverterMachineType"],
+        return {
+            "identifiers": {(DOMAIN, f"{self._model}_{self.data['InverterSerialNumber']}")},
+            "name": f"Must Solar {self._model}",  # Include model in device name
+            "model": self._model,
             "manufacturer": "Must Solar",
             "hw_version": self.data["InverterHardwareVersion"],
             "sw_version": self.data["InverterSoftwareVersion"],

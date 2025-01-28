@@ -10,7 +10,7 @@ from homeassistant.helpers.schema_config_entry_flow import (
     SchemaCommonFlowHandler,
 )
 
-from .const import DOMAIN, DEFAULT_SCAN_INTERVAL
+from .const import DOMAIN, DEFAULT_SCAN_INTERVAL, MODEL_PV1800, MODEL_PV1900, SUPPORTED_MODELS
 
 _LOGGER = logging.getLogger(__name__)
 DEVICE_UNIQUE_ID = "must_inverter"
@@ -21,16 +21,19 @@ SERIAL_SCHEMA =vol.Schema({
     vol.Required("parity", default="N"): str,
     vol.Required("stopbits", default=1): int,
     vol.Required("bytesize", default=8): int,
+    vol.Required("model", default=MODEL_PV1800): vol.In(SUPPORTED_MODELS),
 })
 
 TCP_SCHEMA =vol.Schema({
     vol.Required("host"): str,
     vol.Required("port", default=502): int,
+    vol.Required("model", default=MODEL_PV1800): vol.In(SUPPORTED_MODELS),
 })
 
 UDP_SCHEMA =vol.Schema({
     vol.Required("host"): str,
     vol.Required("port", default=502): int,
+    vol.Required("model", default=MODEL_PV1800): vol.In(SUPPORTED_MODELS),
 })
 
 COMMON_SCHEMA = vol.Schema({
@@ -81,11 +84,11 @@ OPTIONS_FLOW = {
 }
 
 class MustInverterConfigFlow(SchemaConfigFlowHandler, domain=DOMAIN):
-    """Handle a config flow for Scrape."""
+    """Handle a config flow for Must Inverter."""
 
     config_flow = CONFIG_FLOW
     options_flow = OPTIONS_FLOW
 
     def async_config_entry_title(self, options: Mapping[str, Any]) -> str:
         """Return config entry title."""
-        return "Must Inverter"
+        return f"Must Inverter ({options.get('model', MODEL_PV1800)})"

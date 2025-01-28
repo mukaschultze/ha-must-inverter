@@ -6,15 +6,17 @@ from homeassistant.components.select import SelectEntity
 from homeassistant.core import callback
 from homeassistant.const import Platform
 
-from .const import DOMAIN, SENSORS_ARRAY
+from .const import DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
 
 async def async_setup_entry(hass, entry, async_add_entities):
-    inverter = hass.data[DOMAIN][entry.entry_id]
+    inverter_data = hass.data[DOMAIN][entry.entry_id]
+    inverter = inverter_data["inverter"]
+    sensors = inverter_data["sensors"]
     entities = []
 
-    for sensor_info in SENSORS_ARRAY:
+    for sensor_info in sensors:
         if sensor_info.platform == Platform.SELECT:
             sensor = MustInverterSelect(inverter, sensor_info)
             entities.append(sensor)
@@ -31,8 +33,8 @@ class MustInverterSelect(SelectEntity):
         self._address = sensor_info.address
 
         self._attr_has_entity_name = True
-        self._attr_unique_id = self._key
-        self._attr_name = re.sub(r'(?<=[a-z])(?=[A-Z])', ' ', self._key).capitalize()
+        self._attr_unique_id = f"{self._inverter._model}_{self._inverter.data['InverterSerialNumber']}_{self._key}"
+        self._attr_name = re.sub(r'(?<=[a-z])(?=[A-Z])', ' ', self._key)
         self._attr_entity_registry_enabled_default = sensor_info.enabled
         self._attr_icon = sensor_info.icon
         self._attr_options = list(filter(len, sensor_info.options))
