@@ -319,10 +319,11 @@ class MustInverter:
         return True
 
     def _device_info(self):
+        # TODO: Find a way of making sure two inverters of the same model don't have the same identifiers. Issue #54
         return {
-            "identifiers": {(DOMAIN, f"{self._model}_{self.data['InverterSerialNumber']}")},
-            "name": f"Must Solar {self._model}",  # Include model in device name
-            "model": self._model,
+            "identifiers": {(DOMAIN, self.data["InverterMachineType"])},
+            "name": self.data["InverterMachineType"],
+            "model": self.data["InverterMachineType"],
             "manufacturer": "Must Solar",
             "hw_version": self.data["InverterHardwareVersion"],
             "sw_version": self.data["InverterSoftwareVersion"],
