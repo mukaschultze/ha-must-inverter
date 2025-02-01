@@ -1,6 +1,6 @@
 import logging
 import re
-from typing import Any, Dict, Optional
+from typing import Any
 
 from homeassistant.components.sensor import SensorEntity, SensorStateClass
 from homeassistant.const import Platform, UnitOfEnergy
@@ -9,6 +9,7 @@ from homeassistant.core import callback
 from .const import DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
+
 
 async def async_setup_entry(hass, entry, async_add_entities):
     inverter_data = hass.data[DOMAIN][entry.entry_id]
@@ -24,6 +25,7 @@ async def async_setup_entry(hass, entry, async_add_entities):
     async_add_entities(entities)
     return True
 
+
 class MustInverterSensor(SensorEntity):
     def __init__(self, inverter, sensor_info):
         """Initialize the sensor."""
@@ -33,7 +35,7 @@ class MustInverterSensor(SensorEntity):
 
         self._attr_has_entity_name = True
         self._attr_unique_id = f"{self._inverter._model}_{self._inverter.data['InverterSerialNumber']}_{self._key}"
-        self._attr_name = re.sub(r'(?<=[a-z])(?=[A-Z])', ' ', self._key)
+        self._attr_name = re.sub(r"(?<=[a-z])(?=[A-Z])", " ", self._key)
         self._attr_native_unit_of_measurement = sensor_info.unit
         self._attr_device_class = sensor_info.device_class
         self._attr_entity_registry_enabled_default = sensor_info.enabled
@@ -61,12 +63,12 @@ class MustInverterSensor(SensorEntity):
             if self._attr_options is not None:
                 return self._attr_options[self._inverter.data[self._key]]
             else:
-                return self._inverter.data[self._key]  * self._coeff
+                return self._inverter.data[self._key] * self._coeff
 
     @property
-    def device_info(self) -> Optional[Dict[str, Any]]:
+    def device_info(self) -> dict[str, Any] | None:
         return self._inverter._device_info()
 
     @property
-    def available(self) -> Optional[Dict[str, Any]]:
+    def available(self) -> dict[str, Any] | None:
         return self._key in self._inverter.data

@@ -1,8 +1,10 @@
 {
   "name": "mukaschultze/ha-must-inverter",
-  "image": "mcr.microsoft.com/devcontainers/python:3.11-bullseye",
+  "image": "mcr.microsoft.com/devcontainers/python:3.12-bullseye",
   "postCreateCommand": "scripts/setup",
-  "forwardPorts": [8123],
+  "forwardPorts": [
+    8123
+  ],
   "portsAttributes": {
     "8123": {
       "label": "Home Assistant",
@@ -15,15 +17,14 @@
         "ms-python.python",
         "github.vscode-pull-request-github",
         "ryanluker.vscode-coverage-gutters",
-        "ms-python.vscode-pylance"
+        "ms-python.vscode-pylance",
+        "charliermarsh.ruff"
       ],
       "settings": {
         "files.eol": "\n",
         "editor.tabSize": 4,
         "python.pythonPath": "/usr/bin/python3",
         "python.analysis.autoSearchPaths": false,
-        "python.formatting.provider": "black",
-        "python.formatting.blackPath": "/usr/local/py-utils/bin/black",
         "editor.formatOnPaste": false,
         "editor.formatOnSave": true,
         "editor.formatOnType": true,
@@ -32,6 +33,5 @@
     }
   },
   "remoteUser": "vscode",
-  "features": {
-  }
+  "features": {}
 }

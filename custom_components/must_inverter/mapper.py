@@ -2,37 +2,46 @@ import logging
 
 _LOGGER = logging.getLogger(__name__)
 
+
 def int16(address, registers):
     val = registers[address]
     bits = 16
-    if (val & (1 << (bits - 1))) != 0: # if sign bit is set e.g., 8bit: 128-255
-        val = val - (1 << bits)        # compute negative value
-    return val                         # return positive value as is
+    if (val & (1 << (bits - 1))) != 0:  # if sign bit is set e.g., 8bit: 128-255
+        val = val - (1 << bits)  # compute negative value
+    return val  # return positive value as is
+
 
 def uint16(address, registers):
     return registers[address]
 
+
 def version(address, registers):
     return f"{registers[address] // 10000}.{(registers[address] // 100) % 100}.{registers[address] % 100}"
+
 
 def accumulated_kwh(address, registers):
     return registers[address] * 1000 + registers[address + 1] * 0.1
 
+
 def time(address, registers):
-    return int(registers[address]) * 60 * 60 + int(registers[address+1]) * 60 + int(registers[address+2])
+    return int(registers[address]) * 60 * 60 + int(registers[address + 1]) * 60 + int(registers[address + 2])
+
 
 def serial(address, registers):
-    return hex(registers[address] << 16 | registers[address+1])
+    return hex(registers[address] << 16 | registers[address + 1])
+
 
 def model(address, registers):
     a = chr(registers[address] >> 8 & 0xFF)
     b = chr(registers[address] & 0xFF)
     return f"{a}{b}{registers[address + 1]}"
 
+
 def convert_partArr2(partArr2):
     if partArr2 is None:
         return None
 
+    # fmt: off
     result = {}
     result["ChargerWorkEnable"] =              int16(10101, partArr2)
     result["AbsorbVoltage"] =                  int16(10102, partArr2)
@@ -51,13 +60,16 @@ def convert_partArr2(partArr2):
     result["BatteryEqualizationTimeout"] =     int16(10122, partArr2)
     result["BatteryEqualizationInterval"] =    int16(10123, partArr2)
     result["BatteryEqualizationImmediately"] = int16(10124, partArr2)
+    # fmt: on
 
     return result
+
 
 def convert_partArr3(partArr3):
     if partArr3 is None:
         return None
 
+    # fmt: off
     result = {}
     result["ChargerWorkstate"] =     int16(15201, partArr3)
     result["MpptState"] =            int16(15202, partArr3)
@@ -76,12 +88,16 @@ def convert_partArr3(partArr3):
     result["RatedCurrent"] =         int16(15216, partArr3)
     result["AccumulatedPower"] =     accumulated_kwh(15217, partArr3)
     result["AccumulatedTime"] =      time(15219, partArr3)
+    # fmt: on
+
     return result
+
 
 def convert_partArr4(partArr4):
     if partArr4 is None:
         return None
 
+    # fmt: off
     result = {}
     result["InverterMachineType"] =       model(20000, partArr4)
     result["InverterSerialNumber"] =      serial(20002, partArr4)
@@ -97,13 +113,16 @@ def convert_partArr4(partArr4):
     result["InverterCurrentC"] =          int16(20014, partArr4)
     result["GridCurrentC"] =              int16(20015, partArr4)
     result["LoadCurrentC"] =              int16(20016, partArr4)
+    # fmt: on
 
     return result
+
 
 def convert_partArr6(partArr6):
     if partArr6 is None:
         return None
 
+    # fmt: off
     result = {}
     result["WorkState"] =                       int16(25201, partArr6)
     result["AcVoltageGrade"] =                  int16(25202, partArr6)
@@ -153,13 +172,16 @@ def convert_partArr6(partArr6):
     result["BattPower"] =                       int16(25273, partArr6)
     result["BattCurrent"] =                     int16(25274, partArr6)
     result["RatedPowerW"] =                     int16(25277, partArr6)
+    # fmt: on
 
     return result
+
 
 def convert_partArr5(partArr5):
     if partArr5 is None:
         return None
 
+    # fmt: off
     result = {}
     result["InverterOffgridWorkEnable"] =        int16(20101, partArr5)
     result["InverterOutputVoltageSet"] =         int16(20102, partArr5)
@@ -182,12 +204,14 @@ def convert_partArr5(partArr5):
     result["SystemSetting"] =                    uint16(20142, partArr5)
     result["ChargerSourcePriority"] =            int16(20143, partArr5)
     result["SolarPowerBalance"] =                int16(20144, partArr5)
+    # fmt: on
+
     return result
 
 
 # used for PV1900
 def convert_battery_status(registers):
-    """Convert battery status registers"""
+    """Convert battery status registers."""
     result = {}
     try:
         if 113 in registers:
@@ -197,6 +221,7 @@ def convert_battery_status(registers):
     except Exception as e:
         _LOGGER.debug("Battery status not available: %s", e)
     return result
+
 
 # used for PV1900
 def convert_pv_data(registers):
@@ -208,7 +233,7 @@ def convert_pv_data(registers):
             result["PV1ChargerCurrent"] = registers[15207]
         if 15208 in registers:
             result["PV1ChargerPower"] = registers[15208]
-        
+
         # PV2 data
         if 16205 in registers:
             result["PV2Voltage"] = registers[16205]

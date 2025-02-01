@@ -24,9 +24,8 @@ TO_REDACT_DEV = {
     "identifiers",
 }
 
-async def async_get_config_entry_diagnostics(
-    hass: HomeAssistant, entry: ConfigEntry
-) -> dict:
+
+async def async_get_config_entry_diagnostics(hass: HomeAssistant, entry: ConfigEntry) -> dict:
     """Return diagnostics for a config entry."""
     diag_data = {
         "entry": async_redact_data(entry.as_dict(), TO_REDACT),
@@ -41,19 +40,18 @@ async def async_get_config_entry_diagnostics(
 
     return diag_data
 
+
 @callback
-def _async_devices_as_dict(
-    hass: HomeAssistant, entry: ConfigEntry
-) -> dict:
+def _async_devices_as_dict(hass: HomeAssistant, entry: ConfigEntry) -> dict:
     """Gather device information."""
     devs_data = {}
     device: MustInverter = hass.data[DOMAIN].get(entry.entry_id, {})
-    
+
     if not device:
         return {"error": "No device data found"}
 
     device_info = device._device_info()
-    
+
     devs_data[entry.entry_id] = {
         "model": device._model,
         "device_info": async_redact_data(device_info, TO_REDACT_DEV),
@@ -63,6 +61,7 @@ def _async_devices_as_dict(
     }
 
     return devs_data
+
 
 @callback
 def _async_device_ha_info(hass: HomeAssistant, identifiers: set[tuple[str, str]]) -> dict | None:
@@ -95,7 +94,7 @@ def _async_device_ha_info(hass: HomeAssistant, identifiers: set[tuple[str, str]]
     for entity_entry in hass_entities:
         if entity_entry.platform != DOMAIN:
             continue
-        
+
         state = hass.states.get(entity_entry.entity_id)
         state_dict = None
         if state:

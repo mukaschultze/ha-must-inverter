@@ -1,6 +1,6 @@
 import logging
 import re
-from typing import Any, Dict, Optional
+from typing import Any
 
 from homeassistant.components.binary_sensor import BinarySensorEntity
 from homeassistant.const import Platform
@@ -9,6 +9,7 @@ from homeassistant.core import callback
 from .const import DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
+
 
 async def async_setup_entry(hass, entry, async_add_entities):
     inverter_data = hass.data[DOMAIN][entry.entry_id]
@@ -24,6 +25,7 @@ async def async_setup_entry(hass, entry, async_add_entities):
     async_add_entities(entities)
     return True
 
+
 class MustInverterBinarySensor(BinarySensorEntity):
     def __init__(self, inverter, sensor_info):
         """Initialize the binary sensor."""
@@ -32,7 +34,7 @@ class MustInverterBinarySensor(BinarySensorEntity):
 
         self._attr_has_entity_name = True
         self._attr_unique_id = f"{self._inverter._model}_{self._inverter.data['InverterSerialNumber']}_{self._key}"
-        self._attr_name = re.sub(r'(?<=[a-z])(?=[A-Z])', ' ', self._key)
+        self._attr_name = re.sub(r"(?<=[a-z])(?=[A-Z])", " ", self._key)
         self._attr_device_class = sensor_info.device_class
         self._attr_entity_registry_enabled_default = sensor_info.enabled
         self._attr_icon = sensor_info.icon
@@ -53,9 +55,9 @@ class MustInverterBinarySensor(BinarySensorEntity):
             return self._inverter.data[self._key] == 1
 
     @property
-    def device_info(self) -> Optional[Dict[str, Any]]:
+    def device_info(self) -> dict[str, Any] | None:
         return self._inverter._device_info()
 
     @property
-    def available(self) -> Optional[Dict[str, Any]]:
+    def available(self) -> dict[str, Any] | None:
         return self._key in self._inverter.data

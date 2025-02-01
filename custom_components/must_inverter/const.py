@@ -10,7 +10,7 @@ DOMAIN = "must_inverter"
 DEFAULT_SCAN_INTERVAL = 15
 
 # model constants
-MODEL_PV1800 = "PV1800" # Base model
+MODEL_PV1800 = "PV1800"  # Base model
 MODEL_PV1900 = "PV1900"
 
 SUPPORTED_MODELS = [MODEL_PV1800, MODEL_PV1900]
@@ -25,8 +25,25 @@ CHR_WORKSTATE_NO = ["Initialization", "Selftest", "Work", "Stop"]
 MPPT_STATE_NO = ["Stop", "MPPT", "Current limiting"]
 CHARGING_STATE_NO = ["Stop", "Absorb charge", "Float charge", "Equalization charge"]
 
-Sensor = namedtuple("Sensor", ["address", "name", "coeff", "unit", "platform", "device_class", "enabled", "icon", "options", "min", "max", "step"])
+Sensor = namedtuple(
+    "Sensor",
+    [
+        "address",
+        "name",
+        "coeff",
+        "unit",
+        "platform",
+        "device_class",
+        "enabled",
+        "icon",
+        "options",
+        "min",
+        "max",
+        "step",
+    ],
+)
 
+# fmt: off
 # Base sensors, valid for all models
 SENSORS_ARRAY = [
     #      addr    name                              coeff    unit      platform                       device_class                       enabled  icon                         options                  min    max    step
@@ -166,11 +183,12 @@ PV1900_SENSORS = [
     Sensor(25263, "InverterErrorMessage3",           None,    None,     Platform.SENSOR,               None,                              True,    "mdi:alert-circle-outline",  None,                    None,  None,  None),
     Sensor(25266, "InverterWarningMessage2",         None,    None,     Platform.SENSOR,               None,                              True,    "mdi:alert-outline",         None,                    None,  None,  None)
 ]
+# fmt: on
 
 
 def get_sensors_for_model(model: str) -> list:
     """Return sensors based on inverter model.
-    
+
     PV1800: Base sensors only
     PV1900: Base sensors + PV2 and extended battery monitoring
     """
