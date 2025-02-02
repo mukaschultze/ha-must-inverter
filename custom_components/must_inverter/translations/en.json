@@ -93,5 +93,224 @@
         }
       }
     }
+  },
+  "entity": {
+    "binary_sensor": {
+      "BatteryRelay": { "name": "Relay Battery" },
+      "PvRelay": { "name": "Relay PV" },
+      "InverterRelayState": { "name": "Relay Inverter" },
+      "GridRelayState": { "name": "Relay Grid" },
+      "LoadRelayState": { "name": "Relay Load" },
+      "N_LineRelayState": { "name": "Relay N Line" },
+      "DCRelayState": { "name": "Relay DC" },
+      "EarthRelayState": { "name": "Relay Earth" }
+    },
+    "button": {
+      "RemoveTheAccumulatedData": { "name": "Remove Accumulated Data" },
+      "InverterRemoveTheAccumulatedData": { "name": "Remove Accumulated Data (Inverter)" }
+    },
+    "number": {
+      "FloatVoltage": { "name": "Float Voltage" },
+      "AbsorptionVoltage": { "name": "Absorption Voltage" },
+      "BatteryLowVoltage": { "name": "Battery Low Voltage" },
+      "BatteryAh": { "name": "Battery Capacity (Ah)" },
+      "BatteryEqualizationVoltage": { "name": "Battery Equalization Voltage" },
+      "BatteryEqualizationTime": { "name": "Battery Equalization Time" },
+      "BatteryEqualizationTimeout": { "name": "Battery Equalization Timeout" },
+      "BatteryEqualizationInterval": { "name": "Battery Equalization Interval" },
+      "InverterBatteryVoltageC": { "name": "Inverter Battery Voltage Calibration" },
+      "InverterVoltageC": { "name": "Inverter Voltage Calibration" },
+      "GridVoltageC": { "name": "Grid Voltage Calibration" },
+      "BusVoltageC": { "name": "Bus Voltage Calibration" },
+      "ControlCurrentC": { "name": "Control Current Calibration" },
+      "InverterCurrentC": { "name": "Inverter Current Calibration" },
+      "GridCurrentC": { "name": "Grid Current Calibration" },
+      "LoadCurrentC": { "name": "Load Current Calibration" },
+      "InverterOutputVoltageSet": { "name": "Inverter Output Voltage" },
+      "InverterOutputFrequencySet": { "name": "Inverter Output Frequency" },
+      "InverterMaxDischargerCurrent": { "name": "Inverter Max Discharger Current" },
+      "BatteryStopDischargingVoltage": { "name": "Battery Stop Discharging Voltage" },
+      "BatteryStopChargingVoltage": { "name": "Battery Stop Charging Voltage" },
+      "GridMaxChargerCurrentSet": { "name": "Grid Max Charger Current" },
+      "InverterBatteryLowVoltage": { "name": "Inverter Battery Low Voltage" },
+      "MaxCombineChargerCurrent": { "name": "Max Combine Charger Current" }
+    },
+    "select": {
+      "BatteryType": {
+        "name": "Battery Type",
+        "state": {
+          "User defined": "User Defined",
+          "Lithium": "Lithium",
+          "Sealed Lead": "Sealed Lead",
+          "Agm": "AGM",
+          "Gel": "Gel",
+          "Flooded": "Flooded"
+        }
+      },
+      "EnergyUseMode": {
+        "name": "Energy Use Mode",
+        "state": {
+          "SBU": "Solar-Battery-Utility",
+          "SUB": "Solar-Utility-Battery",
+          "UTI": "Utility",
+          "SOL": "Solar"
+        }
+      },
+      "GridProtectStandard": {
+        "name": "Grid Protect Standard",
+        "state": {
+          "VDE4105": "VDE 4105",
+          "UPS": "UPS",
+          "APL": "Appliances",
+          "GEN": "Generator"
+        }
+      },
+      "SolarUseAim": {
+        "name": "Solar Use Aim",
+        "state": {
+          "LBU": "Load-Battery-Utility",
+          "BLU": "Battery-Load-Utility"
+        }
+      },
+      "ChargerSourcePriority": {
+        "name": "Charger Source Priority",
+        "state": {
+          "Solar first": "Solar First",
+          "Solar and Utility": "Solar and Utility",
+          "Only Solar": "Only Solar"
+        }
+      }
+    },
+    "sensor": {
+      "AbsorbVoltage": { "name": "Absorb Voltage" },
+      "BatteryHighVoltage": { "name": "Battery High Voltage" },
+      "MaxChargerCurrent": { "name": "Max Charger Current" },
+      "AbsorbChargerCurrent": { "name": "Absorb Charger Current" },
+      "ChargerWorkstate": {
+        "name": "Charger Workstate",
+        "state": {
+          "Initialization": "Initialization",
+          "Selftest": "Self-Test",
+          "Work": "Work",
+          "Stop": "Stop"
+        }
+      },
+      "MpptState": {
+        "name": "MPPT State",
+        "state": {
+          "Stop": "Stop",
+          "MPPT": "MPPT",
+          "Current limiting": "Current limiting"
+        }
+      },
+      "ChargingState": {
+        "name": "Charging State",
+        "state": {
+          "Stop": "Stop",
+          "Absorb charge": "Absorb charge",
+          "Float charge": "Float charge",
+          "Equalization charge": "Equalization charge"
+        }
+      },
+      "PvVoltage": { "name": "PV Voltage" },
+      "BatteryVoltage": { "name": "Battery Voltage" },
+      "ChargerCurrent": { "name": "Charger Current" },
+      "ChargerPower": { "name": "Charger Power" },
+      "RadiatorTemperature": { "name": "Radiator Temperature" },
+      "ExternalTemperature": { "name": "External Temperature" },
+      "ChargerErrorMessage": { "name": "Charger Error Message" },
+      "ChargerWarningMessage": { "name": "Charger Warning Message" },
+      "BattVolGrade": { "name": "Battery Vol Grade" },
+      "RatedCurrent": { "name": "Rated Current" },
+      "AccumulatedPower": { "name": "Accumulated Power" },
+      "AccumulatedTime": { "name": "Accumulated Time" },
+      "InverterMachineType": { "name": "Inverter Machine Type" },
+      "InverterSerialNumber": { "name": "Inverter Serial Number" },
+      "InverterHardwareVersion": { "name": "Inverter Hardware Version" },
+      "InverterSoftwareVersion": { "name": "Inverter Software Version" },
+      "InverterBatteryHighVoltage": { "name": "Inverter Battery High Voltage" },
+      "SystemSetting": { "name": "System Setting" },
+      "WorkState": {
+        "name": "Work State",
+        "state": {
+          "PowerOn": "Power On",
+          "SelfTest": "Self-Test",
+          "OffGrid": "Off-Grid",
+          "Grid-Tie": "Grid-Tie",
+          "ByPass": "Bypass",
+          "Stop": "Stop",
+          "Grid charging": "Grid Charging"
+        }
+      },
+      "AcVoltageGrade": { "name": "AC Voltage Grade" },
+      "RatedPower": { "name": "Rated Power" },
+      "InverterBatteryVoltage": { "name": "Inverter Battery Voltage" },
+      "InverterVoltage": { "name": "Inverter Voltage" },
+      "GridVoltage": { "name": "Grid Voltage" },
+      "BusVoltage": { "name": "Bus Voltage" },
+      "ControlCurrent": { "name": "Control Current" },
+      "InverterCurrent": { "name": "Inverter Current" },
+      "GridCurrent": { "name": "Grid Current" },
+      "LoadCurrent": { "name": "Load Current" },
+      "PInverter": { "name": "P Inverter" },
+      "PGrid": { "name": "P Grid" },
+      "PLoad": { "name": "P Load" },
+      "LoadPercent": { "name": "Load Percent" },
+      "SInverter": { "name": "S Inverter" },
+      "SGrid": { "name": "S Grid" },
+      "Sload": { "name": "S Load" },
+      "Qinverter": { "name": "Q Inverter" },
+      "Qgrid": { "name": "Q Grid" },
+      "Qload": { "name": "Q Load" },
+      "InverterFrequency": { "name": "Inverter Frequency" },
+      "GridFrequency": { "name": "Grid Frequency" },
+      "InverterMaxNumber": { "name": "Inverter Max Number" },
+      "CombineType": { "name": "Combine Type" },
+      "InverterNumber": { "name": "Inverter Number" },
+      "AcRadiatorTemperature": { "name": "AC Radiator Temperature" },
+      "TransformerTemperature": { "name": "Transformer Temperature" },
+      "DcRadiatorTemperature": { "name": "DC Radiator Temperature" },
+      "AccumulatedChargerPower": { "name": "Accumulated Charger Power" },
+      "AccumulatedDischargerPower": { "name": "Accumulated Discharger Power" },
+      "AccumulatedBuyPower": { "name": "Accumulated Buy Power" },
+      "AccumulatedSellPower": { "name": "Accumulated Sell Power" },
+      "AccumulatedLoadPower": { "name": "Accumulated Load Power" },
+      "AccumulatedSelfUsePower": { "name": "Accumulated Self Use Power" },
+      "AccumulatedPvSellPower": { "name": "Accumulated PV Sell Power" },
+      "AccumulatedGridChargerPower": { "name": "Accumulated Grid Charger Power" },
+      "InverterErrorMessage": { "name": "Inverter Error Message" },
+      "InverterWarningMessage": { "name": "Inverter Warning Message" },
+      "BattPower": { "name": "Battery Power" },
+      "BattCurrent": { "name": "Battery Current" },
+      "RatedPowerW": { "name": "Rated Power Watts" },
+      "StateOfCharge": { "name": "Battery State Of Charge" },
+      "BatteryStateOfHealth": { "name": "Battery State Of Health" },
+      "PV1ChargerCurrent": { "name": "PV1 Charger Current" },
+      "PV1ChargerPower": { "name": "PV1 Charger Power" },
+      "PV2ChargerCurrent": { "name": "PV2 Charger Current" },
+      "PV2ChargerPower": { "name": "PV2 Charger Power" },
+      "InverterErrorMessage3": { "name": "Inverter Error Message3" },
+      "InverterWarningMessage2": { "name": "Inverter Warning Message2" }
+    },
+    "switch": {
+      "ChargerWorkEnable": { "name": "Charger Work Enable" },
+      "BatteryEqualizationEnable": { "name": "Battery Equalization Enable" },
+      "BatteryEqualizationImmediately": { "name": "Battery Equalization Immediately" },
+      "InverterOffgridWorkEnable": { "name": "Inverter Offgrid Work Enable" },
+      "InverterSearchModeEnable": { "name": "Inverter Search Mode Enable" },
+      "InverterOngridWorkEnable": { "name": "Inverter Ongrid Work Enable" },
+      "InverterChargerFromGridEnable": { "name": "Inverter Charger From Grid Enable" },
+      "InverterDischargerEnable": { "name": "Inverter Discharger Enable" },
+      "InverterDischargerToGridEnable": { "name": "Inverter Discharger To Grid Enable" },
+      "SolarPowerBalance": { "name": "Solar Power Balance" },
+      "OverLoadRestart": { "name": "Overload Restart" },
+      "OverTempRestart": { "name": "Over Temperature Restart" },
+      "OverLoadBypass": { "name": "Overload Bypass" },
+      "AutoTurnPage": { "name": "Auto Turn Page" },
+      "GridBuzz": { "name": "Grid Buzz" },
+      "Buzz": { "name": "Buzz" },
+      "LcdLight": { "name": "LCD Light" },
+      "RecordFault": { "name": "Record Fault" }
+    }
   }
 }

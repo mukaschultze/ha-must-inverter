@@ -17,18 +17,18 @@ _system_settings_lock = asyncio.Lock()
 
 
 async def async_setup_entry(hass, entry, async_add_entities):
-    Setting = namedtuple("Setting", ["bit", "name", "flip", "enabled", "icon"])
+    Setting = namedtuple("Setting", ["bit", "name", "flip", "enabled"])
 
     # fmt: off
     settings = [
-        Setting(0, "OverLoadRestart",  True,  True,  'mdi:restart-alert'),
-        Setting(1, "OverTempRestart",  True,  True,  'mdi:thermometer-alert'),
-        Setting(2, "OverLoadBypass",   True,  True,  'mdi:transmission-tower-off'),
-        Setting(3, "AutoTurnPage",     True,  True,  'mdi:book-open-page-variant'),
-        Setting(4, "GridBuzz",         False, True,  'mdi:bell-alert'),
-        Setting(5, "Buzz",             True,  True,  'mdi:bell'),
-        Setting(6, "LcdLight",         False, True,  'mdi:lightbulb'),
-        Setting(7, "RecordFault",      True,  True,  'mdi:alert'),
+        Setting(0, "OverLoadRestart",  True,  True),
+        Setting(1, "OverTempRestart",  True,  True),
+        Setting(2, "OverLoadBypass",   True,  True),
+        Setting(3, "AutoTurnPage",     True,  True),
+        Setting(4, "GridBuzz",         False, True),
+        Setting(5, "Buzz",             True,  True),
+        Setting(6, "LcdLight",         False, True),
+        Setting(7, "RecordFault",      True,  True),
     ]
     # fmt: on
 
@@ -58,10 +58,9 @@ class MustInverterSwitch(SwitchEntity):
 
         self._attr_has_entity_name = True
         self._attr_unique_id = f"{self._inverter._model}_{self._inverter.data['InverterSerialNumber']}_{self._key}"
-        self._attr_name = re.sub(r"(?<=[a-z])(?=[A-Z])", " ", self._key)
+        self._attr_translation_key = self._key
         self._attr_device_class = sensor_info.device_class
         self._attr_entity_registry_enabled_default = sensor_info.enabled
-        self._attr_icon = sensor_info.icon
 
     async def async_added_to_hass(self):
         self._inverter.async_add_must_inverter_sensor(self._inverter_data_updated)
@@ -109,9 +108,8 @@ class MustInverterSettingsSwitch(SwitchEntity):
 
         self._attr_has_entity_name = True
         self._attr_unique_id = f"{self._inverter._model}_{self._inverter.data['InverterSerialNumber']}_{self._name}"
-        self._attr_name = re.sub(r"(?<=[a-z])(?=[A-Z])", " ", self._name)
+        self._attr_translation_key = self._name
         self._attr_entity_registry_enabled_default = setting_config.enabled
-        self._attr_icon = setting_config.icon
 
     async def async_added_to_hass(self):
         self._inverter.async_add_must_inverter_sensor(self._inverter_data_updated)

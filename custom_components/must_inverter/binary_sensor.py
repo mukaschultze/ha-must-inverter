@@ -34,10 +34,9 @@ class MustInverterBinarySensor(BinarySensorEntity):
 
         self._attr_has_entity_name = True
         self._attr_unique_id = f"{self._inverter._model}_{self._inverter.data['InverterSerialNumber']}_{self._key}"
-        self._attr_name = re.sub(r"(?<=[a-z])(?=[A-Z])", " ", self._key)
+        self._attr_translation_key = self._key
         self._attr_device_class = sensor_info.device_class
         self._attr_entity_registry_enabled_default = sensor_info.enabled
-        self._attr_icon = sensor_info.icon
 
     async def async_added_to_hass(self):
         self._inverter.async_add_must_inverter_sensor(self._inverter_data_updated)

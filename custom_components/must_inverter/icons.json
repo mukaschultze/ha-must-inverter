@@ -1,0 +1,133 @@
+{
+    "entity": {
+        "binary_sensor": {
+            "BatteryRelay": {
+                "default": "mdi:electric-switch",
+                "state": {
+                    "off": "mdi:electric-switch",
+                    "on": "mdi:electric-switch-closed"
+                }
+            },
+            "PvRelay": {
+                "default": "mdi:electric-switch",
+                "state": {
+                    "off": "mdi:electric-switch",
+                    "on": "mdi:electric-switch-closed"
+                }
+            },
+            "InverterRelayState": {
+                "default": "mdi:electric-switch",
+                "state": {
+                    "off": "mdi:electric-switch",
+                    "on": "mdi:electric-switch-closed"
+                }
+            },
+            "GridRelayState": {
+                "default": "mdi:electric-switch",
+                "state": {
+                    "off": "mdi:electric-switch",
+                    "on": "mdi:electric-switch-closed"
+                }
+            },
+            "LoadRelayState": {
+                "default": "mdi:electric-switch",
+                "state": {
+                    "off": "mdi:electric-switch",
+                    "on": "mdi:electric-switch-closed"
+                }
+            },
+            "N_LineRelayState": {
+                "default": "mdi:electric-switch",
+                "state": {
+                    "off": "mdi:electric-switch",
+                    "on": "mdi:electric-switch-closed"
+                }
+            },
+            "DCRelayState": {
+                "default": "mdi:electric-switch",
+                "state": {
+                    "off": "mdi:electric-switch",
+                    "on": "mdi:electric-switch-closed"
+                }
+            },
+            "EarthRelayState": {
+                "default": "mdi:electric-switch",
+                "state": {
+                    "off": "mdi:electric-switch",
+                    "on": "mdi:electric-switch-closed"
+                }
+            }
+        },
+        "number": {
+            "BatteryAh": { "default": "mdi:car-battery" },
+            "BatteryEqualizationVoltage": { "default": "mdi:equalizer" },
+            "BatteryEqualizationTime": { "default": "mdi:equalizer" },
+            "BatteryEqualizationTimeout": { "default": "mdi:equalizer" },
+            "BatteryEqualizationInterval": { "default": "mdi:equalizer" },
+            "InverterMaxDischargerCurrent": { "default": "mdi:current-ac" },
+            "GridMaxChargerCurrentSet": { "default": "mdi:current-dc" },
+            "MaxCombineChargerCurrent": { "default": "mdi:current-dc" }
+        },
+        "select": {
+            "BatteryType": { "default": "mdi:car-battery" },
+            "EnergyUseMode": { "default": "mdi:lightning-bolt" },
+            "GridProtectStandard": { "default": "mdi:lightning-bolt" },
+            "SolarUseAim": { "default": "mdi:lightning-bolt" },
+            "ChargerSourcePriority": { "default": "mdi:battery-charging-high" }
+        },
+        "sensor": {
+            "MaxChargerCurrent": { "default": "mdi:current-dc" },
+            "AbsorbChargerCurrent": { "default": "mdi:current-dc" },
+            "MpptState": { "default": "mdi:solar-power" },
+            "ChargerCurrent": { "default": "mdi:current-dc" },
+            "ChargerErrorMessage": { "default": "mdi:alert-circle-outline" },
+            "ChargerWarningMessage": { "default": "mdi:alert-outline" },
+            "RatedCurrent": { "default": "mdi:current-dc" },
+            "AccumulatedTime": { "default": "mdi:clock-outline" },
+            "ControlCurrent": { "default": "mdi:current-ac" },
+            "InverterCurrent": { "default": "mdi:current-ac" },
+            "GridCurrent": { "default": "mdi:current-ac" },
+            "LoadCurrent": { "default": "mdi:current-ac" },
+            "InverterErrorMessage": { "default": "mdi:alert-circle-outline" },
+            "InverterWarningMessage": { "default": "mdi:alert-outline" },
+            "BattPower": { "default": "mdi:home-battery-outline" },
+            "BattCurrent": { "default": "mdi:current-dc" },
+            "BatteryStateOfHealth": { "default": "mdi:battery-heart-variant" },
+            "PV1ChargerCurrent": { "default": "mdi:current-dc" },
+            "PV2ChargerCurrent": { "default": "mdi:current-dc" },
+            "InverterErrorMessage3": { "default": "mdi:alert-circle-outline" },
+            "InverterWarningMessage2": { "default": "mdi:alert-outline" }
+        },
+        "switch": {
+            "BatteryEqualizationEnable": { "default": "mdi:equalizer" },
+            "BatteryEqualizationImmediately": { "default": "mdi:equalizer" },
+            "SolarPowerBalance": { "default": "mdi:solar-power" },
+            "OverLoadRestart": { "default": "mdi:restart-alert" },
+            "OverTempRestart": { "default": "mdi:thermometer-alert" },
+            "OverLoadBypass": { "default": "mdi:transmission-tower-off" },
+            "AutoTurnPage": { "default": "mdi:book-open-page-variant" },
+            "GridBuzz": {
+                "default": "mdi:bell",
+                "state": {
+                    "on": "mdi:bell",
+                    "off": "mdi:bell-off"
+                }
+            },
+            "Buzz": {
+                "default": "mdi:bell-alert",
+                "state": {
+                    "on": "mdi:bell-alert",
+                    "off": "mdi:bell-off"
+                }
+            },
+            "LcdLight": {
+                "default": "mdi:lightbulb",
+                "state": {
+                    "on": "mdi:lightbulb",
+                    "off": "mdi:lightbulb-off"
+                }
+            },
+            "RecordFault": { "default": "mdi:alert" }
+        }
+    }
+}

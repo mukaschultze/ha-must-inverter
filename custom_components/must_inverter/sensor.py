@@ -35,11 +35,10 @@ class MustInverterSensor(SensorEntity):
 
         self._attr_has_entity_name = True
         self._attr_unique_id = f"{self._inverter._model}_{self._inverter.data['InverterSerialNumber']}_{self._key}"
-        self._attr_name = re.sub(r"(?<=[a-z])(?=[A-Z])", " ", self._key)
+        self._attr_translation_key = self._key
         self._attr_native_unit_of_measurement = sensor_info.unit
         self._attr_device_class = sensor_info.device_class
         self._attr_entity_registry_enabled_default = sensor_info.enabled
-        self._attr_icon = sensor_info.icon
         self._attr_options = sensor_info.options
 
         if self._attr_native_unit_of_measurement == UnitOfEnergy.KILO_WATT_HOUR:
