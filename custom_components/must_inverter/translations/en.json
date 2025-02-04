@@ -220,7 +220,7 @@
       "ExternalTemperature": { "name": "External Temperature" },
       "ChargerErrorMessage": { "name": "Charger Error Message" },
       "ChargerWarningMessage": { "name": "Charger Warning Message" },
-      "BattVolGrade": { "name": "Battery Vol Grade" },
+      "BattVolGrade": { "name": "Battery Voltage Grade" },
       "RatedCurrent": { "name": "Rated Current" },
       "AccumulatedPower": { "name": "Accumulated Power" },
       "AccumulatedTime": { "name": "Accumulated Time" },
