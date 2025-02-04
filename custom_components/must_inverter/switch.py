@@ -57,7 +57,7 @@ class MustInverterSwitch(SwitchEntity):
         self._address = sensor_info.address
 
         self._attr_has_entity_name = True
-        self._attr_unique_id = f"{self._inverter._model}_{self._inverter.data['InverterSerialNumber']}_{self._key}"
+        self._attr_unique_id = f"{self._inverter.model}_{self._inverter.data['InverterSerialNumber']}_{self._key}"
         self._attr_translation_key = self._key
         self._attr_device_class = sensor_info.device_class
         self._attr_entity_registry_enabled_default = sensor_info.enabled
@@ -107,7 +107,7 @@ class MustInverterSettingsSwitch(SwitchEntity):
         self._flip = setting_config.flip
 
         self._attr_has_entity_name = True
-        self._attr_unique_id = f"{self._inverter._model}_{self._inverter.data['InverterSerialNumber']}_{self._name}"
+        self._attr_unique_id = f"{self._inverter.model}_{self._inverter.data['InverterSerialNumber']}_{self._name}"
         self._attr_translation_key = self._name
         self._attr_entity_registry_enabled_default = setting_config.enabled
 

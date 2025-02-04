@@ -38,6 +38,7 @@
       "common": {
         "title": "Configuration",
         "data": {
+          "model": "Model",
           "scan_interval": "Scan Interval (seconds)",
           "timeout": "Timeout (seconds)",
           "retries": "Retries",
@@ -85,12 +86,22 @@
       "common": {
         "title": "Configuration",
         "data": {
+          "model": "Model",
           "scan_interval": "Scan Interval (seconds)",
           "timeout": "Timeout (seconds)",
           "retries": "Retries",
           "reconnect_delay": "Reconnect Delay (seconds)",
           "reconnect_delay_max": "Max Reconnect Delay (seconds)"
         }
+      }
+    }
+  },
+  "selector": {
+    "model": {
+      "options": {
+        "autodetect": "Auto Detect",
+        "PV1800": "PV1800 Series",
+        "PV1900": "PV1900 Series"
       }
     }
   },

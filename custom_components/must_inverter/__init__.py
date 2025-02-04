@@ -11,8 +11,16 @@ from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers.event import async_track_time_interval
 from pymodbus.client import AsyncModbusSerialClient, AsyncModbusTcpClient, AsyncModbusUdpClient
 
-from .const import DEFAULT_SCAN_INTERVAL, DOMAIN, get_sensors_for_model, MODEL_PV1800, MODEL_PV1900
-from .mapper import *
+from .const import DEFAULT_SCAN_INTERVAL, DOMAIN, get_sensors_for_model, MODEL_PV1900
+from .mapper import (
+    convert_partArr2,
+    convert_partArr3,
+    convert_partArr4,
+    convert_partArr5,
+    convert_partArr6,
+    convert_battery_status,
+    convert_pv_data,
+)
 # from .utils.register_monitor import RegisterMonitor
 
 PLATFORMS = [
@@ -36,15 +44,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     try:
         entry.async_on_unload(entry.add_update_listener(async_reload_entry))
 
-        # Get model from config entry, default to PV1800
-        model = entry.data.get("model") or entry.options.get("model", MODEL_PV1800)
-        _LOGGER.debug("Setting up Must Inverter with model: %s", model)
-
-        # Get model-specific sensors
-        sensors = get_sensors_for_model(model)
-
         # Initialize inverter with model-specific sensors
-        inverter = MustInverter(hass, entry, sensors)
+        inverter = MustInverter(hass, entry)
 
         successConnecting = await inverter.connect()
 
@@ -56,8 +57,12 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         if not successReading:
             raise ConfigEntryNotReady("Unable to read from modbus device")
 
-        # Store both inverter instance and model info
-        hass.data[DOMAIN][entry.entry_id] = {"inverter": inverter, "model": model, "sensors": sensors}
+        model = inverter.model
+        sensors = get_sensors_for_model(model)
+        _LOGGER.debug("Setting up Must Inverter with model: %s", model)
+
+        # Store sensors to be used by platforms
+        hass.data[DOMAIN][entry.entry_id] = {"inverter": inverter, "sensors": sensors}
 
         await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
 
@@ -111,13 +116,11 @@ async def async_reload_entry(hass: HomeAssistant, entry: ConfigEntry) -> None:
 
 
 class MustInverter:
-    def __init__(self, hass, entry: ConfigEntry, sensors: list):
+    def __init__(self, hass, entry: ConfigEntry):
         self._hass = hass
-        self._sensor_defs = sensors  # Store sensor definitions
         self._callbacks = []  # Store callbacks separately
+        self._entry = entry
         # Check both data and options
-        self._model = entry.data.get("model") or entry.options.get("model", MODEL_PV1800)
-        _LOGGER.debug("Initializing MustInverter with model: %s", self._model)
 
         common = {
             "timeout": entry.options["timeout"],
@@ -188,6 +191,17 @@ class MustInverter:
             update_result = False
 
         return update_result
+
+    @property
+    def model(self):
+        from_config = self._entry.data.get("model") or self._entry.options.get("model")
+        detected = self.data.get("InverterMachineType")
+
+        return from_config or detected
+
+    @property
+    def has_extra_registers(self):
+        return self.model == MODEL_PV1900
 
     def close(self):
         _LOGGER.info("closing modbus client")
@@ -260,7 +274,7 @@ class MustInverter:
 
         # Add PV19-specific register ranges if needed
         # Keep register ranges for pv separate to not overload the inverter
-        if self._model == MODEL_PV1900:
+        if self.has_extra_registers:
             registersAddresses.extend(
                 [
                     (113, 114, convert_battery_status),  # Battery Status (SoC, SoH)
@@ -272,13 +286,10 @@ class MustInverter:
         read = {}
 
         for register in registersAddresses:
-            if self._model == MODEL_PV1900:
+            if self.has_extra_registers:
                 # Add a small delay between reading standard and PV19-specific registers
                 # to prevent any potential issues
                 await asyncio.sleep(0.1)
-
-                # Log when reading PV19-specific registers
-                _LOGGER.debug("Reading PV19-specific registers")
 
             start = register[0]
             end = register[1]
@@ -321,9 +332,9 @@ class MustInverter:
     def _device_info(self):
         # TODO: Find a way of making sure two inverters of the same model don't have the same identifiers. Issue #54
         return {
-            "identifiers": {(DOMAIN, self.data["InverterMachineType"])},
-            "name": self.data["InverterMachineType"],
-            "model": self.data["InverterMachineType"],
+            "identifiers": {(DOMAIN, self.model)},
+            "name": self.model,
+            "model": self.model,
             "manufacturer": "Must Solar",
             "hw_version": self.data["InverterHardwareVersion"],
             "sw_version": self.data["InverterSoftwareVersion"],

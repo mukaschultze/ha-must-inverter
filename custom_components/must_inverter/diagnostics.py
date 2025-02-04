@@ -53,7 +53,7 @@ def _async_devices_as_dict(hass: HomeAssistant, entry: ConfigEntry) -> dict:
     device_info = device._device_info()
 
     devs_data[entry.entry_id] = {
-        "model": device._model,
+        "model": device.model,
         "device_info": async_redact_data(device_info, TO_REDACT_DEV),
         "data": async_redact_data(device.data, TO_REDACT),
         "registers": device.registers,
