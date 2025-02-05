@@ -7,6 +7,14 @@ from homeassistant.const import Platform
 
 DOMAIN = "must_inverter"
 
+CONF_BAUDRATE = "baudrate"
+CONF_PARITY = "parity"
+CONF_STOPBITS = "stopbits"
+CONF_BYTESIZE = "bytesize"
+CONF_RETRIES = "retries"
+CONF_RECONNECT_DELAY = "reconnect_delay"
+CONF_RECONNECT_DELAY_MAX = "reconnect_delay_max"
+
 DEFAULT_SCAN_INTERVAL = 15
 
 # model constants

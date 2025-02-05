@@ -2,23 +2,32 @@
   "title": "Must Inverter",
   "config": {
     "step": {
-      "user": {
-        "title": "Select the connection type",
-        "menu_options": {
-          "serial": "USB or Serial",
-          "tcp": "TCP",
-          "tls": "TLS",
-          "udp": "UDP"
+      "common": {
+        "title": "Common settings",
+        "description": "Configure your Must Inverter integration.",
+        "data": {
+          "model": "Model",
+          "scan_interval": "Scan Interval (seconds)",
+          "mode": "Connection type"
+        },
+        "data_description": {
+          "model": "Leave in Auto Detect unless you're not seeing data that should be available for your device.",
+          "scan_interval": "The interval in seconds to poll the inverter for data.",
+          "mode": "The connection type to use to communicate with the inverter, usually via the included USB cable or via TCP/UDP for wireless connections."
         }
       },
       "serial": {
         "title": "USB or serial",
+        "description": "Configure the serial parameters for your inverter. The default values should work for most models.",
         "data": {
           "device": "USB or Serial device path",
           "baudrate": "Baud rate",
           "parity": "Parity (‘E’ven, ‘O’dd or ‘N’one)",
           "stopbits": "Stop bits (1, 1.5, 2)",
           "bytesize": "Byte size (7, 8)"
+        },
+        "data_description": {
+          "device": "The path to the USB or Serial device to use for the connection, usually /dev/ttyUSB0 or /dev/ttyS0."
         }
       },
       "tcp": {
@@ -35,63 +44,20 @@
           "port": "Port"
         }
       },
-      "common": {
-        "title": "Configuration",
+      "modbus": {
+        "title": "PyModbus advanced settings",
+        "description": "Leave this section unchanged unless you are seeing connection issues or need to adjust the modbus connection settings.",
         "data": {
-          "model": "Model",
-          "scan_interval": "Scan Interval (seconds)",
           "timeout": "Timeout (seconds)",
           "retries": "Retries",
           "reconnect_delay": "Reconnect Delay (seconds)",
           "reconnect_delay_max": "Max Reconnect Delay (seconds)"
-        }
-      }
-    }
-  },
-  "options": {
-    "step": {
-      "init": {
-        "title": "Select the connection type",
-        "menu_options": {
-          "serial": "USB or Serial",
-          "tcp": "TCP",
-          "tls": "TLS",
-          "udp": "UDP"
-        }
-      },
-      "serial": {
-        "title": "USB or serial",
-        "data": {
-          "device": "USB or Serial device path",
-          "baudrate": "Baud rate",
-          "parity": "Parity (‘E’ven, ‘O’dd or ‘N’one)",
-          "stopbits": "Stop bits (1, 1.5, 2)",
-          "bytesize": "Byte size (7, 8)"
-        }
-      },
-      "tcp": {
-        "title": "TCP",
-        "data": {
-          "host": "Host",
-          "port": "Port"
-        }
-      },
-      "udp": {
-        "title": "UDP",
-        "data": {
-          "host": "Host",
-          "port": "Port"
-        }
-      },
-      "common": {
-        "title": "Configuration",
-        "data": {
-          "model": "Model",
-          "scan_interval": "Scan Interval (seconds)",
-          "timeout": "Timeout (seconds)",
-          "retries": "Retries",
-          "reconnect_delay": "Reconnect Delay (seconds)",
-          "reconnect_delay_max": "Max Reconnect Delay (seconds)"
+        },
+        "data_description": {
+          "timeout": "Timeout for connecting and receiving data.",
+          "retries": "Max number of retries per request.",
+          "reconnect_delay": "Minimum delay before reconnecting. Set to 0 to disable reconnecting.",
+          "reconnect_delay_max": "Maximum delay before reconnecting. Pymodbus doubles the delay after each unsuccessful connection attempt."
         }
       }
     }
@@ -102,6 +68,14 @@
         "autodetect": "Auto Detect",
         "PV1800": "PV1800 Series",
         "PV1900": "PV1900 Series"
+      }
+    },
+    "mode": {
+      "options": {
+        "serial": "USB or Serial",
+        "tcp": "TCP",
+        "tls": "TLS",
+        "udp": "UDP"
       }
     }
   },

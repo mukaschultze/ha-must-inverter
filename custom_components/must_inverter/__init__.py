@@ -11,7 +11,31 @@ from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers.event import async_track_time_interval
 from pymodbus.client import AsyncModbusSerialClient, AsyncModbusTcpClient, AsyncModbusUdpClient
 
-from .const import DEFAULT_SCAN_INTERVAL, DOMAIN, get_sensors_for_model, MODEL_PV1900
+from homeassistant.const import (
+    CONF_DEVICE,
+    CONF_MODEL,
+    CONF_SCAN_INTERVAL,
+    CONF_MODE,
+    CONF_HOST,
+    CONF_PORT,
+    CONF_TIMEOUT,
+)
+
+from .const import (
+    DOMAIN,
+    DEFAULT_SCAN_INTERVAL,
+    CONF_BAUDRATE,
+    CONF_PARITY,
+    CONF_STOPBITS,
+    CONF_BYTESIZE,
+    CONF_RETRIES,
+    CONF_RECONNECT_DELAY,
+    CONF_RECONNECT_DELAY_MAX,
+    DEFAULT_SCAN_INTERVAL,
+    get_sensors_for_model,
+    MODEL_PV1900,
+)
+
 from .mapper import (
     convert_partArr2,
     convert_partArr3,
@@ -123,33 +147,33 @@ class MustInverter:
         # Check both data and options
 
         common = {
-            "timeout": entry.options["timeout"],
-            "retries": entry.options["retries"],
-            "reconnect_delay": entry.options["reconnect_delay"],
-            "reconnect_delay_max": entry.options["reconnect_delay_max"],
+            "timeout": entry.options[CONF_TIMEOUT],
+            "retries": entry.options[CONF_RETRIES],
+            "reconnect_delay": entry.options[CONF_RECONNECT_DELAY],
+            "reconnect_delay_max": entry.options[CONF_RECONNECT_DELAY_MAX],
         }
 
-        match entry.options["mode"]:
+        match entry.options[CONF_MODE]:
             case "serial":
                 self._client = AsyncModbusSerialClient(
-                    entry.options["device"],
-                    baudrate=entry.options["baudrate"],
-                    stopbits=entry.options["stopbits"],
-                    bytesize=entry.options["bytesize"],
-                    parity=entry.options["parity"],
+                    entry.options[CONF_DEVICE],
+                    baudrate=entry.options[CONF_BAUDRATE],
+                    stopbits=entry.options[CONF_STOPBITS],
+                    bytesize=entry.options[CONF_BYTESIZE],
+                    parity=entry.options[CONF_PARITY],
                     **common,
                 )
             case "tcp":
-                self._client = AsyncModbusTcpClient(entry.options["host"], port=entry.options["port"], **common)
+                self._client = AsyncModbusTcpClient(entry.options[CONF_HOST], port=entry.options[CONF_PORT], **common)
             case "udp":
-                self._client = AsyncModbusUdpClient(entry.options["host"], port=entry.options["port"], **common)
+                self._client = AsyncModbusUdpClient(entry.options[CONF_HOST], port=entry.options[CONF_PORT], **common)
             case _:
                 raise Exception("Invalid mode")
 
         self._client.rts = False
         self._client.dtr = False
         self._lock = asyncio.Lock()
-        self._scan_interval = timedelta(seconds=entry.options.get("scan_interval", DEFAULT_SCAN_INTERVAL))
+        self._scan_interval = timedelta(seconds=entry.options.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL))
         self._reading = False
         self.registers = {}
         self.data = {}
@@ -194,7 +218,7 @@ class MustInverter:
 
     @property
     def model(self):
-        from_config = self._entry.data.get("model") or self._entry.options.get("model")
+        from_config = self._entry.options.get(CONF_MODEL)
         detected = self.data.get("InverterMachineType")
 
         return from_config or detected
