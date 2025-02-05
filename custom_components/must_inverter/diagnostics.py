@@ -45,7 +45,12 @@ async def async_get_config_entry_diagnostics(hass: HomeAssistant, entry: ConfigE
 def _async_devices_as_dict(hass: HomeAssistant, entry: ConfigEntry) -> dict:
     """Gather device information."""
     devs_data = {}
-    device: MustInverter = hass.data[DOMAIN].get(entry.entry_id, {})
+    data = hass.data[DOMAIN].get(entry.entry_id, {})
+
+    if not data:
+        return {"error": "No device data found"}
+
+    device: MustInverter = data.get("inverter")
 
     if not device:
         return {"error": "No device data found"}
