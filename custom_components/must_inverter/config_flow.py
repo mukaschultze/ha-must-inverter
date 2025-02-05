@@ -7,8 +7,8 @@ from typing import Any
 from homeassistant.helpers.schema_config_entry_flow import SchemaConfigFlowHandler, SchemaFlowStep, SchemaFlowFormStep
 
 from homeassistant.helpers.selector import selector, SelectSelectorMode
-from homeassistant.data_entry_flow import section
 from homeassistant.const import (
+    CONF_NAME,
     CONF_DEVICE,
     CONF_MODEL,
     CONF_SCAN_INTERVAL,
@@ -60,6 +60,7 @@ UDP_SCHEMA = vol.Schema(
 
 COMMON_SCHEMA = vol.Schema(
     {
+        vol.Optional(CONF_NAME): str,
         vol.Required(CONF_MODEL, default="autodetect"): selector(
             {
                 "select": {
@@ -122,4 +123,10 @@ class MustInverterConfigFlow(SchemaConfigFlowHandler, domain=DOMAIN):
 
     def async_config_entry_title(self, options: Mapping[str, Any]) -> str:
         """Return config entry title."""
-        return f"Must Inverter"
+        # return f"Must Inverter"
+        mode = options.get(CONF_MODE)
+
+        if mode == "serial":
+            return options.get(CONF_NAME) or options.get(CONF_DEVICE)
+        else:
+            return options.get(CONF_NAME) or options.get(CONF_HOST)

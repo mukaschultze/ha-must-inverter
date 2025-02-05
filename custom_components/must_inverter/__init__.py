@@ -12,6 +12,7 @@ from homeassistant.helpers.event import async_track_time_interval
 from pymodbus.client import AsyncModbusSerialClient, AsyncModbusTcpClient, AsyncModbusUdpClient
 
 from homeassistant.const import (
+    CONF_NAME,
     CONF_DEVICE,
     CONF_MODEL,
     CONF_SCAN_INTERVAL,
@@ -217,6 +218,10 @@ class MustInverter:
         return update_result
 
     @property
+    def name(self):
+        return self._entry.options.get(CONF_NAME, self.data.get("InverterMachineType"))
+
+    @property
     def model(self):
         from_config = self._entry.options.get(CONF_MODEL)
         detected = self.data.get("InverterMachineType")
@@ -357,12 +362,11 @@ class MustInverter:
         return True
 
     def _device_info(self):
-        # TODO: Find a way of making sure two inverters of the same model don't have the same identifiers. Issue #54
         return {
             "identifiers": {(DOMAIN, self.model)},
-            "name": self.model,
-            "model": self.model,
+            "name": self.name,
             "manufacturer": "Must Solar",
+            "model": self.data["InverterMachineType"],
             "hw_version": self.data["InverterHardwareVersion"],
             "sw_version": self.data["InverterSoftwareVersion"],
             "serial_number": self.data["InverterSerialNumber"],

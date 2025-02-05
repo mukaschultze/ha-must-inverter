@@ -6,11 +6,13 @@
         "title": "Common settings",
         "description": "Configure your Must Inverter integration.",
         "data": {
+          "name": "Name",
           "model": "Model",
           "scan_interval": "Scan Interval (seconds)",
           "mode": "Connection type"
         },
         "data_description": {
+          "name": "Leave empty to use the inverter model as name.",
           "model": "Leave in Auto Detect unless you're not seeing data that should be available for your device.",
           "scan_interval": "The interval in seconds to poll the inverter for data.",
           "mode": "The connection type to use to communicate with the inverter, usually via the included USB cable or via TCP/UDP for wireless connections."
