@@ -221,6 +221,9 @@ class MustInverter:
         from_config = self._entry.options.get(CONF_MODEL)
         detected = self.data.get("InverterMachineType")
 
+        if from_config == "autodetect":
+            return detected
+
         return from_config or detected
 
     @property
