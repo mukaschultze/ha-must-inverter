@@ -100,7 +100,8 @@ async def next_step(user_input):
 
 CONFIG_FLOW: Mapping[str, SchemaFlowStep] = {
     "user": SchemaFlowFormStep(next_step="common"),
-    "reconfigure": SchemaFlowFormStep(next_step="common"),
+    # Reconfigure is not yet supported by SchemaConfigFlowHandler as it creates a new entry instead of updating the existing one
+    # "reconfigure": SchemaFlowFormStep(next_step="common"),
     "common": SchemaFlowFormStep(schema=COMMON_SCHEMA, next_step=next_step),
     "serial": SchemaFlowFormStep(schema=SERIAL_SCHEMA, next_step="modbus"),
     "tcp": SchemaFlowFormStep(schema=TCP_SCHEMA, next_step="modbus"),
@@ -108,18 +109,17 @@ CONFIG_FLOW: Mapping[str, SchemaFlowStep] = {
     "modbus": SchemaFlowFormStep(schema=MODBUS_SCHEMA),
 }
 
-# OPTIONS_FLOW: Mapping[str, SchemaFlowStep] = {
-#     "init": SchemaFlowFormStep(next_step="common"),
-#     **CONFIG_FLOW,
-# }
+OPTIONS_FLOW: Mapping[str, SchemaFlowStep] = {
+    "init": SchemaFlowFormStep(next_step="common"),
+    **CONFIG_FLOW,
+}
 
 
 class MustInverterConfigFlow(SchemaConfigFlowHandler, domain=DOMAIN):
     """Handle a config flow for Must Inverter."""
 
     config_flow = CONFIG_FLOW
-    # We'll use reconfigure feature for now
-    # options_flow = OPTIONS_FLOW
+    options_flow = OPTIONS_FLOW
 
     def async_config_entry_title(self, options: Mapping[str, Any]) -> str:
         """Return config entry title."""
