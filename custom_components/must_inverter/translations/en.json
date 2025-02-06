@@ -128,6 +128,26 @@
       }
     }
   },
+  "issues": {
+    "no_serial_number": {
+      "title": "No serial number set",
+      "fix_flow": {
+        "step": {
+          "confirm": {
+            "title": "No serial number set",
+            "description": "Your inverter does not have a serial number written to it. This will cause issues with the integration when attempting to add multiple inverters.\n\nThis repair will write a serial number to the inverter. This will not affect the operation of the inverter, but it will allow the integration to work correctly with more than one device simultaneously.",
+            "data": {
+              "new_serial": "Serial number to set",
+              "confirm": "I understand and want to proceed with the repair"
+            },
+            "data_description": {
+              "new_serial": "You can find your serial number written on the side of the device. Otherwise, you can leave this unchanged to use a random value."
+            }
+          }
+        }
+      }
+    }
+  },
   "selector": {
     "model": {
       "options": {

@@ -28,7 +28,7 @@ def time(address, registers):
 
 
 def serial(address, registers):
-    return hex(registers[address] << 16 | registers[address + 1])
+    return registers[address] << 16 | registers[address + 1]
 
 
 def model(address, registers):

@@ -8,6 +8,7 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.exceptions import ConfigEntryNotReady
+from homeassistant.helpers import issue_registry as ir
 from homeassistant.helpers.event import async_track_time_interval
 from pymodbus.client import AsyncModbusSerialClient, AsyncModbusTcpClient, AsyncModbusUdpClient
 
@@ -24,7 +25,6 @@ from homeassistant.const import (
 
 from .const import (
     DOMAIN,
-    DEFAULT_SCAN_INTERVAL,
     CONF_BAUDRATE,
     CONF_PARITY,
     CONF_STOPBITS,
@@ -358,6 +358,17 @@ class MustInverter:
         self.registers = read
         self._reading = False
         # _LOGGER.debug("Data: %s", self.data)
+
+        if self.data["InverterSerialNumber"] == 0xFFFFFFFF or self.data["InverterSerialNumber"] == 0:
+            ir.async_create_issue(
+                self._hass,
+                DOMAIN,
+                "no_serial_number",
+                is_fixable=True,
+                severity=ir.IssueSeverity.WARNING,
+                translation_key="no_serial_number",
+                data={"entry_id": self._entry.entry_id},
+            )
 
         return True
 
