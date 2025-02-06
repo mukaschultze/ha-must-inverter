@@ -1,11 +1,11 @@
 import logging
-import re
 from typing import Any
 
 from homeassistant.components.button import ButtonEntity
 from homeassistant.const import Platform
 
-from .const import DOMAIN
+from .const import DOMAIN, Sensor
+from .__init__ import MustInverter
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -26,7 +26,7 @@ async def async_setup_entry(hass, entry, async_add_entities):
 
 
 class MustInverterButton(ButtonEntity):
-    def __init__(self, inverter, sensor_info):
+    def __init__(self, inverter: MustInverter, sensor_info: Sensor):
         """Initialize the button."""
         self._inverter = inverter
         self._key = sensor_info.name

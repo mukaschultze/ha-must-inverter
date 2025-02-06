@@ -1,24 +1,29 @@
 import asyncio
 import logging
-import re
-from collections import namedtuple
-from typing import Any
+from typing import Any, NamedTuple
 
 from homeassistant.components.switch import SwitchEntity
 from homeassistant.const import Platform
 from homeassistant.core import callback
 
-from .const import DOMAIN
+from .const import DOMAIN, Sensor
+from .__init__ import MustInverter
 
 _LOGGER = logging.getLogger(__name__)
+
+
+class Setting(NamedTuple):
+    bit: int
+    name: str
+    flip: bool
+    enabled: bool
+
 
 # This lock is used to prevent concurrent writes to the system settings.
 _system_settings_lock = asyncio.Lock()
 
 
 async def async_setup_entry(hass, entry, async_add_entities):
-    Setting = namedtuple("Setting", ["bit", "name", "flip", "enabled"])
-
     # fmt: off
     settings = [
         Setting(0, "OverLoadRestart",  True,  True),
@@ -50,7 +55,7 @@ async def async_setup_entry(hass, entry, async_add_entities):
 
 
 class MustInverterSwitch(SwitchEntity):
-    def __init__(self, inverter, sensor_info):
+    def __init__(self, inverter: MustInverter, sensor_info: Sensor):
         """Initialize the sensor."""
         self._inverter = inverter
         self._key = sensor_info.name
@@ -99,7 +104,7 @@ class MustInverterSwitch(SwitchEntity):
 
 
 class MustInverterSettingsSwitch(SwitchEntity):
-    def __init__(self, inverter, setting_config):
+    def __init__(self, inverter: MustInverter, setting_config: Setting):
         """Initialize the sensor."""
         self._inverter = inverter
         self._name = setting_config.name

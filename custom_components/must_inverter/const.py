@@ -1,9 +1,8 @@
-from collections import namedtuple
-
 from homeassistant.components.binary_sensor import BinarySensorDeviceClass
 from homeassistant.components.number import NumberDeviceClass
 from homeassistant.components.sensor import SensorDeviceClass
 from homeassistant.const import Platform
+from typing import NamedTuple
 
 DOMAIN = "must_inverter"
 
@@ -33,28 +32,23 @@ CHR_WORKSTATE_NO = ["Initialization", "Selftest", "Work", "Stop"]
 MPPT_STATE_NO = ["Stop", "MPPT", "Current limiting"]
 CHARGING_STATE_NO = ["Stop", "Absorb charge", "Float charge", "Equalization charge"]
 
-Sensor = namedtuple(
-    "Sensor",
-    [
-        "address",
-        "name",
-        "coeff",
-        "unit",
-        "platform",
-        "device_class",
-        "enabled",
-        "options",
-    ],
-)
 
-Range = namedtuple(
-    "Range",
-    [
-        "min",
-        "max",
-        "step",
-    ],
-)
+class Sensor(NamedTuple):
+    address: int
+    name: str
+    coeff: float | None
+    unit: str | None
+    platform: str
+    device_class: str | None
+    enabled: bool
+    options: list[str] | None
+
+
+class Range(NamedTuple):
+    min: float | int
+    max: float | int
+    step: float | int
+
 
 # fmt: off
 # Base sensors, valid for all models
