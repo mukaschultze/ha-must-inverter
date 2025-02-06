@@ -29,10 +29,6 @@ power production, battery status, and more, directly from your Must solar invert
 
 This integration is tested using a Must Solar PV18-3024 VPM (aka PV1800), PV19 / PV1900 EXP Series (4/6KW). However, it should work with other models that use the same communication protocol, such as the PH1800 and EP1800 series.
 
-This integration will have the wrong min and max range for writable voltages when using it with 12v or 48v inverters
-(mostly because my model is 24v and I don't own other models to reverse engineer). If you see some values that don't
-make sense for your inverter, please open an issue or a pull request.
-
 ## Disclaimer
 
 This integration is not officially supported by Must Solar, I'm not affiliated with Must Solar in any way. This
