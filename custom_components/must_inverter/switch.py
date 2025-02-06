@@ -58,7 +58,7 @@ class MustInverterSwitch(SwitchEntity):
 
         self._attr_has_entity_name = True
         self._attr_unique_id = f"{self._inverter.data['InverterSerialNumber']}_{self._key}"
-        self._attr_translation_key = self._key
+        self._attr_translation_key = self._key.lower()
         self._attr_device_class = sensor_info.device_class
         self._attr_entity_registry_enabled_default = sensor_info.enabled
 
@@ -108,7 +108,7 @@ class MustInverterSettingsSwitch(SwitchEntity):
 
         self._attr_has_entity_name = True
         self._attr_unique_id = f"{self._inverter.data['InverterSerialNumber']}_{self._name}"
-        self._attr_translation_key = self._name
+        self._attr_translation_key = self._name.lower()
         self._attr_entity_registry_enabled_default = setting_config.enabled
 
     async def async_added_to_hass(self):
