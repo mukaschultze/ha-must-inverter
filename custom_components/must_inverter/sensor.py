@@ -5,7 +5,7 @@ from homeassistant.components.sensor import SensorEntity, SensorStateClass
 from homeassistant.const import Platform, UnitOfEnergy
 from homeassistant.core import callback
 
-from .const import DOMAIN, Sensor
+from .const import DOMAIN, OPTIONS, Sensor
 from .__init__ import MustInverter
 
 _LOGGER = logging.getLogger(__name__)
@@ -39,7 +39,7 @@ class MustInverterSensor(SensorEntity):
         self._attr_native_unit_of_measurement = sensor_info.unit
         self._attr_device_class = sensor_info.device_class
         self._attr_entity_registry_enabled_default = sensor_info.enabled
-        self._attr_options = sensor_info.options
+        self._attr_options = OPTIONS.get(self._key)
 
         if self._attr_native_unit_of_measurement == UnitOfEnergy.KILO_WATT_HOUR:
             self._attr_state_class = SensorStateClass.TOTAL_INCREASING
