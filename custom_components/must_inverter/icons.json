@@ -101,6 +101,15 @@
         "switch": {
             "batteryequalizationenable": { "default": "mdi:equalizer" },
             "batteryequalizationimmediately": { "default": "mdi:equalizer" },
+            "invertersearchmodeenable": {
+                "default": "mdi:leaf",
+                "state": {
+                    "on": "mdi:leaf",
+                    "off": "mdi:leaf-off"
+                }
+            },
+            "inverterchargerfromgridenable": { "default": "mdi:transmission-tower-import" },
+            "inverterdischargertogridenable": { "default": "mdi:transmission-tower-export" },
             "solarpowerbalance": { "default": "mdi:solar-power" },
             "overloadrestart": { "default": "mdi:restart-alert" },
             "overtemprestart": { "default": "mdi:thermometer-alert" },

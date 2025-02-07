@@ -99,7 +99,7 @@ SENSORS_ARRAY = [
     Sensor(20105, "InverterOngridWorkEnable",        None,    None,     Platform.SWITCH,               None,                              False, ),
     Sensor(20106, "InverterChargerFromGridEnable",   None,    None,     Platform.SWITCH,               None,                              False, ),
     Sensor(20107, "InverterDischargerEnable",        None,    None,     Platform.SWITCH,               None,                              False, ),
-    Sensor(20108, "InverterDischargerToGridEnable",  None,    None,     Platform.SWITCH,               None,                              True,  ),
+    Sensor(20108, "InverterDischargerToGridEnable",  None,    None,     Platform.SWITCH,               None,                              False, ),
     Sensor(20109, "EnergyUseMode",                   None,    None,     Platform.SELECT,               None,                              True,  ),
     Sensor(20111, "GridProtectStandard",             None,    None,     Platform.SELECT,               None,                              True,  ),
     Sensor(20112, "SolarUseAim",                     None,    None,     Platform.SELECT,               None,                              True,  ),

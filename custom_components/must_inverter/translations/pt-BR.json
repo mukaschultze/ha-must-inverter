@@ -1,0 +1,386 @@
+{
+  "title": "Inversor Must Solar",
+  "config": {
+    "step": {
+      "common": {
+        "title": "Configurações básicas",
+        "description": "Configure sua integração Must Inverter.",
+        "data": {
+          "name": "Nome",
+          "model": "Modelo",
+          "scan_interval": "Intervalo de varredura (segundos)",
+          "mode": "Tipo de conexão"
+        },
+        "data_description": {
+          "name": "Deixe vazio para usar o modelo do inversor como nome.",
+          "model": "Deixe em detecção automática exceto se você não estiver vendo dados que deveriam estar disponíveis para o seu dispositivo.",
+          "scan_interval": "Intervalo em segundos para atualizar os dados do inversor.",
+          "mode": "O tipo de conexão a ser usada para se comunicar com o inversor, geralmente via cabo USB incluso ou via TCP/UDP para conexões sem fio."
+        }
+      },
+      "serial": {
+        "title": "USB ou serial",
+        "description": "Configure os parâmetros da conexão serial para o seu inversor. Os valores padrão devem funcionar para a maioria dos modelos.",
+        "data": {
+          "device": "Caminho do dispositivo USB ou Serial",
+          "baudrate": "Baud rate",
+          "parity": "Paridade (‘E’ven, ‘O’dd or ‘N’one)",
+          "stopbits": "Stop bits (1, 1.5, 2)",
+          "bytesize": "Byte size (7, 8)"
+        },
+        "data_description": {
+          "device": "O caminho para o dispositivo USB ou Serial a ser usado para a conexão, geralmente /dev/ttyUSB0 ou /dev/ttyS0."
+        }
+      },
+      "tcp": {
+        "title": "TCP",
+        "data": {
+          "host": "Host",
+          "port": "Porta"
+        }
+      },
+      "udp": {
+        "title": "UDP",
+        "data": {
+          "host": "Host",
+          "port": "Porta"
+        }
+      },
+      "modbus": {
+        "title": "Configurações avançadas do PyModbus",
+        "description": "Deixe esta seção inalterada, a menos que você esteja tendo problemas de conexão ou precise ajustar as configurações de conexão do modbus.",
+        "data": {
+          "timeout": "Timeout (segundos)",
+          "retries": "Tentativas",
+          "reconnect_delay": "Delay de reconexão (segundos)",
+          "reconnect_delay_max": "Delay máximo de reconexão (segundos)"
+        },
+        "data_description": {
+          "timeout": "Tempo limite para conectar e receber dados.",
+          "retries": "Número máximo de tentativas por solicitação.",
+          "reconnect_delay": "Delay mínimo antes de reconectar. Defina como 0 para desativar a reconexão.",
+          "reconnect_delay_max": "Delay máximo antes de reconectar. O Pymodbus dobra o delay após cada tentativa de conexão mal-sucedida."
+        }
+      }
+    }
+  },
+  "options": {
+    "step": {
+      "common": {
+        "title": "Configurações básicas",
+        "description": "Configure sua integração Must Inverter.",
+        "data": {
+          "name": "Nome",
+          "model": "Modelo",
+          "scan_interval": "Intervalo de varredura (segundos)",
+          "mode": "Tipo de conexão"
+        },
+        "data_description": {
+          "name": "Deixe vazio para usar o modelo do inversor como nome.",
+          "model": "Deixe em detecção automática exceto se você não estiver vendo dados que deveriam estar disponíveis para o seu dispositivo.",
+          "scan_interval": "Intervalo em segundos para atualizar os dados do inversor.",
+          "mode": "O tipo de conexão a ser usada para se comunicar com o inversor, geralmente via cabo USB incluso ou via TCP/UDP para conexões sem fio."
+        }
+      },
+      "serial": {
+        "title": "USB ou serial",
+        "description": "Configure os parâmetros da conexão serial para o seu inversor. Os valores padrão devem funcionar para a maioria dos modelos.",
+        "data": {
+          "device": "Caminho do dispositivo USB ou Serial",
+          "baudrate": "Baud rate",
+          "parity": "Paridade (‘E’ven, ‘O’dd or ‘N’one)",
+          "stopbits": "Stop bits (1, 1.5, 2)",
+          "bytesize": "Byte size (7, 8)"
+        },
+        "data_description": {
+          "device": "O caminho para o dispositivo USB ou Serial a ser usado para a conexão, geralmente /dev/ttyUSB0 ou /dev/ttyS0."
+        }
+      },
+      "tcp": {
+        "title": "TCP",
+        "data": {
+          "host": "Host",
+          "port": "Porta"
+        }
+      },
+      "udp": {
+        "title": "UDP",
+        "data": {
+          "host": "Host",
+          "port": "Porta"
+        }
+      },
+      "modbus": {
+        "title": "Configurações avançadas do PyModbus",
+        "description": "Deixe esta seção inalterada, a menos que você esteja tendo problemas de conexão ou precise ajustar as configurações de conexão do modbus.",
+        "data": {
+          "timeout": "Timeout (segundos)",
+          "retries": "Tentativas",
+          "reconnect_delay": "Delay de reconexão (segundos)",
+          "reconnect_delay_max": "Delay máximo de reconexão (segundos)"
+        },
+        "data_description": {
+          "timeout": "Tempo limite para conectar e receber dados.",
+          "retries": "Número máximo de tentativas por solicitação.",
+          "reconnect_delay": "Delay mínimo antes de reconectar. Defina como 0 para desativar a reconexão.",
+          "reconnect_delay_max": "Delay máximo antes de reconectar. O Pymodbus dobra o delay após cada tentativa de conexão mal-sucedida."
+        }
+      }
+    }
+  },
+  "issues": {
+    "no_serial_number": {
+      "title": "Número de série não definido",
+      "fix_flow": {
+        "step": {
+          "confirm": {
+            "title": "Número de série não definido",
+            "description": "Seu inversor não tem um número de série definido. Isso pode causar problemas com a integração ao tentar conectar mais de um inversor ao mesmo tempo.\n\nEste reparo vai escrever um número de série no inversor. Isso não afeta a operação do inversor, mas permite a integração possa funcionar corretamente com multiplos inversores simultaneamente.",
+            "data": {
+              "new_serial": "Novo número de série"
+            },
+            "data_description": {
+              "new_serial": "Você pode encontrar o número de série do seu inversor na lateral do dispositivo. Ou pode deixar este campo inalterado para usar um número de série aleatório."
+            }
+          }
+        }
+      }
+    }
+  },
+  "selector": {
+    "model": {
+      "options": {
+        "autodetect": "Detecção automática",
+        "PV1800": "Série PV1800",
+        "PV1900": "Série PV1900"
+      }
+    },
+    "mode": {
+      "options": {
+        "serial": "USB ou Serial",
+        "tcp": "TCP",
+        "tls": "TLS",
+        "udp": "UDP"
+      }
+    }
+  },
+  "entity": {
+    "binary_sensor": {
+      "batteryrelay": { "name": "Relé da bateria" },
+      "pvrelay": { "name": "Relé PV" },
+      "inverterrelaystate": { "name": "Relé do inversor" },
+      "gridrelaystate": { "name": "Relé da rede" },
+      "loadrelaystate": { "name": "Relé da carga" },
+      "n_linerelaystate": { "name": "Relé do neutro" },
+      "dcrelaystate": { "name": "Relé DC" },
+      "earthrelaystate": { "name": "Relé de aterramento" }
+    },
+    "button": {
+      "removetheaccumulateddata": { "name": "Remover dados acumulados" },
+      "inverterremovetheaccumulateddata": { "name": "Remover dados acumulados (Inversor)" }
+    },
+    "number": {
+      "floatvoltage": { "name": "Tensão de flutuação" },
+      "absorptionvoltage": { "name": "Tensão de absorção" },
+      "batterylowvoltage": { "name": "Baixa tensão da bateria" },
+      "batteryah": { "name": "Capacidade da bateria (Ah)" },
+      "batteryequalizationvoltage": { "name": "Carga de equalização tensão" },
+      "batteryequalizationtime": { "name": "Carga de equalização tempo" },
+      "batteryequalizationtimeout": { "name": "Carga de equalização timeout" },
+      "batteryequalizationinterval": { "name": "Carga de equalização intervalo" },
+      "inverterbatteryvoltagec": { "name": "Calibração tensão da bateria (Inversor)" },
+      "invertervoltagec": { "name": "Calibração tensão do inversor" },
+      "gridvoltagec": { "name": "Calibração tensão da rede" },
+      "busvoltagec": { "name": "Calibração tensão do barramento" },
+      "controlcurrentc": { "name": "Calibração corrente de controle" },
+      "invertercurrentc": { "name": "Calibração corrente do inversor" },
+      "gridcurrentc": { "name": "Calibração corrente da rede" },
+      "loadcurrentc": { "name": "Calibração corrente da carga" },
+      "inverteroutputvoltageset": { "name": "Tensão de saída do inversor" },
+      "inverteroutputfrequencyset": { "name": "Frequência de saída do inversor" },
+      "invertermaxdischargercurrent": { "name": "Corrente de descarga máxima do inversor" },
+      "batterystopdischargingvoltage": { "name": "Tensão de parada de descarga da bateria" },
+      "batterystopchargingvoltage": { "name": "Tensão de parada de carga da bateria" },
+      "gridmaxchargercurrentset": { "name": "Corrente máxima de carga da rede" },
+      "inverterbatterylowvoltage": { "name": "Baixa tensão da bateria (Inversor)" },
+      "maxcombinechargercurrent": { "name": "Corrente máxima de carga combinada" }
+    },
+    "select": {
+      "batterytype": {
+        "name": "Tipo de bateria",
+        "state": {
+          "User defined": "Definido pelo usuário",
+          "Lithium": "Lítio",
+          "Sealed Lead": "Chumbo ácido selado",
+          "Agm": "AGM",
+          "Gel": "Gel",
+          "Flooded": "Chumbo ácido"
+        }
+      },
+      "energyusemode": {
+        "name": "Modo de uso de energia",
+        "state": {
+          "SBU": "Solar-Bateria-Rede (SBU)",
+          "SUB": "Solar-Rede-Bateria (SUB)",
+          "UTI": "Rede (UTI)",
+          "SOL": "Solar (SOL)"
+        }
+      },
+      "gridprotectstandard": {
+        "name": "Padrão de proteção da rede",
+        "state": {
+          "VDE4105": "VDE 4105",
+          "UPS": "UPS",
+          "APL": "APL",
+          "GEN": "Gerador (GEN)"
+        }
+      },
+      "solaruseaim": {
+        "name": "Objetivo de uso solar",
+        "state": {
+          "LBU": "Carga-Bateria-Rede (LBU)",
+          "BLU": "Bateria-Carga-Rede (BLU)"
+        }
+      },
+      "chargersourcepriority": {
+        "name": "Prioridade de carga",
+        "state": {
+          "Solar first": "Prioridade solar",
+          "Solar and Utility": "Solar e rede",
+          "Only Solar": "Somente solar"
+        }
+      }
+    },
+    "sensor": {
+      "absorbvoltage": { "name": "Tensão de absorção" },
+      "batteryhighvoltage": { "name": "Tensão alta da bateria" },
+      "maxchargercurrent": { "name": "Corrente máxima de carga" },
+      "absorbchargercurrent": { "name": "Corrente de carga de absorção" },
+      "chargerworkstate": {
+        "name": "Estado do carregador",
+        "state": {
+          "Initialization": "Inicializando",
+          "Selftest": "Auto teste",
+          "Work": "Trabalhando",
+          "Stop": "Parado"
+        }
+      },
+      "mpptstate": {
+        "name": "Estado MPPT",
+        "state": {
+          "Stop": "Parado",
+          "MPPT": "MPPT",
+          "Current limiting": "Limitação de corrente"
+        }
+      },
+      "chargingstate": {
+        "name": "Estado de carga",
+        "state": {
+          "Stop": "Parado",
+          "Absorb charge": "Absorção",
+          "Float charge": "Flutuação",
+          "Equalization charge": "Equalização"
+        }
+      },
+      "pvvoltage": { "name": "Tensão PV" },
+      "batteryvoltage": { "name": "Tensão da bateria" },
+      "chargercurrent": { "name": "Corrente de carga" },
+      "chargerpower": { "name": "Potência de carga" },
+      "radiatortemperature": { "name": "Temperatura do dissipador" },
+      "externaltemperature": { "name": "Temperatura externa" },
+      "chargererrormessage": { "name": "Mensagem de erro do carregador" },
+      "chargerwarningmessage": { "name": "Mensagem de aviso do carregador" },
+      "battvolgrade": { "name": "Tensão nominal da bateria" },
+      "ratedcurrent": { "name": "Corrente nominal" },
+      "accumulatedpower": { "name": "Potência acumulada" },
+      "accumulatedtime": { "name": "Tempo acumulado" },
+      "invertermachinetype": { "name": "Modelo" },
+      "inverterserialnumber": { "name": "Número de série" },
+      "inverterhardwareversion": { "name": "Versão do hardware" },
+      "invertersoftwareversion": { "name": "Versão do software" },
+      "inverterbatteryhighvoltage": { "name": "Tensão alta da bateria (Inversor)" },
+      "systemsetting": { "name": "Configuração do sistema" },
+      "workstate": {
+        "name": "Estado de trabalho",
+        "state": {
+          "PowerOn": "Ligando",
+          "SelfTest": "Auto teste",
+          "OffGrid": "Off-Grid",
+          "Grid-Tie": "Grid-Tie",
+          "ByPass": "ByPass",
+          "Stop": "Parado",
+          "Grid charging": "Carregando pela rede"
+        }
+      },
+      "acvoltagegrade": { "name": "Tensão nominal da rede" },
+      "ratedpower": { "name": "Potência nominal" },
+      "inverterbatteryvoltage": { "name": "Tensão da bateria (Inversor)" },
+      "invertervoltage": { "name": "Tensão do inversor" },
+      "gridvoltage": { "name": "Tensão da rede" },
+      "busvoltage": { "name": "Tensão do barramento" },
+      "controlcurrent": { "name": "Corrente de controle" },
+      "invertercurrent": { "name": "Corrente do inversor" },
+      "gridcurrent": { "name": "Corrente da rede" },
+      "loadcurrent": { "name": "Corrente da carga" },
+      "pinverter": { "name": "P Inversor" },
+      "pgrid": { "name": "P Rede" },
+      "pload": { "name": "P Carga" },
+      "loadpercent": { "name": "Porcentagem de carga" },
+      "sinverter": { "name": "S Inversor" },
+      "sgrid": { "name": "S Rede" },
+      "sload": { "name": "S Carga" },
+      "qinverter": { "name": "Q Inversor" },
+      "qgrid": { "name": "Q Rede" },
+      "qload": { "name": "Q Carga" },
+      "inverterfrequency": { "name": "Frequência do inversor" },
+      "gridfrequency": { "name": "Frequência da rede" },
+      "invertermaxnumber": { "name": "Número máximo de inversores" },
+      "combinetype": { "name": "Tipo de combinação" },
+      "inverternumber": { "name": "Número do inversor" },
+      "acradiatortemperature": { "name": "Temperatura do dissipador AC" },
+      "transformertemperature": { "name": "Temperatura do transformador" },
+      "dcradiatortemperature": { "name": "Temperatura do dissipador DC" },
+      "accumulatedchargerpower": { "name": "Potência de carga acumulada" },
+      "accumulateddischargerpower": { "name": "Potência de descarga acumulada" },
+      "accumulatedbuypower": { "name": "Potência comprada acumulada" },
+      "accumulatedsellpower": { "name": "Potência vendida acumulada" },
+      "accumulatedloadpower": { "name": "Potência da carga acumulada" },
+      "accumulatedselfusepower": { "name": "Potência de autoconsumo acumulada" },
+      "accumulatedpvsellpower": { "name": "Potência solar vendida acumulada" },
+      "accumulatedgridchargerpower": { "name": "Potência de carga da rede acumulada" },
+      "invertererrormessage": { "name": "Mensagem de erro do inversor" },
+      "inverterwarningmessage": { "name": "Mensagem de aviso do inversor" },
+      "battpower": { "name": "Potência da bateria" },
+      "battcurrent": { "name": "Corrente da bateria" },
+      "ratedpowerw": { "name": "Potência nominal (W)" },
+      "stateofcharge": { "name": "Carga da bateria" },
+      "batterystateofhealth": { "name": "Saúde da bateria" },
+      "pv1chargercurrent": { "name": "PV1 Corrente de carga" },
+      "pv1chargerpower": { "name": "PV1 Potência de carga" },
+      "pv2chargercurrent": { "name": "PV2 Corrente de carga" },
+      "pv2chargerpower": { "name": "PV2 Potência de carga" },
+      "invertererrormessage3": { "name": "Mensagem de erro do inversor3" },
+      "inverterwarningmessage2": { "name": "Mensagem de aviso do inversor2" }
+    },
+    "switch": {
+      "chargerworkenable": { "name": "Carregador" },
+      "batteryequalizationenable": { "name": "Carga de equalização" },
+      "batteryequalizationimmediately": { "name": "Carga de equalização imediatamente" },
+      "inverteroffgridworkenable": { "name": "Funcionamento off-grid" },
+      "invertersearchmodeenable": { "name": "Modo de Economia de Energia" },
+      "inverterongridworkenable": { "name": "Funcionamento on-grid" },
+      "inverterchargerfromgridenable": { "name": "Carregador pela rede" },
+      "inverterdischargerenable": { "name": "Descarga" },
+      "inverterdischargertogridenable": { "name": "Descarga para a rede" },
+      "solarpowerbalance": { "name": "Equilíbrio de potência solar" },
+      "overloadrestart": { "name": "Reinício após sobrecarga" },
+      "overtemprestart": { "name": "Reinício após superaquecimento" },
+      "overloadbypass": { "name": "ByPass durante sobrecarga" },
+      "autoturnpage": { "name": "Mudar tela automaticamente" },
+      "gridbuzz": { "name": "Aviso sonoro da rede" },
+      "buzz": { "name": "Aviso sonoro" },
+      "lcdlight": { "name": "Luz de fundo do LCD" },
+      "recordfault": { "name": "Registrar falhas" }
+    }
+  }
+}

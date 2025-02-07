@@ -1,5 +1,5 @@
 {
-  "title": "Must Inverter",
+  "title": "Must Solar Inverter",
   "config": {
     "step": {
       "common": {
@@ -137,8 +137,7 @@
             "title": "No serial number set",
             "description": "Your inverter does not have a serial number written to it. This will cause issues with the integration when attempting to add multiple inverters.\n\nThis repair will write a serial number to the inverter. This will not affect the operation of the inverter, but it will allow the integration to work correctly with more than one device simultaneously.",
             "data": {
-              "new_serial": "Serial number to set",
-              "confirm": "I understand and want to proceed with the repair"
+              "new_serial": "Serial number to set"
             },
             "data_description": {
               "new_serial": "You can find your serial number written on the side of the device. Otherwise, you can leave this unchanged to use a random value."
@@ -189,21 +188,21 @@
       "batteryequalizationtime": { "name": "Battery Equalization Time" },
       "batteryequalizationtimeout": { "name": "Battery Equalization Timeout" },
       "batteryequalizationinterval": { "name": "Battery Equalization Interval" },
-      "inverterbatteryvoltagec": { "name": "Inverter Battery Voltage Calibration" },
-      "invertervoltagec": { "name": "Inverter Voltage Calibration" },
-      "gridvoltagec": { "name": "Grid Voltage Calibration" },
-      "busvoltagec": { "name": "Bus Voltage Calibration" },
-      "controlcurrentc": { "name": "Control Current Calibration" },
-      "invertercurrentc": { "name": "Inverter Current Calibration" },
-      "gridcurrentc": { "name": "Grid Current Calibration" },
-      "loadcurrentc": { "name": "Load Current Calibration" },
-      "inverteroutputvoltageset": { "name": "Inverter Output Voltage" },
-      "inverteroutputfrequencyset": { "name": "Inverter Output Frequency" },
-      "invertermaxdischargercurrent": { "name": "Inverter Max Discharger Current" },
+      "inverterbatteryvoltagec": { "name": "Calibration Inverter Battery Voltage" },
+      "invertervoltagec": { "name": "Calibration Inverter Voltage" },
+      "gridvoltagec": { "name": "Calibration Grid Voltage" },
+      "busvoltagec": { "name": "Calibration Bus Voltage" },
+      "controlcurrentc": { "name": "Calibration Control Current" },
+      "invertercurrentc": { "name": "Calibration Inverter Current" },
+      "gridcurrentc": { "name": "Calibration Grid Current" },
+      "loadcurrentc": { "name": "Calibration Load Current" },
+      "inverteroutputvoltageset": { "name": "Output Voltage" },
+      "inverteroutputfrequencyset": { "name": "Output Frequency" },
+      "invertermaxdischargercurrent": { "name": "Max Discharger Current" },
       "batterystopdischargingvoltage": { "name": "Battery Stop Discharging Voltage" },
       "batterystopchargingvoltage": { "name": "Battery Stop Charging Voltage" },
       "gridmaxchargercurrentset": { "name": "Grid Max Charger Current" },
-      "inverterbatterylowvoltage": { "name": "Inverter Battery Low Voltage" },
+      "inverterbatterylowvoltage": { "name": "Battery Low Voltage (Inverter)" },
       "maxcombinechargercurrent": { "name": "Max Combine Charger Current" }
     },
     "select": {
@@ -295,11 +294,11 @@
       "ratedcurrent": { "name": "Rated Current" },
       "accumulatedpower": { "name": "Accumulated Power" },
       "accumulatedtime": { "name": "Accumulated Time" },
-      "invertermachinetype": { "name": "Inverter Machine Type" },
-      "inverterserialnumber": { "name": "Inverter Serial Number" },
-      "inverterhardwareversion": { "name": "Inverter Hardware Version" },
-      "invertersoftwareversion": { "name": "Inverter Software Version" },
-      "inverterbatteryhighvoltage": { "name": "Inverter Battery High Voltage" },
+      "invertermachinetype": { "name": "Machine Type (Inverter)" },
+      "inverterserialnumber": { "name": "Serial Number (Inverter)" },
+      "inverterhardwareversion": { "name": "Hardware Version (Inverter)" },
+      "invertersoftwareversion": { "name": "Software Version (Inverter)" },
+      "inverterbatteryhighvoltage": { "name": "Battery High Voltage (Inverter)" },
       "systemsetting": { "name": "System Setting" },
       "workstate": {
         "name": "Work State",
@@ -315,7 +314,7 @@
       },
       "acvoltagegrade": { "name": "AC Voltage Grade" },
       "ratedpower": { "name": "Rated Power" },
-      "inverterbatteryvoltage": { "name": "Inverter Battery Voltage" },
+      "inverterbatteryvoltage": { "name": "Battery Voltage (Inverter)" },
       "invertervoltage": { "name": "Inverter Voltage" },
       "gridvoltage": { "name": "Grid Voltage" },
       "busvoltage": { "name": "Bus Voltage" },
@@ -364,15 +363,15 @@
       "inverterwarningmessage2": { "name": "Inverter Warning Message2" }
     },
     "switch": {
-      "chargerworkenable": { "name": "Charger Work Enable" },
-      "batteryequalizationenable": { "name": "Battery Equalization Enable" },
+      "chargerworkenable": { "name": "Charger" },
+      "batteryequalizationenable": { "name": "Battery Equalization" },
       "batteryequalizationimmediately": { "name": "Battery Equalization Immediately" },
-      "inverteroffgridworkenable": { "name": "Inverter Offgrid Work Enable" },
-      "invertersearchmodeenable": { "name": "Inverter Search Mode Enable" },
-      "inverterongridworkenable": { "name": "Inverter Ongrid Work Enable" },
-      "inverterchargerfromgridenable": { "name": "Inverter Charger From Grid Enable" },
-      "inverterdischargerenable": { "name": "Inverter Discharger Enable" },
-      "inverterdischargertogridenable": { "name": "Inverter Discharger To Grid Enable" },
+      "inverteroffgridworkenable": { "name": "Offgrid Work" },
+      "invertersearchmodeenable": { "name": "Power Saving Mode" },
+      "inverterongridworkenable": { "name": "Ongrid Work" },
+      "inverterchargerfromgridenable": { "name": "Charger From Grid" },
+      "inverterdischargerenable": { "name": "Discharger" },
+      "inverterdischargertogridenable": { "name": "Discharger To Grid" },
       "solarpowerbalance": { "name": "Solar Power Balance" },
       "overloadrestart": { "name": "Overload Restart" },
       "overtemprestart": { "name": "Over Temperature Restart" },
