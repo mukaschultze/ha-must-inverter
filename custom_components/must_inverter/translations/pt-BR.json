@@ -151,8 +151,8 @@
     "model": {
       "options": {
         "autodetect": "Detecção automática",
-        "PV1800": "Série PV1800",
-        "PV1900": "Série PV1900"
+        "pv1800": "Série PV1800",
+        "pv1900": "Série PV1900"
       }
     },
     "mode": {
@@ -209,45 +209,45 @@
       "batterytype": {
         "name": "Tipo de bateria",
         "state": {
-          "User defined": "Definido pelo usuário",
-          "Lithium": "Lítio",
-          "Sealed Lead": "Chumbo ácido selado",
-          "Agm": "AGM",
-          "Gel": "Gel",
-          "Flooded": "Chumbo ácido"
+          "user_defined": "Definido pelo usuário",
+          "lithium": "Lítio",
+          "sealed_lead": "Chumbo ácido selado",
+          "agm": "AGM",
+          "gel": "Gel",
+          "flooded": "Chumbo ácido"
         }
       },
       "energyusemode": {
         "name": "Modo de uso de energia",
         "state": {
-          "SBU": "Solar-Bateria-Rede (SBU)",
-          "SUB": "Solar-Rede-Bateria (SUB)",
-          "UTI": "Rede (UTI)",
-          "SOL": "Solar (SOL)"
+          "sbu": "Solar-Bateria-Rede (SBU)",
+          "sub": "Solar-Rede-Bateria (SUB)",
+          "uti": "Rede (UTI)",
+          "sol": "Solar (SOL)"
         }
       },
       "gridprotectstandard": {
         "name": "Padrão de proteção da rede",
         "state": {
-          "VDE4105": "VDE 4105",
-          "UPS": "UPS",
-          "APL": "APL",
-          "GEN": "Gerador (GEN)"
+          "vde4105": "VDE 4105",
+          "ups": "UPS",
+          "apl": "APL",
+          "gen": "Gerador (GEN)"
         }
       },
       "solaruseaim": {
         "name": "Objetivo de uso solar",
         "state": {
-          "LBU": "Carga-Bateria-Rede (LBU)",
-          "BLU": "Bateria-Carga-Rede (BLU)"
+          "lbu": "Carga-Bateria-Rede (LBU)",
+          "blu": "Bateria-Carga-Rede (BLU)"
         }
       },
       "chargersourcepriority": {
         "name": "Prioridade de carga",
         "state": {
-          "Solar first": "Prioridade solar",
-          "Solar and Utility": "Solar e rede",
-          "Only Solar": "Somente solar"
+          "solar_first": "Prioridade solar",
+          "solar_and_utility": "Solar e rede",
+          "only_solar": "Somente solar"
         }
       }
     },
@@ -259,27 +259,27 @@
       "chargerworkstate": {
         "name": "Estado do carregador",
         "state": {
-          "Initialization": "Inicializando",
-          "Selftest": "Auto teste",
-          "Work": "Trabalhando",
-          "Stop": "Parado"
+          "initialization": "Inicializando",
+          "selftest": "Auto teste",
+          "work": "Trabalhando",
+          "stop": "Parado"
         }
       },
       "mpptstate": {
         "name": "Estado MPPT",
         "state": {
-          "Stop": "Parado",
-          "MPPT": "MPPT",
-          "Current limiting": "Limitação de corrente"
+          "stop": "Parado",
+          "mppt": "MPPT",
+          "current_limiting": "Limitação de corrente"
         }
       },
       "chargingstate": {
         "name": "Estado de carga",
         "state": {
-          "Stop": "Parado",
-          "Absorb charge": "Absorção",
-          "Float charge": "Flutuação",
-          "Equalization charge": "Equalização"
+          "stop": "Parado",
+          "absorb_charge": "Absorção",
+          "float_charge": "Flutuação",
+          "equalization_charge": "Equalização"
         }
       },
       "pvvoltage": { "name": "Tensão PV" },
@@ -303,13 +303,13 @@
       "workstate": {
         "name": "Estado de trabalho",
         "state": {
-          "PowerOn": "Ligando",
-          "SelfTest": "Auto teste",
-          "OffGrid": "Off-Grid",
-          "Grid-Tie": "Grid-Tie",
-          "ByPass": "ByPass",
-          "Stop": "Parado",
-          "Grid charging": "Carregando pela rede"
+          "poweron": "Ligando",
+          "selftest": "Auto teste",
+          "offgrid": "Off-Grid",
+          "grid_tie": "Grid-Tie",
+          "bypass": "ByPass",
+          "stop": "Parado",
+          "grid_charging": "Carregando pela rede"
         }
       },
       "acvoltagegrade": { "name": "Tensão nominal da rede" },
@@ -355,10 +355,10 @@
       "ratedpowerw": { "name": "Potência nominal (W)" },
       "stateofcharge": { "name": "Carga da bateria" },
       "batterystateofhealth": { "name": "Saúde da bateria" },
-      "pv1chargercurrent": { "name": "PV1 Corrente de carga" },
-      "pv1chargerpower": { "name": "PV1 Potência de carga" },
-      "pv2chargercurrent": { "name": "PV2 Corrente de carga" },
-      "pv2chargerpower": { "name": "PV2 Potência de carga" },
+      "pv1chargercurrent": { "name": "PV1 Corrente" },
+      "pv1chargerpower": { "name": "PV1 Potência" },
+      "pv2chargercurrent": { "name": "PV2 Corrente" },
+      "pv2chargerpower": { "name": "PV2 Potência" },
       "invertererrormessage3": { "name": "Mensagem de erro do inversor3" },
       "inverterwarningmessage2": { "name": "Mensagem de aviso do inversor2" }
     },

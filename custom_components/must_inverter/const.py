@@ -16,9 +16,9 @@ CONF_RECONNECT_DELAY_MAX = "reconnect_delay_max"
 
 DEFAULT_SCAN_INTERVAL = 15
 
-# model constants
-MODEL_PV1800 = "PV1800"  # Base model
-MODEL_PV1900 = "PV1900"
+# model constants, needs to be lowercase otherwise hassfest checks fails...
+MODEL_PV1800 = "pv1800"  # Base model
+MODEL_PV1900 = "pv1900"
 
 SUPPORTED_MODELS = [MODEL_PV1800, MODEL_PV1900]
 
@@ -181,19 +181,17 @@ PV1900_SENSORS = [
 ]
 # fmt: on
 
-# fmt: off
 OPTIONS = {
-    "EnergyUseMode" : ["", "SBU", "SUB", "UTI", "SOL"],
-    "GridProtectStandard" : ["VDE4105", "UPS", "APL", "GEN"],
-    "SolarUseAim" : ["LBU", "BLU"],
-    "ChargerSourcePriority" : ["Solar first", "", "Solar and Utility", "Only Solar"],
-    "WorkState" : ["PowerOn", "SelfTest", "OffGrid", "Grid-Tie", "ByPass", "Stop", "Grid charging"],
-    "BatteryType" : ["", "User defined", "Lithium", "Sealed Lead", "Agm", "Gel", "Flooded"],
-    "ChargerWorkstate" : ["Initialization", "Selftest", "Work", "Stop"],
-    "MpptState" : ["Stop", "MPPT", "Current limiting"],
-    "ChargingState" : ["Stop", "Absorb charge", "Float charge", "Equalization charge"],
+    "EnergyUseMode": ["", "sbu", "sub", "uti", "sol"],
+    "GridProtectStandard": ["vde4105", "ups", "apl", "gen"],
+    "SolarUseAim": ["lbu", "blu"],
+    "ChargerSourcePriority": ["solar_first", "", "solar_and_utility", "only_solar"],
+    "WorkState": ["poweron", "selftest", "offgrid", "grid_tie", "bypass", "stop", "grid_charging"],
+    "BatteryType": ["", "user_defined", "lithium", "sealed_lead", "agm", "gel", "flooded"],
+    "ChargerWorkstate": ["initialization", "selftest", "work", "stop"],
+    "MpptState": ["stop", "mppt", "current_limiting"],
+    "ChargingState": ["stop", "absorb_charge", "float_charge", "equalization_charge"],
 }
-# fmt: on
 
 # fmt: off
 RANGES = {

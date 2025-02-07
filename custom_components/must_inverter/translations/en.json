@@ -151,8 +151,8 @@
     "model": {
       "options": {
         "autodetect": "Auto Detect",
-        "PV1800": "PV1800 Series",
-        "PV1900": "PV1900 Series"
+        "pv1800": "PV1800 Series",
+        "pv1900": "PV1900 Series"
       }
     },
     "mode": {
@@ -209,45 +209,45 @@
       "batterytype": {
         "name": "Battery Type",
         "state": {
-          "User defined": "User Defined",
-          "Lithium": "Lithium",
-          "Sealed Lead": "Sealed Lead",
-          "Agm": "AGM",
-          "Gel": "Gel",
-          "Flooded": "Flooded"
+          "user_defined": "User Defined",
+          "lithium": "Lithium",
+          "sealed_lead": "Sealed Lead",
+          "agm": "AGM",
+          "gel": "Gel",
+          "flooded": "Flooded"
         }
       },
       "energyusemode": {
         "name": "Energy Use Mode",
         "state": {
-          "SBU": "Solar-Battery-Utility",
-          "SUB": "Solar-Utility-Battery",
-          "UTI": "Utility",
-          "SOL": "Solar"
+          "sbu": "Solar-Battery-Utility",
+          "sub": "Solar-Utility-Battery",
+          "uti": "Utility",
+          "sol": "Solar"
         }
       },
       "gridprotectstandard": {
         "name": "Grid Protect Standard",
         "state": {
-          "VDE4105": "VDE 4105",
-          "UPS": "UPS",
-          "APL": "Appliances",
-          "GEN": "Generator"
+          "vde4105": "VDE 4105",
+          "ups": "UPS",
+          "apl": "Appliances",
+          "gen": "Generator"
         }
       },
       "solaruseaim": {
         "name": "Solar Use Aim",
         "state": {
-          "LBU": "Load-Battery-Utility",
-          "BLU": "Battery-Load-Utility"
+          "lbu": "Load-Battery-Utility",
+          "blu": "Battery-Load-Utility"
         }
       },
       "chargersourcepriority": {
         "name": "Charger Source Priority",
         "state": {
-          "Solar first": "Solar First",
-          "Solar and Utility": "Solar and Utility",
-          "Only Solar": "Only Solar"
+          "solar_first": "Solar First",
+          "solar_and_utility": "Solar and Utility",
+          "only_solar": "Only Solar"
         }
       }
     },
@@ -259,27 +259,27 @@
       "chargerworkstate": {
         "name": "Charger Workstate",
         "state": {
-          "Initialization": "Initialization",
-          "Selftest": "Self-Test",
-          "Work": "Work",
-          "Stop": "Stop"
+          "initialization": "Initialization",
+          "selftest": "Self-Test",
+          "work": "Work",
+          "stop": "Stop"
         }
       },
       "mpptstate": {
         "name": "MPPT State",
         "state": {
-          "Stop": "Stop",
-          "MPPT": "MPPT",
-          "Current limiting": "Current limiting"
+          "stop": "Stop",
+          "mppt": "MPPT",
+          "current_limiting": "Current limiting"
         }
       },
       "chargingstate": {
         "name": "Charging State",
         "state": {
-          "Stop": "Stop",
-          "Absorb charge": "Absorb charge",
-          "Float charge": "Float charge",
-          "Equalization charge": "Equalization charge"
+          "stop": "Stop",
+          "absorb_charge": "Absorb charge",
+          "float_charge": "Float charge",
+          "equalization_charge": "Equalization charge"
         }
       },
       "pvvoltage": { "name": "PV Voltage" },
@@ -303,13 +303,13 @@
       "workstate": {
         "name": "Work State",
         "state": {
-          "PowerOn": "Power On",
-          "SelfTest": "Self-Test",
-          "OffGrid": "Off-Grid",
-          "Grid-Tie": "Grid-Tie",
-          "ByPass": "Bypass",
-          "Stop": "Stop",
-          "Grid charging": "Grid Charging"
+          "poweron": "Power On",
+          "selftest": "Self-Test",
+          "offgrid": "Off-Grid",
+          "grid_tie": "Grid-Tie",
+          "bypass": "Bypass",
+          "stop": "Stop",
+          "grid_charging": "Grid Charging"
         }
       },
       "acvoltagegrade": { "name": "AC Voltage Grade" },
