@@ -339,12 +339,15 @@ class MustInverter:
                     _LOGGER.error("error reading modbus data at address %s: %s", start, response)
                 elif len(response.registers) != count:
                     _LOGGER.warning(
-                        "wrong number of registers read at address %s, expected %s, got %s",
+                        "wrong number of registers read at address %s, expected %s, got %s - this usually is caused by concurrent access to modbus (usb/wifi/rs485), please remove other devices",
                         start,
                         count,
                         len(response.registers),
                     )
+                    # Log the actual values received
+                    _LOGGER.debug("Received registers (wrong): %s", response.registers)
                 else:
+                    _LOGGER.debug("Correctly read %s registers from start %s", count, start)
                     for i in range(count):
                         read[start + i] = response.registers[i]
                     self.data.update(register[2](read))
