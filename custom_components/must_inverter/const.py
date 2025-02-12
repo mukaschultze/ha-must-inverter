@@ -175,9 +175,6 @@ PV1900_SENSORS = [
     # PV2 Charger data
     Sensor(16207, "PV2ChargerCurrent",               0.1,     "A",      Platform.SENSOR,               SensorDeviceClass.CURRENT,         True,  ),
     Sensor(16208, "PV2ChargerPower",                 None,    "W",      Platform.SENSOR,               SensorDeviceClass.POWER,           True,  ),
-    # Error and warning messages
-    Sensor(25263, "InverterErrorMessage3",           None,    None,     Platform.SENSOR,               None,                              True,  ),
-    Sensor(25266, "InverterWarningMessage2",         None,    None,     Platform.SENSOR,               None,                              True,  ),
 ]
 # fmt: on
 
@@ -222,6 +219,85 @@ RANGES = {
     "LoadCurrentC":                   lambda data: Range(0,     0xFFFF, 1   ),
 }
 # fmt: on
+
+INVERTER_ERROR = [
+    # 1
+    "Fan is locked when inverter is off",
+    "Inverter transformer over temperature",
+    "battery voltage is too high",
+    "battery voltage is too low",
+    "Output short circuited",
+    "Inverter output voltage is high",
+    "Overload time out",
+    "Inverter bus voltage is too high",
+    "Bus soft start failed",
+    "Main relay failed",
+    "Inverter output voltage sensor error",
+    "Inverter grid voltage sensor error",
+    "Inverter output current sensor error",
+    "Inverter grid current sensor error",
+    "Inverter load current sensor error",
+    "Inverter grid over current error"
+    # 2
+    "Inverter radiator over temperature",
+    "Solar charger battery voltage class error",
+    "Solar charger current sensor error",
+    "Solar charger current is uncontrollable",
+    "Inverter grid voltage is low",
+    "Inverter grid voltage is high",
+    "Inverter grid under frequency",
+    "Inverter grid over frequency",
+    "Inverter over current protection error",
+    "Inverter bus voltage is too low",
+    "Inverter soft start failed",
+    "Over DC voltage in AC output",
+    "Battery connection is open",
+    "Inverter control current sensor error",
+    "Inverter output voltage is too low",
+    "",
+    # 3
+    # Unknown
+]
+
+INVERTER_WARNING = [
+    "Fan is locked when inverter is on.",
+    "Fan2 is locked when inverter is on.",
+    "Battery is over-charged.",
+    "Low battery",
+    "Overload",
+    "Output power derating",
+    "Solar charger stops due to low battery.",
+    "Solar charger stops due to high PV voltage.",
+    "Solar charger stops due to over load.",
+    "Solar charger over temperature",
+    "PV charger communication error ",
+    "",
+    "",
+    "",
+    "",
+    "",
+]
+
+CHARGER_ERROR = [
+    "Hardware protection",
+    "Over current",
+    "Current sensor error",
+    "Over temperature",
+    "PV voltage is too high",
+    "PV voltage is too low",
+    "Battery voltage is too high",
+    "Battery voltage is too Low",
+    "Current is uncontrollable",
+    "Parameter error",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+]
+
+CHARGER_WARNING = ["Fan Error", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""]
 
 
 def get_sensors_for_model(model: str) -> list:

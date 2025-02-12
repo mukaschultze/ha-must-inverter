@@ -94,9 +94,7 @@
             "battcurrent": { "default": "mdi:current-dc" },
             "batterystateofhealth": { "default": "mdi:battery-heart-variant" },
             "pv1chargercurrent": { "default": "mdi:current-dc" },
-            "pv2chargercurrent": { "default": "mdi:current-dc" },
-            "invertererrormessage3": { "default": "mdi:alert-circle-outline" },
-            "inverterwarningmessage2": { "default": "mdi:alert-outline" }
+            "pv2chargercurrent": { "default": "mdi:current-dc" }
         },
         "switch": {
             "batteryequalizationenable": { "default": "mdi:equalizer" },

@@ -1,5 +1,7 @@
 import logging
 
+from .const import INVERTER_ERROR, INVERTER_WARNING, CHARGER_ERROR, CHARGER_WARNING
+
 _LOGGER = logging.getLogger(__name__)
 
 
@@ -35,6 +37,23 @@ def model(address, registers):
     a = chr(registers[address] >> 8 & 0xFF)
     b = chr(registers[address] & 0xFF)
     return f"{a}{b}{registers[address + 1]}"
+
+
+def error_bits(address, registers, error_codes):
+    number_of_registers = len(error_codes) // 16
+    errors_found = []
+
+    for i in range(number_of_registers):
+        for j in range(16):
+            if registers[address + i] & (1 << j):
+                _LOGGER.debug("Error code %s found", i * 16 + j)
+                errors_found.append(error_codes[i * 16 + j] or f"Unknown error bit {i * 16 + j}")
+
+    if len(errors_found) == 0:
+        return "No errors"
+
+    _LOGGER.debug("Errors found: %s", errors_found)
+    return ", ".join(errors_found)
 
 
 def convert_partArr2(partArr2):
@@ -82,8 +101,8 @@ def convert_partArr3(partArr3):
     result["ExternalTemperature"] =  int16(15210, partArr3)
     result["BatteryRelay"] =         int16(15211, partArr3)
     result["PvRelay"] =              int16(15212, partArr3)
-    result["ErrorMessage"] =         int16(15213, partArr3)
-    result["WarningMessage"] =       int16(15214, partArr3)
+    result["ChargerErrorMessage"] =  error_bits(15213, partArr3, CHARGER_ERROR)
+    result["ChargerWarningMessage"] =error_bits(15214, partArr3, CHARGER_WARNING)
     result["BattVolGrade"] =         int16(15215, partArr3)
     result["RatedCurrent"] =         int16(15216, partArr3)
     result["AccumulatedPower"] =     accumulated_kwh(15217, partArr3)
@@ -167,8 +186,8 @@ def convert_partArr6(partArr6):
     result["AccumulatedSelfUsePower"] =         accumulated_kwh(25255, partArr6)
     result["AccumulatedPvSellPower"] =          accumulated_kwh(25257, partArr6)
     result["AccumulatedGridChargerPower"] =     accumulated_kwh(25259, partArr6)
-    #"InverterErrorMessage": Rs485ComServer.Operator.AnalyBitMessage(partArr6[60], Rs485Parse.InverterError1) + Rs485ComServer.Operator.AnalyBitMessage(partArr6[61], Rs485Parse.InverterError2),
-    #"InverterWarningMessage": Rs485ComServer.Operator.AnalyBitMessage(partArr6[64], Rs485Parse.InverterWarning)
+    result["InverterErrorMessage"] =            error_bits(25261, partArr6, INVERTER_ERROR)
+    result["InverterWarningMessage"] =          error_bits(25265, partArr6, INVERTER_WARNING)
     result["BattPower"] =                       int16(25273, partArr6)
     result["BattCurrent"] =                     int16(25274, partArr6)
     result["RatedPowerW"] =                     int16(25277, partArr6)

@@ -288,8 +288,8 @@
       "chargerpower": { "name": "Potência de carga" },
       "radiatortemperature": { "name": "Temperatura do dissipador" },
       "externaltemperature": { "name": "Temperatura externa" },
-      "chargererrormessage": { "name": "Mensagem de erro do carregador" },
-      "chargerwarningmessage": { "name": "Mensagem de aviso do carregador" },
+      "chargererrormessage": { "name": "Mensagem de erro (Carregador)" },
+      "chargerwarningmessage": { "name": "Mensagem de alerta (Carregador)" },
       "battvolgrade": { "name": "Tensão nominal da bateria" },
       "ratedcurrent": { "name": "Corrente nominal" },
       "accumulatedpower": { "name": "Potência acumulada" },
@@ -348,8 +348,8 @@
       "accumulatedselfusepower": { "name": "Potência de autoconsumo acumulada" },
       "accumulatedpvsellpower": { "name": "Potência solar vendida acumulada" },
       "accumulatedgridchargerpower": { "name": "Potência de carga da rede acumulada" },
-      "invertererrormessage": { "name": "Mensagem de erro do inversor" },
-      "inverterwarningmessage": { "name": "Mensagem de aviso do inversor" },
+      "invertererrormessage": { "name": "Mensagem de erro (Inversor)" },
+      "inverterwarningmessage": { "name": "Mensagem de alerta (Inversor)" },
       "battpower": { "name": "Potência da bateria" },
       "battcurrent": { "name": "Corrente da bateria" },
       "ratedpowerw": { "name": "Potência nominal (W)" },
@@ -358,9 +358,7 @@
       "pv1chargercurrent": { "name": "PV1 Corrente" },
       "pv1chargerpower": { "name": "PV1 Potência" },
       "pv2chargercurrent": { "name": "PV2 Corrente" },
-      "pv2chargerpower": { "name": "PV2 Potência" },
-      "invertererrormessage3": { "name": "Mensagem de erro do inversor3" },
-      "inverterwarningmessage2": { "name": "Mensagem de aviso do inversor2" }
+      "pv2chargerpower": { "name": "PV2 Potência" }
     },
     "switch": {
       "chargerworkenable": { "name": "Carregador" },

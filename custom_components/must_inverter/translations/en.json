@@ -288,8 +288,8 @@
       "chargerpower": { "name": "Charger Power" },
       "radiatortemperature": { "name": "Radiator Temperature" },
       "externaltemperature": { "name": "External Temperature" },
-      "chargererrormessage": { "name": "Charger Error Message" },
-      "chargerwarningmessage": { "name": "Charger Warning Message" },
+      "chargererrormessage": { "name": "Error Message (Charger)" },
+      "chargerwarningmessage": { "name": "Warning Message (Charger)" },
       "battvolgrade": { "name": "Battery Voltage Grade" },
       "ratedcurrent": { "name": "Rated Current" },
       "accumulatedpower": { "name": "Accumulated Power" },
@@ -348,8 +348,8 @@
       "accumulatedselfusepower": { "name": "Accumulated Self Use Power" },
       "accumulatedpvsellpower": { "name": "Accumulated PV Sell Power" },
       "accumulatedgridchargerpower": { "name": "Accumulated Grid Charger Power" },
-      "invertererrormessage": { "name": "Inverter Error Message" },
-      "inverterwarningmessage": { "name": "Inverter Warning Message" },
+      "invertererrormessage": { "name": "Error Message (Inverter)" },
+      "inverterwarningmessage": { "name": "Warning Message (Inverter)" },
       "battpower": { "name": "Battery Power" },
       "battcurrent": { "name": "Battery Current" },
       "ratedpowerw": { "name": "Rated Power Watts" },
@@ -358,9 +358,7 @@
       "pv1chargercurrent": { "name": "PV1 Charger Current" },
       "pv1chargerpower": { "name": "PV1 Charger Power" },
       "pv2chargercurrent": { "name": "PV2 Charger Current" },
-      "pv2chargerpower": { "name": "PV2 Charger Power" },
-      "invertererrormessage3": { "name": "Inverter Error Message3" },
-      "inverterwarningmessage2": { "name": "Inverter Warning Message2" }
+      "pv2chargerpower": { "name": "PV2 Charger Power" }
     },
     "switch": {
       "chargerworkenable": { "name": "Charger" },
