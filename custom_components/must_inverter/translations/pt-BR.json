@@ -145,6 +145,10 @@
           }
         }
       }
+    },
+    "mismatched_registers": {
+      "title": "Registradores do Modbus Incompletos",
+      "description": "Os dados retornados pelo dispositivo modbus não correspondem aos dados que a integração está tentando ler.\n\nIsso é provavelmente causado por uma condição de corrida devido a múltiplos dispositivos tentando ler simultaneamente da mesma porta serial.\n\nVerifique a configuração serial e certifique-se de que nenhum outro dispositivo esteja conectado ao inversor."
     }
   },
   "selector": {

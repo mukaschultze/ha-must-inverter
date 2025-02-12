@@ -145,6 +145,10 @@
           }
         }
       }
+    },
+    "mismatched_registers": {
+      "title": "Mismatched Modbus Registers",
+      "description": "The data returned by the modbus device does not match the data that the integration is trying to read.\n\nThis is most likely a race condition from multiple devices trying to concurrenty read from the same serial port.\n\nPlease check the serial configuration and make sure no other devices are connected to the inverter."
     }
   },
   "selector": {

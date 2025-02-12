@@ -346,6 +346,17 @@ class MustInverter:
                     )
                     # Log the actual values received
                     _LOGGER.debug("Received registers (wrong): %s", response.registers)
+
+                    ir.async_create_issue(
+                        self._hass,
+                        DOMAIN,
+                        "mismatched_registers",
+                        is_fixable=False,
+                        severity=ir.IssueSeverity.ERROR,
+                        translation_key="mismatched_registers",
+                        is_persistent=False,
+                        learn_more_url="https://github.com/mukaschultze/ha-must-inverter/issues/47",
+                    )
                 else:
                     _LOGGER.debug("Correctly read %s registers from start %s", count, start)
                     for i in range(count):
