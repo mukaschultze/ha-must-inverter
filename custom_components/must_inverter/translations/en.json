@@ -187,6 +187,7 @@
       "floatvoltage": { "name": "Float Voltage" },
       "absorptionvoltage": { "name": "Absorption Voltage" },
       "batterylowvoltage": { "name": "Battery Low Voltage" },
+      "maxchargercurrent": { "name": "Max Charger Current" },
       "batteryah": { "name": "Battery Capacity (Ah)" },
       "batteryequalizationvoltage": { "name": "Battery Equalization Voltage" },
       "batteryequalizationtime": { "name": "Battery Equalization Time" },
@@ -258,7 +259,6 @@
     "sensor": {
       "absorbvoltage": { "name": "Absorb Voltage" },
       "batteryhighvoltage": { "name": "Battery High Voltage" },
-      "maxchargercurrent": { "name": "Max Charger Current" },
       "absorbchargercurrent": { "name": "Absorb Charger Current" },
       "chargerworkstate": {
         "name": "Charger Workstate",

@@ -59,6 +59,7 @@
             }
         },
         "number": {
+            "maxchargercurrent": { "default": "mdi:current-dc" },
             "batteryah": { "default": "mdi:car-battery" },
             "batteryequalizationvoltage": { "default": "mdi:equalizer" },
             "batteryequalizationtime": { "default": "mdi:equalizer" },
@@ -76,7 +77,6 @@
             "chargersourcepriority": { "default": "mdi:battery-charging-high" }
         },
         "sensor": {
-            "maxchargercurrent": { "default": "mdi:current-dc" },
             "absorbchargercurrent": { "default": "mdi:current-dc" },
             "mpptstate": { "default": "mdi:solar-power" },
             "chargercurrent": { "default": "mdi:current-dc" },

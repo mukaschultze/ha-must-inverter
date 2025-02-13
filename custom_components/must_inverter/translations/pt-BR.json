@@ -187,6 +187,7 @@
       "floatvoltage": { "name": "Tensão de flutuação" },
       "absorptionvoltage": { "name": "Tensão de absorção" },
       "batterylowvoltage": { "name": "Baixa tensão da bateria" },
+      "maxchargercurrent": { "name": "Corrente máxima de carga" },
       "batteryah": { "name": "Capacidade da bateria (Ah)" },
       "batteryequalizationvoltage": { "name": "Carga de equalização tensão" },
       "batteryequalizationtime": { "name": "Carga de equalização tempo" },
@@ -258,7 +259,6 @@
     "sensor": {
       "absorbvoltage": { "name": "Tensão de absorção" },
       "batteryhighvoltage": { "name": "Tensão alta da bateria" },
-      "maxchargercurrent": { "name": "Corrente máxima de carga" },
       "absorbchargercurrent": { "name": "Corrente de carga de absorção" },
       "chargerworkstate": {
         "name": "Estado do carregador",
