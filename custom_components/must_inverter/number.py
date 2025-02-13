@@ -37,6 +37,7 @@ class MustInverterNumber(NumberEntity):
         self._attr_has_entity_name = True
         self._attr_unique_id = f"{self._inverter.data['InverterSerialNumber']}_{self._key}"
         self._attr_translation_key = self._key.lower()
+        self._attr_native_unit_of_measurement = sensor_info.unit
         self._attr_device_class = sensor_info.device_class
         self._attr_entity_registry_enabled_default = sensor_info.enabled
 
