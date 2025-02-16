@@ -296,7 +296,7 @@
       "chargerwarningmessage": { "name": "Warning Message (Charger)" },
       "battvolgrade": { "name": "Battery Voltage Grade" },
       "ratedcurrent": { "name": "Rated Current" },
-      "accumulatedpower": { "name": "Accumulated Energy" },
+      "accumulatedpower": { "name": "Accumulated PV Energy" },
       "accumulatedtime": { "name": "Accumulated Time" },
       "invertermachinetype": { "name": "Machine Type (Inverter)" },
       "inverterserialnumber": { "name": "Serial Number (Inverter)" },
