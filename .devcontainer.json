@@ -32,6 +32,12 @@
       }
     }
   },
+  "mounts": [
+    "source=/dev/ttyUSB0,target=/dev/ttyUSB0,type=bind,consistency=cached"
+  ],
+  "runArgs": [
+    "--privileged"
+  ],
   "remoteUser": "vscode",
   "features": {}
 }
