@@ -269,7 +269,7 @@ class MustInverter:
 
         _LOGGER.debug("writing modbus data: %s %s", address, value)
         async with self._lock:
-            response = await self._client.write_register(address, value, 0x04)
+            response = await self._client.write_register(address=address, value=value, slave=0x04)
 
         if response.isError():
             _LOGGER.error("error writing modbus data: %s", response)
