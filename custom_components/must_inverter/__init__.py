@@ -269,7 +269,7 @@ class MustInverter:
 
         _LOGGER.debug("writing modbus data: %s %s", address, value)
         async with self._lock:
-            response = await self._client.write_register(address=address, value=value, slave=0x04)
+            response = await self._client.write_register(address=address, value=value, device_id=0x04)
 
         if response.isError():
             _LOGGER.error("error writing modbus data: %s", response)
@@ -334,7 +334,7 @@ class MustInverter:
                     break
 
                 async with self._lock:
-                    response = await self._client.read_holding_registers(address=start, count=count, slave=0x04)
+                    response = await self._client.read_holding_registers(address=start, count=count, device_id=0x04)
                 if response.isError():
                     _LOGGER.error("error reading modbus data at address %s: %s", start, response)
                 elif len(response.registers) != count:
