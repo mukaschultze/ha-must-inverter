@@ -156,7 +156,8 @@
       "options": {
         "autodetect": "Auto Detect",
         "pv1800": "PV1800 Series",
-        "pv1900": "PV1900 Series"
+        "pv1900": "PV1900 Series",
+        "ph1100": "PH1100 Series"
       }
     },
     "mode": {
@@ -290,6 +291,17 @@
       "batteryvoltage": { "name": "Battery Voltage" },
       "chargercurrent": { "name": "Charger Current" },
       "chargerpower": { "name": "Charger Power" },
+      "invertertemperature": { "name": "Inverter Temperature" },
+      "ambienttemperature": { "name": "Ambient Temperature" },
+      "batterytemperature": { "name": "Battery Temperature" },
+      "bmsvoltage": { "name": "BMS Voltage" },
+      "bmscurrent": { "name": "BMS Current" },
+      "bmstemperature": { "name": "BMS Temperature" },
+      "bmsstateofcharge": { "name": "BMS State Of Charge" },
+      "bmsmaxcvset": { "name": "BMS Max Charge Voltage Set" },
+      "bmsmaxccset": { "name": "BMS Max Charge Current Set" },
+      "bmsdiscvset": { "name": "BMS Discharge Voltage Set" },
+      "bmsdisccset": { "name": "BMS Discharge Current Set" },
       "radiatortemperature": { "name": "Radiator Temperature" },
       "externaltemperature": { "name": "External Temperature" },
       "chargererrormessage": { "name": "Error Message (Charger)" },
@@ -362,7 +374,51 @@
       "pv1chargercurrent": { "name": "PV1 Charger Current" },
       "pv1chargerpower": { "name": "PV1 Charger Power" },
       "pv2chargercurrent": { "name": "PV2 Charger Current" },
-      "pv2chargerpower": { "name": "PV2 Charger Power" }
+      "pv2chargerpower": { "name": "PV2 Charger Power" },
+      "pv1voltage": { "name": "PV1 Voltage" },
+      "pv1current": { "name": "PV1 Current" },
+      "pv1power": { "name": "PV1 Power" },
+      "pv2voltage": { "name": "PV2 Voltage" },
+      "pv2current": { "name": "PV2 Current" },
+      "pv2power": { "name": "PV2 Power" },
+      "pv3voltage": { "name": "PV3 Voltage" },
+      "pv3current": { "name": "PV3 Current" },
+      "pv3power": { "name": "PV3 Power" },
+      "pv4voltage": { "name": "PV4 Voltage" },
+      "pv4current": { "name": "PV4 Current" },
+      "pv4power": { "name": "PV4 Power" },
+      "gridvoltager": { "name": "Grid Voltage R" },
+      "gridvoltages": { "name": "Grid Voltage S" },
+      "gridvoltaget": { "name": "Grid Voltage T" },
+      "gridcurrentr": { "name": "Grid Current R" },
+      "gridcurrents": { "name": "Grid Current S" },
+      "gridcurrentt": { "name": "Grid Current T" },
+      "invertervoltager": { "name": "Inverter Voltage R" },
+      "invertervoltages": { "name": "Inverter Voltage S" },
+      "invertervoltaget": { "name": "Inverter Voltage T" },
+      "invertercurrentr": { "name": "Inverter Current R" },
+      "invertercurrents": { "name": "Inverter Current S" },
+      "invertercurrentt": { "name": "Inverter Current T" },
+      "loadvoltager": { "name": "Load Voltage R" },
+      "loadvoltages": { "name": "Load Voltage S" },
+      "loadvoltaget": { "name": "Load Voltage T" },
+      "loadcurrentr": { "name": "Load Current R" },
+      "loadcurrents": { "name": "Load Current S" },
+      "loadcurrentt": { "name": "Load Current T" },
+      "mainsctrphasecurrent": { "name": "Mains CT-R Phase Current" },
+      "mainsctsphasecurrent": { "name": "Mains CT-S Phase Current" },
+      "mainscttphasecurrent": { "name": "Mains CT-T Phase Current" },
+      "mainspowerct": { "name": "Mains Power CT" },
+      "totalpvenergy": { "name": "Total PV Energy" },
+      "totalloadenergy": { "name": "Total Load Energy" },
+      "totalbatterychargeenergy": { "name": "Total Battery Charge Energy" },
+      "totalbatterydischargeenergy": { "name": "Total Battery Discharge Energy" },
+      "totalinverterchargeenergy": { "name": "Total Inverter Charge Energy" },
+      "totalinverterdischargeenergy": { "name": "Total Inverter Discharge Energy" },
+      "totalgridchargeenergy": { "name": "Total Grid Charge Energy" },
+      "totalgriddischargeenergy": { "name": "Total Grid Discharge Energy" },
+      "totalmainschargeenergyct": { "name": "Total Mains Charge Energy (CT)" },
+      "totalmainsdischargeenergyct": { "name": "Total Mains Discharge Energy (CT)" }
     },
     "switch": {
       "chargerworkenable": { "name": "Charger" },
@@ -383,6 +439,10 @@
       "buzz": { "name": "Buzz" },
       "lcdlight": { "name": "LCD Light" },
       "recordfault": { "name": "Record Fault" }
+    },
+    "time": {
+      "batteryequalizationstarttime": { "name": "Battery Equalization Start Time" },
+      "batteryequalizationendtime": { "name": "Battery Equalization End Time" }
     }
   }
 }

@@ -6,7 +6,7 @@ from homeassistant.components.switch import SwitchEntity
 from homeassistant.const import Platform
 from homeassistant.core import callback
 
-from .const import DOMAIN, Sensor
+from .const import DOMAIN, MODEL_PH1100, Sensor
 from .__init__ import MustInverter
 
 _LOGGER = logging.getLogger(__name__)
@@ -24,23 +24,26 @@ _system_settings_lock = asyncio.Lock()
 
 
 async def async_setup_entry(hass, entry, async_add_entities):
-    # fmt: off
-    settings = [
-        Setting(0, "OverLoadRestart",  True,  True),
-        Setting(1, "OverTempRestart",  True,  True),
-        Setting(2, "OverLoadBypass",   True,  True),
-        Setting(3, "AutoTurnPage",     True,  True),
-        Setting(4, "GridBuzz",         False, True),
-        Setting(5, "Buzz",             True,  True),
-        Setting(6, "LcdLight",         False, True),
-        Setting(7, "RecordFault",      True,  True),
-    ]
-    # fmt: on
-
     inverter_data = hass.data[DOMAIN][entry.entry_id]
     inverter = inverter_data["inverter"]
     sensors = inverter_data["sensors"]
     entities = []
+
+    if inverter.model == MODEL_PH1100:
+        settings = []
+    else:
+        # fmt: off
+        settings = [
+            Setting(0, "OverLoadRestart",  True,  True),
+            Setting(1, "OverTempRestart",  True,  True),
+            Setting(2, "OverLoadBypass",   True,  True),
+            Setting(3, "AutoTurnPage",     True,  True),
+            Setting(4, "GridBuzz",         False, True),
+            Setting(5, "Buzz",             True,  True),
+            Setting(6, "LcdLight",         False, True),
+            Setting(7, "RecordFault",      True,  True),
+        ]
+        # fmt: on
 
     for setting in settings:
         entities.append(MustInverterSettingsSwitch(inverter, setting))

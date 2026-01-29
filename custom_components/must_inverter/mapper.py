@@ -1,3 +1,4 @@
+import datetime
 import logging
 
 from .const import INVERTER_ERROR, INVERTER_WARNING, CHARGER_ERROR, CHARGER_WARNING
@@ -25,12 +26,20 @@ def accumulated_kwh(address, registers):
     return registers[address] * 1000 + registers[address + 1] * 0.1
 
 
-def time(address, registers):
+def duration(address, registers):
     return int(registers[address]) * 60 * 60 + int(registers[address + 1]) * 60 + int(registers[address + 2])
+
+
+def time(address, registers):
+    return datetime.time(registers[address] // 100, registers[address] % 100)
 
 
 def serial(address, registers):
     return registers[address] << 16 | registers[address + 1]
+
+
+def serial_string(address, registers):
+    return f"{registers[address]:05d}{registers[address + 1]:05d}{registers[address + 2]:05d}"
 
 
 def model(address, registers):
@@ -106,7 +115,7 @@ def convert_partArr3(partArr3):
     result["BattVolGrade"] =         int16(15215, partArr3)
     result["RatedCurrent"] =         int16(15216, partArr3)
     result["AccumulatedPower"] =     accumulated_kwh(15217, partArr3)
-    result["AccumulatedTime"] =      time(15219, partArr3)
+    result["AccumulatedTime"] =      duration(15219, partArr3)
     # fmt: on
 
     return result
@@ -262,4 +271,123 @@ def convert_pv_data(registers):
             result["PV2ChargerPower"] = registers[16208]
     except Exception as e:
         _LOGGER.debug("PV data not available: %s", e)
+    return result
+
+
+def convert_ph1100_partArr1(partArr1):
+    if partArr1 is None:
+        return None
+
+    # fmt: off
+    result = {}
+    result["BatteryEqualizationInterval"] =  int16(10117, partArr1)
+    result["BatteryEqualizationStartTime"] = time(10118, partArr1)
+    result["BatteryEqualizationEndTime"] =   time(10119, partArr1)
+    # fmt: on
+
+    return result
+
+
+def convert_ph1100_partArr2(partArr2):
+    if partArr2 is None:
+        return None
+
+    # fmt: off
+    result = {}
+    result["BatteryVoltage"] =         int16(15104, partArr2)
+    result["BattCurrent"] =            int16(15105, partArr2)
+    result["BattPower"] =              int16(15106, partArr2)
+    result["InverterTemperature"] =    int16(15107, partArr2)
+    result["DcRadiatorTemperature"] =  int16(15108, partArr2)
+    result["TransformerTemperature"] = int16(15109, partArr2)
+    result["AmbientTemperature"] =     int16(15110, partArr2)
+    result["BatteryTemperature"] =     int16(15111, partArr2)
+    result["BMSVoltage"] =             int16(15112, partArr2)
+    result["BMSCurrent"] =             int16(15113, partArr2)
+    result["BMSTemperature"] =         int16(15114, partArr2)
+    result["BMSStateOfCharge"] =       int16(15115, partArr2)
+    result["BMSMaxCVSet"] =            int16(15116, partArr2)
+    result["BMSMaxCCSet"] =            int16(15117, partArr2)
+    result["BMSDisCVSet"] =            int16(15118, partArr2)
+    result["BMSDisCCSet"] =            int16(15119, partArr2)
+    # fmt: on
+
+    return result
+
+
+def convert_ph1100_partArr3(partArr3):
+    if partArr3 is None:
+        return None
+
+    # fmt: off
+    result = {}
+    result["InverterSerialNumber"] = serial_string(20001, partArr3)
+    # fmt: on
+
+    return result
+
+
+def convert_ph1100_partArr4(partArr4):
+    if partArr4 is None:
+        return None
+
+    # fmt: off
+    result = {}
+    result["PV1Voltage"] =                   int16(25225, partArr4)
+    result["PV1Current"] =                   int16(25226, partArr4)
+    result["PV1Power"] =                     int16(25227, partArr4)
+    result["PV2Voltage"] =                   int16(25228, partArr4)
+    result["PV2Current"] =                   int16(25229, partArr4)
+    result["PV2Power"] =                     int16(25230, partArr4)
+    result["PV3Voltage"] =                   int16(25231, partArr4)
+    result["PV3Current"] =                   int16(25232, partArr4)
+    result["PV3Power"] =                     int16(25233, partArr4)
+    result["PV4Voltage"] =                   int16(25234, partArr4)
+    result["PV4Current"] =                   int16(25235, partArr4)
+    result["PV4Power"] =                     int16(25236, partArr4)
+    result["GridVoltageR"] =                 int16(25237, partArr4)
+    result["GridVoltageS"] =                 int16(25238, partArr4)
+    result["GridVoltageT"] =                 int16(25239, partArr4)
+    result["GridCurrentR"] =                 int16(25240, partArr4)
+    result["GridCurrentS"] =                 int16(25241, partArr4)
+    result["GridCurrentT"] =                 int16(25242, partArr4)
+    result["GridFrequency"] =                int16(25243, partArr4)
+    result["PGrid"] =                        int16(25244, partArr4)
+    result["QGrid"] =                        int16(25245, partArr4)
+    result["SGrid"] =                        int16(25246, partArr4)
+    result["InverterVoltageR"] =             int16(25247, partArr4)
+    result["InverterVoltageS"] =             int16(25248, partArr4)
+    result["InverterVoltageT"] =             int16(25249, partArr4)
+    result["InverterCurrentR"] =             int16(25250, partArr4)
+    result["InverterCurrentS"] =             int16(25251, partArr4)
+    result["InverterCurrentT"] =             int16(25252, partArr4)
+    result["InverterFrequency"] =            int16(25253, partArr4)
+    result["PInverter"] =                    int16(25254, partArr4)
+    result["QInverter"] =                    int16(25255, partArr4)
+    result["SInverter"] =                    int16(25256, partArr4)
+    result["LoadVoltageR"] =                 int16(25257, partArr4)
+    result["LoadVoltageS"] =                 int16(25258, partArr4)
+    result["LoadVoltageT"] =                 int16(25259, partArr4)
+    result["LoadCurrentR"] =                 int16(25260, partArr4)
+    result["LoadCurrentS"] =                 int16(25261, partArr4)
+    result["LoadCurrentT"] =                 int16(25262, partArr4)
+    result["PLoad"] =                        int16(25263, partArr4)
+    result["QLoad"] =                        int16(25264, partArr4)
+    result["SLoad"] =                        int16(25265, partArr4)
+    result["MainsCTRPhaseCurrent"] =         int16(25284, partArr4)
+    result["MainsCTSPhaseCurrent"] =         int16(25285, partArr4)
+    result["MainsCTTPhaseCurrent"] =         int16(25286, partArr4)
+    result["MainsPowerCT"] =                 int16(25287, partArr4)
+    result["TotalPvEnergy"] =                accumulated_kwh(25310, partArr4)
+    result["TotalLoadEnergy"] =              accumulated_kwh(25312, partArr4)
+    result["TotalBatteryChargeEnergy"] =     accumulated_kwh(25314, partArr4)
+    result["TotalBatteryDischargeEnergy"] =  accumulated_kwh(25316, partArr4)
+    result["TotalInverterChargeEnergy"] =    accumulated_kwh(25318, partArr4)
+    result["TotalInverterDischargeEnergy"] = accumulated_kwh(25320, partArr4)
+    result["TotalGridChargeEnergy"] =        accumulated_kwh(25322, partArr4)
+    result["TotalGridDischargeEnergy"] =     accumulated_kwh(25324, partArr4)
+    result["TotalMainsChargeEnergyCT"] =     accumulated_kwh(25336, partArr4)
+    result["TotalMainsDischargeEnergyCT"] =  accumulated_kwh(25338, partArr4)
+    # fmt: on
+
     return result

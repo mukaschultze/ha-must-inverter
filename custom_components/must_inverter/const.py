@@ -19,8 +19,9 @@ DEFAULT_SCAN_INTERVAL = 15
 # model constants, needs to be lowercase otherwise hassfest checks fails...
 MODEL_PV1800 = "pv1800"  # Base model
 MODEL_PV1900 = "pv1900"
+MODEL_PH1100 = "ph1100"
 
-SUPPORTED_MODELS = [MODEL_PV1800, MODEL_PV1900]
+SUPPORTED_MODELS = [MODEL_PV1800, MODEL_PV1900, MODEL_PH1100]
 
 
 class Sensor(NamedTuple):
@@ -176,6 +177,94 @@ PV1900_SENSORS = [
     Sensor(16207, "PV2ChargerCurrent",               0.1,     "A",      Platform.SENSOR,               SensorDeviceClass.CURRENT,         True,  ),
     Sensor(16208, "PV2ChargerPower",                 None,    "W",      Platform.SENSOR,               SensorDeviceClass.POWER,           True,  ),
 ]
+
+PH1100_SENSORS = [
+    # Charger Control Messages
+    # Don't know what are the ranges for these settings, so skipping for now
+    # Sensor(10102, "BatteryHighFaultVoltage",         0.01,    "V",      Platform.NUMBER,               NumberDeviceClass.VOLTAGE,         True,  ),
+    # Sensor(10103, "BatteryLowFaultVoltage",          0.01,    "V",      Platform.NUMBER,               NumberDeviceClass.VOLTAGE,         True,  ),
+    # Sensor(10104, "BatteryLowRecoverVoltage",        0.01,    "V",      Platform.NUMBER,               NumberDeviceClass.VOLTAGE,         True,  ),
+    # Sensor(10110, "BatteryMinCurrentChargeVoltage",  0.01,    "V",      Platform.NUMBER,               NumberDeviceClass.VOLTAGE,         True,  ),
+    # Sensor(10111, "BatteryMinCurrentChargeCurrent",  0.01,    "A",      Platform.NUMBER,               NumberDeviceClass.CURRENT,         True,  ),
+    Sensor(10117, "BatteryEqualizationInterval",     1,       "day",    Platform.NUMBER,               None,                              True,  ),
+    Sensor(10118, "BatteryEqualizationStartTime",    None,    None,     Platform.TIME,                 None,                              True,  ),
+    Sensor(10119, "BatteryEqualizationEndTime",      None,    None,     Platform.TIME,                 None,                              True,  ),
+    # Charger Display Messages
+    Sensor(15104, "BatteryVoltage",                  0.1,     "V",      Platform.SENSOR,               SensorDeviceClass.VOLTAGE,         True,  ),
+    Sensor(15105, "BattCurrent",                     0.1,     "A",      Platform.SENSOR,               SensorDeviceClass.CURRENT,         True,  ),
+    Sensor(15106, "BattPower",                       None,    "W",      Platform.SENSOR,               SensorDeviceClass.POWER,           True,  ),
+    Sensor(15107, "InverterTemperature",             0.1,     "°C",     Platform.SENSOR,               SensorDeviceClass.TEMPERATURE,     True,  ),
+    Sensor(15108, "DcRadiatorTemperature",           0.1,     "°C",     Platform.SENSOR,               SensorDeviceClass.TEMPERATURE,     True,  ),
+    Sensor(15109, "TransformerTemperature",          0.1,     "°C",     Platform.SENSOR,               SensorDeviceClass.TEMPERATURE,     True,  ),
+    Sensor(15110, "AmbientTemperature",              0.1,     "°C",     Platform.SENSOR,               SensorDeviceClass.TEMPERATURE,     True,  ),
+    Sensor(15111, "BatteryTemperature",              0.1,     "°C",     Platform.SENSOR,               SensorDeviceClass.TEMPERATURE,     True,  ),
+    Sensor(15112, "BMSVoltage",                      0.1,     "V",      Platform.SENSOR,               SensorDeviceClass.VOLTAGE,         True,  ),
+    Sensor(15113, "BMSCurrent",                      0.1,     "A",      Platform.SENSOR,               SensorDeviceClass.CURRENT,         True,  ),
+    Sensor(15114, "BMSTemperature",                  0.1,     "°C",     Platform.SENSOR,               SensorDeviceClass.TEMPERATURE,     True,  ),
+    Sensor(15115, "BMSStateOfCharge",                None,    "%",      Platform.SENSOR,               SensorDeviceClass.BATTERY,         True,  ),
+    Sensor(15116, "BMSMaxCVSet",                     0.1,     "V",      Platform.SENSOR,               SensorDeviceClass.VOLTAGE,         True,  ),
+    Sensor(15117, "BMSMaxCCSet",                     0.1,     "A",      Platform.SENSOR,               SensorDeviceClass.CURRENT,         True,  ),
+    Sensor(15118, "BMSDisCVSet",                     0.1,     "V",      Platform.SENSOR,               SensorDeviceClass.VOLTAGE,         True,  ),
+    Sensor(15119, "BMSDisCCSet",                     0.1,     "A",      Platform.SENSOR,               SensorDeviceClass.CURRENT,         True,  ),
+    # Inverter Control Messages
+    Sensor(20001, "InverterSerialNumber",            None,    None,     Platform.SENSOR,               None,                              False, ),
+    # Inverter Display Messages
+    Sensor(25225, "PV1Voltage",                      0.1,     "V",      Platform.SENSOR,               SensorDeviceClass.VOLTAGE,         True,  ),
+    Sensor(25226, "PV1Current",                      0.1,     "A",      Platform.SENSOR,               SensorDeviceClass.CURRENT,         True,  ),
+    Sensor(25227, "PV1Power",                        None,    "W",      Platform.SENSOR,               SensorDeviceClass.POWER,           True,  ),
+    Sensor(25228, "PV2Voltage",                      0.1,     "V",      Platform.SENSOR,               SensorDeviceClass.VOLTAGE,         True,  ),
+    Sensor(25229, "PV2Current",                      0.1,     "A",      Platform.SENSOR,               SensorDeviceClass.CURRENT,         True,  ),
+    Sensor(25230, "PV2Power",                        None,    "W",      Platform.SENSOR,               SensorDeviceClass.POWER,           True,  ),
+    Sensor(25231, "PV3Voltage",                      0.1,     "V",      Platform.SENSOR,               SensorDeviceClass.VOLTAGE,         True,  ),
+    Sensor(25232, "PV3Current",                      0.1,     "A",      Platform.SENSOR,               SensorDeviceClass.CURRENT,         True,  ),
+    Sensor(25233, "PV3Power",                        None,    "W",      Platform.SENSOR,               SensorDeviceClass.POWER,           True,  ),
+    Sensor(25234, "PV4Voltage",                      0.1,     "V",      Platform.SENSOR,               SensorDeviceClass.VOLTAGE,         True,  ),
+    Sensor(25235, "PV4Current",                      0.1,     "A",      Platform.SENSOR,               SensorDeviceClass.CURRENT,         True,  ),
+    Sensor(25236, "PV4Power",                        None,    "W",      Platform.SENSOR,               SensorDeviceClass.POWER,           True,  ),
+    Sensor(25237, "GridVoltageR",                    0.1,     "V",      Platform.SENSOR,               SensorDeviceClass.VOLTAGE,         True,  ),
+    Sensor(25238, "GridVoltageS",                    0.1,     "V",      Platform.SENSOR,               SensorDeviceClass.VOLTAGE,         True,  ),
+    Sensor(25239, "GridVoltageT",                    0.1,     "V",      Platform.SENSOR,               SensorDeviceClass.VOLTAGE,         True,  ),
+    Sensor(25240, "GridCurrentR",                    0.1,     "A",      Platform.SENSOR,               SensorDeviceClass.CURRENT,         True,  ),
+    Sensor(25241, "GridCurrentS",                    0.1,     "A",      Platform.SENSOR,               SensorDeviceClass.CURRENT,         True,  ),
+    Sensor(25242, "GridCurrentT",                    0.1,     "A",      Platform.SENSOR,               SensorDeviceClass.CURRENT,         True,  ),
+    Sensor(25243, "GridFrequency",                   0.01,    "Hz",     Platform.SENSOR,               SensorDeviceClass.FREQUENCY,       True,  ),
+    Sensor(25244, "PGrid",                           None,    "W",      Platform.SENSOR,               SensorDeviceClass.POWER,           True,  ),
+    Sensor(25245, "QGrid",                           None,    "var",    Platform.SENSOR,               SensorDeviceClass.REACTIVE_POWER,  True,  ),
+    Sensor(25246, "SGrid",                           None,    "VA",     Platform.SENSOR,               SensorDeviceClass.APPARENT_POWER,  True,  ),
+    Sensor(25247, "InverterVoltageR",                0.1,     "V",      Platform.SENSOR,               SensorDeviceClass.VOLTAGE,         True,  ),
+    Sensor(25248, "InverterVoltageS",                0.1,     "V",      Platform.SENSOR,               SensorDeviceClass.VOLTAGE,         True,  ),
+    Sensor(25249, "InverterVoltageT",                0.1,     "V",      Platform.SENSOR,               SensorDeviceClass.VOLTAGE,         True,  ),
+    Sensor(25250, "InverterCurrentR",                0.1,     "A",      Platform.SENSOR,               SensorDeviceClass.CURRENT,         True,  ),
+    Sensor(25251, "InverterCurrentS",                0.1,     "A",      Platform.SENSOR,               SensorDeviceClass.CURRENT,         True,  ),
+    Sensor(25252, "InverterCurrentT",                0.1,     "A",      Platform.SENSOR,               SensorDeviceClass.CURRENT,         True,  ),
+    Sensor(25253, "InverterFrequency",               0.01,    "Hz",     Platform.SENSOR,               SensorDeviceClass.FREQUENCY,       True,  ),
+    Sensor(25254, "PInverter",                       None,    "W",      Platform.SENSOR,               SensorDeviceClass.POWER,           True,  ),
+    Sensor(25255, "QInverter",                       None,    "var",    Platform.SENSOR,               SensorDeviceClass.REACTIVE_POWER,  True,  ),
+    Sensor(25256, "SInverter",                       None,    "VA",     Platform.SENSOR,               SensorDeviceClass.APPARENT_POWER,  True,  ),
+    Sensor(25257, "LoadVoltageR",                    0.1,     "V",      Platform.SENSOR,               SensorDeviceClass.VOLTAGE,         True,  ),
+    Sensor(25258, "LoadVoltageS",                    0.1,     "V",      Platform.SENSOR,               SensorDeviceClass.VOLTAGE,         True,  ),
+    Sensor(25259, "LoadVoltageT",                    0.1,     "V",      Platform.SENSOR,               SensorDeviceClass.VOLTAGE,         True,  ),
+    Sensor(25260, "LoadCurrentR",                    0.1,     "A",      Platform.SENSOR,               SensorDeviceClass.CURRENT,         True,  ),
+    Sensor(25261, "LoadCurrentS",                    0.1,     "A",      Platform.SENSOR,               SensorDeviceClass.CURRENT,         True,  ),
+    Sensor(25262, "LoadCurrentT",                    0.1,     "A",      Platform.SENSOR,               SensorDeviceClass.CURRENT,         True,  ),
+    Sensor(25263, "PLoad",                           None,    "W",      Platform.SENSOR,               SensorDeviceClass.POWER,           True,  ),
+    Sensor(25264, "QLoad",                           None,    "var",    Platform.SENSOR,               SensorDeviceClass.REACTIVE_POWER,  True,  ),
+    Sensor(25265, "SLoad",                           None,    "VA",     Platform.SENSOR,               SensorDeviceClass.APPARENT_POWER,  True,  ),
+    Sensor(25284, "MainsCTRPhaseCurrent",            0.1,     "A",      Platform.SENSOR,               SensorDeviceClass.CURRENT,         True,  ),
+    Sensor(25285, "MainsCTSPhaseCurrent",            0.1,     "A",      Platform.SENSOR,               SensorDeviceClass.CURRENT,         True,  ),
+    Sensor(25286, "MainsCTTPhaseCurrent",            0.1,     "A",      Platform.SENSOR,               SensorDeviceClass.CURRENT,         True,  ),
+    Sensor(25287, "MainsPowerCT",                    0.01,    "kW",     Platform.SENSOR,               SensorDeviceClass.POWER,           True,  ),
+    Sensor(25310, "TotalPvEnergy",                   None,    "kWh",    Platform.SENSOR,               SensorDeviceClass.ENERGY,          True,  ),
+    Sensor(25312, "TotalLoadEnergy",                 None,    "kWh",    Platform.SENSOR,               SensorDeviceClass.ENERGY,          True,  ),
+    Sensor(25314, "TotalBatteryChargeEnergy",        None,    "kWh",    Platform.SENSOR,               SensorDeviceClass.ENERGY,          True,  ),
+    Sensor(25316, "TotalBatteryDischargeEnergy",     None,    "kWh",    Platform.SENSOR,               SensorDeviceClass.ENERGY,          True,  ),
+    Sensor(25318, "TotalInverterChargeEnergy",       None,    "kWh",    Platform.SENSOR,               SensorDeviceClass.ENERGY,          True,  ),
+    Sensor(25320, "TotalInverterDischargeEnergy",    None,    "kWh",    Platform.SENSOR,               SensorDeviceClass.ENERGY,          True,  ),
+    Sensor(25322, "TotalGridChargeEnergy",           None,    "kWh",    Platform.SENSOR,               SensorDeviceClass.ENERGY,          True,  ),
+    Sensor(25324, "TotalGridDischargeEnergy",        None,    "kWh",    Platform.SENSOR,               SensorDeviceClass.ENERGY,          True,  ),
+    Sensor(25336, "TotalMainsChargeEnergyCT",        None,    "kWh",    Platform.SENSOR,               SensorDeviceClass.ENERGY,          True,  ),
+    Sensor(25338, "TotalMainsDischargeEnergyCT",     None,    "kWh",    Platform.SENSOR,               SensorDeviceClass.ENERGY,          True,  ),
+]
 # fmt: on
 
 OPTIONS = {
@@ -307,6 +396,9 @@ def get_sensors_for_model(model: str) -> list:
     PV1800: Base sensors only
     PV1900: Base sensors + PV2 and extended battery monitoring
     """
+    if model == MODEL_PH1100:
+        return PH1100_SENSORS
+
     if model == MODEL_PV1900:
         return SENSORS_ARRAY + PV1900_SENSORS
     return SENSORS_ARRAY

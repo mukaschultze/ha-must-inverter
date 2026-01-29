@@ -27,7 +27,7 @@ power production, battery status, and more, directly from your Must solar invert
 
 ## Supported Devices
 
-This integration is tested using a Must Solar PV18-3024 VPM (aka PV1800), PV19 / PV1900 EXP Series (4/6KW). However, it should work with other models that use the same communication protocol, such as the PH1800 and EP1800 series.
+This integration is tested using a Must Solar PV18-3024 VPM (aka PV1800), PV19 / PV1900 EXP Series (4/6KW), PH11 / PH1100 EU Series (AC:380V 5-12KW). However, it should work with other models that use the same communication protocol, such as the PH1800 and EP1800 series.
 
 ## Disclaimer
 

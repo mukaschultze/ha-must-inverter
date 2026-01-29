@@ -80,6 +80,9 @@
             "absorbchargercurrent": { "default": "mdi:current-dc" },
             "mpptstate": { "default": "mdi:solar-power" },
             "chargercurrent": { "default": "mdi:current-dc" },
+            "bmscurrent": { "default": "mdi:current-dc" },
+            "bmsmaxccset": { "default": "mdi:current-dc" },
+            "bmsdisccset": { "default": "mdi:current-dc" },
             "chargererrormessage": { "default": "mdi:alert-circle-outline" },
             "chargerwarningmessage": { "default": "mdi:alert-outline" },
             "ratedcurrent": { "default": "mdi:current-dc" },
@@ -94,7 +97,23 @@
             "battcurrent": { "default": "mdi:current-dc" },
             "batterystateofhealth": { "default": "mdi:battery-heart-variant" },
             "pv1chargercurrent": { "default": "mdi:current-dc" },
-            "pv2chargercurrent": { "default": "mdi:current-dc" }
+            "pv2chargercurrent": { "default": "mdi:current-dc" },
+            "pv1current": { "default": "mdi:current-dc" },
+            "pv2current": { "default": "mdi:current-dc" },
+            "pv3current": { "default": "mdi:current-dc" },
+            "pv4current": { "default": "mdi:current-dc" },
+            "gridcurrentr": { "default": "mdi:current-ac" },
+            "gridcurrents": { "default": "mdi:current-ac" },
+            "gridcurrentt": { "default": "mdi:current-ac" },
+            "invertercurrentr": { "default": "mdi:current-ac" },
+            "invertercurrents": { "default": "mdi:current-ac" },
+            "invertercurrentt": { "default": "mdi:current-ac" },
+            "loadcurrentr": { "default": "mdi:current-ac" },
+            "loadcurrents": { "default": "mdi:current-ac" },
+            "loadcurrentt": { "default": "mdi:current-ac" },
+            "mainsctrphasecurrent": { "default": "mdi:current-ac" },
+            "mainsctsphasecurrent": { "default": "mdi:current-ac" },
+            "mainscttphasecurrent": { "default": "mdi:current-ac" }
         },
         "switch": {
             "batteryequalizationenable": { "default": "mdi:equalizer" },
@@ -135,6 +154,10 @@
                 }
             },
             "recordfault": { "default": "mdi:alert" }
+        },
+        "time": {
+            "batteryequalizationstarttime": { "default": "mdi:equalizer" },
+            "batteryequalizationendtime": { "default": "mdi:equalizer" }
         }
     }
 }

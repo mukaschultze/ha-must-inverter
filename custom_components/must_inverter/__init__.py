@@ -35,9 +35,14 @@ from .const import (
     DEFAULT_SCAN_INTERVAL,
     get_sensors_for_model,
     MODEL_PV1900,
+    MODEL_PH1100,
 )
 
 from .mapper import (
+    convert_ph1100_partArr1,
+    convert_ph1100_partArr2,
+    convert_ph1100_partArr3,
+    convert_ph1100_partArr4,
     convert_partArr2,
     convert_partArr3,
     convert_partArr4,
@@ -55,6 +60,7 @@ PLATFORMS = [
     Platform.SELECT,
     Platform.SWITCH,
     Platform.BUTTON,
+    Platform.TIME,
 ]
 _LOGGER = logging.getLogger(__name__)
 
@@ -219,7 +225,7 @@ class MustInverter:
 
     @property
     def name(self):
-        return self._entry.options.get(CONF_NAME, self.data.get("InverterMachineType"))
+        return self._entry.options.get(CONF_NAME, self.model)
 
     @property
     def model(self):
@@ -294,26 +300,34 @@ class MustInverter:
         # immediately and the charger stops working afterwards (all registers
         # return zeroes). Requires the grid/batteries/PV to be disconnected and
         # the inverter restarted for it to come back online.
-        # Base register ranges for all models
-        registersAddresses = [
-            # (10000, 10008, convert_partArr1), # Charger Control Messages
-            (10101, 10124, convert_partArr2),  # Charger Control Messages
-            (15201, 15221, convert_partArr3),  # Charger Display Messages
-            (20000, 20016, convert_partArr4),  # Inverter Control Messages
-            (20101, 20214, convert_partArr5),  # Inverter Control Messages
-            (25201, 25279, convert_partArr6),  # Inverter Display Messages
-        ]
+        if self.model == MODEL_PH1100:
+            registersAddresses = [
+                (10102, 10119, convert_ph1100_partArr1),  # Charger Control Messages
+                (15104, 15119, convert_ph1100_partArr2),  # Charger Display Messages
+                (20001, 20003, convert_ph1100_partArr3),  # Inverter Control Messages
+                (25225, 25339, convert_ph1100_partArr4),  # Inverter Display Messages
+            ]
+        else:
+            # Base register ranges for all models
+            registersAddresses = [
+                # (10000, 10008, convert_partArr1), # Charger Control Messages
+                (10101, 10124, convert_partArr2),  # Charger Control Messages
+                (15201, 15221, convert_partArr3),  # Charger Display Messages
+                (20000, 20016, convert_partArr4),  # Inverter Control Messages
+                (20101, 20214, convert_partArr5),  # Inverter Control Messages
+                (25201, 25279, convert_partArr6),  # Inverter Display Messages
+            ]
 
-        # Add PV19-specific register ranges if needed
-        # Keep register ranges for pv separate to not overload the inverter
-        if self.has_extra_registers:
-            registersAddresses.extend(
-                [
-                    (113, 114, convert_battery_status),  # Battery Status (SoC, SoH)
-                    (15207, 15208, convert_pv_data),  # PV1 Data (Current, Power)
-                    (16205, 16208, convert_pv_data),  # PV2 Data (Voltage, Current, Power)
-                ]
-            )
+            # Add PV19-specific register ranges if needed
+            # Keep register ranges for pv separate to not overload the inverter
+            if self.has_extra_registers:
+                registersAddresses.extend(
+                    [
+                        (113, 114, convert_battery_status),  # Battery Status (SoC, SoH)
+                        (15207, 15208, convert_pv_data),  # PV1 Data (Current, Power)
+                        (16205, 16208, convert_pv_data),  # PV2 Data (Voltage, Current, Power)
+                    ]
+                )
 
         read = {}
 
@@ -391,8 +405,8 @@ class MustInverter:
             "identifiers": {(DOMAIN, self.data["InverterSerialNumber"])},
             "name": self.name,
             "manufacturer": "Must Solar",
-            "model": self.data["InverterMachineType"],
-            "hw_version": self.data["InverterHardwareVersion"],
-            "sw_version": self.data["InverterSoftwareVersion"],
+            "model": self.model,
+            "hw_version": self.data.get("InverterHardwareVersion"),
+            "sw_version": self.data.get("InverterSoftwareVersion"),
             "serial_number": self.data["InverterSerialNumber"],
         }
