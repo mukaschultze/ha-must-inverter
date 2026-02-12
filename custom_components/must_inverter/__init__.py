@@ -225,7 +225,7 @@ class MustInverter:
 
     @property
     def name(self):
-        return self._entry.options.get(CONF_NAME, self.model)
+        return self._entry.options.get(CONF_NAME, self.data.get("InverterMachineType", self.model))
 
     @property
     def model(self):
@@ -405,7 +405,7 @@ class MustInverter:
             "identifiers": {(DOMAIN, self.data["InverterSerialNumber"])},
             "name": self.name,
             "manufacturer": "Must Solar",
-            "model": self.model,
+            "model": self.data.get("InverterMachineType", self.model),
             "hw_version": self.data.get("InverterHardwareVersion"),
             "sw_version": self.data.get("InverterSoftwareVersion"),
             "serial_number": self.data["InverterSerialNumber"],
