@@ -377,7 +377,7 @@ def convert_ph1100_partArr4(partArr4):
     result["MainsCTRPhaseCurrent"] =         int16(25284, partArr4)
     result["MainsCTSPhaseCurrent"] =         int16(25285, partArr4)
     result["MainsCTTPhaseCurrent"] =         int16(25286, partArr4)
-    result["MainsPowerCT"] =                 -int16(25287, partArr4) # Inverting for compatibility with HA home energy management grid power sensor spec
+    result["MainsPowerCT"] =                 int16(25287, partArr4)
     result["TotalPvEnergy"] =                accumulated_kwh(25310, partArr4)
     result["TotalLoadEnergy"] =              accumulated_kwh(25312, partArr4)
     result["TotalBatteryChargeEnergy"] =     accumulated_kwh(25314, partArr4)

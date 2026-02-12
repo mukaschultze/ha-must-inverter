@@ -253,7 +253,8 @@ PH1100_SENSORS = [
     Sensor(25284, "MainsCTRPhaseCurrent",            0.1,     "A",      Platform.SENSOR,               SensorDeviceClass.CURRENT,         True,  ),
     Sensor(25285, "MainsCTSPhaseCurrent",            0.1,     "A",      Platform.SENSOR,               SensorDeviceClass.CURRENT,         True,  ),
     Sensor(25286, "MainsCTTPhaseCurrent",            0.1,     "A",      Platform.SENSOR,               SensorDeviceClass.CURRENT,         True,  ),
-    Sensor(25287, "MainsPowerCT",                    0.01,    "kW",     Platform.SENSOR,               SensorDeviceClass.POWER,           True,  ),
+    # Negating for compatibility with HA home energy management grid power sensor spec
+    Sensor(25287, "MainsPowerCT",                    -0.01,   "kW",     Platform.SENSOR,               SensorDeviceClass.POWER,           True,  ),
     Sensor(25310, "TotalPvEnergy",                   None,    "kWh",    Platform.SENSOR,               SensorDeviceClass.ENERGY,          True,  ),
     Sensor(25312, "TotalLoadEnergy",                 None,    "kWh",    Platform.SENSOR,               SensorDeviceClass.ENERGY,          True,  ),
     Sensor(25314, "TotalBatteryChargeEnergy",        None,    "kWh",    Platform.SENSOR,               SensorDeviceClass.ENERGY,          True,  ),
