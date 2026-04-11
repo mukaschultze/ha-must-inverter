@@ -32,7 +32,9 @@ from .const import (
     CONF_RETRIES,
     CONF_RECONNECT_DELAY,
     CONF_RECONNECT_DELAY_MAX,
+    CONF_DEVICE_ID,
     DEFAULT_SCAN_INTERVAL,
+    DEFAULT_DEVICE_ID,
     get_sensors_for_model,
     MODEL_PV1900,
     MODEL_PH1100,
@@ -180,6 +182,7 @@ class MustInverter:
         self._client.rts = False
         self._client.dtr = False
         self._lock = asyncio.Lock()
+        self._device_id = entry.options.get(CONF_DEVICE_ID, DEFAULT_DEVICE_ID)
         self._scan_interval = timedelta(seconds=entry.options.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL))
         self._reading = False
         self.registers = {}
@@ -275,7 +278,7 @@ class MustInverter:
 
         _LOGGER.debug("writing modbus data: %s %s", address, value)
         async with self._lock:
-            response = await self._client.write_register(address=address, value=value, device_id=0x04)
+            response = await self._client.write_register(address=address, value=value, device_id=self._device_id)
 
         if response.isError():
             _LOGGER.error("error writing modbus data: %s", response)
@@ -348,7 +351,9 @@ class MustInverter:
                     break
 
                 async with self._lock:
-                    response = await self._client.read_holding_registers(address=start, count=count, device_id=0x04)
+                    response = await self._client.read_holding_registers(
+                        address=start, count=count, device_id=self._device_id
+                    )
                 if response.isError():
                     _LOGGER.error("error reading modbus data at address %s: %s", start, response)
                 elif len(response.registers) != count:

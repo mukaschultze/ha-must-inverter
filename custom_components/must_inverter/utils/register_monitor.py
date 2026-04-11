@@ -52,7 +52,9 @@ class RegisterMonitor:
                         break
 
                     async with inverter._lock:
-                        response = await inverter._client.read_holding_registers(address=start, count=count, device_id=0x04)
+                        response = await inverter._client.read_holding_registers(
+                            address=start, count=count, device_id=inverter._device_id
+                        )
 
                     if response.isError():
                         _LOGGER.warning(f"Error reading range {start}-{end}: {response}")

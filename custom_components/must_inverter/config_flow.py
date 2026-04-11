@@ -21,6 +21,7 @@ from homeassistant.const import (
 from .const import (
     DOMAIN,
     DEFAULT_SCAN_INTERVAL,
+    DEFAULT_DEVICE_ID,
     SUPPORTED_MODELS,
     CONF_BAUDRATE,
     CONF_PARITY,
@@ -29,6 +30,7 @@ from .const import (
     CONF_RETRIES,
     CONF_RECONNECT_DELAY,
     CONF_RECONNECT_DELAY_MAX,
+    CONF_DEVICE_ID,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -89,6 +91,7 @@ MODBUS_SCHEMA = vol.Schema(
         vol.Required(CONF_RETRIES, default=3): int,
         vol.Required(CONF_RECONNECT_DELAY, default=0.3): vol.Coerce(float),
         vol.Required(CONF_RECONNECT_DELAY_MAX, default=1.0): vol.Coerce(float),
+        vol.Required(CONF_DEVICE_ID, default=DEFAULT_DEVICE_ID): int,
     }
 )
 

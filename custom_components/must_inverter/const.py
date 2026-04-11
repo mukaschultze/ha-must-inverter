@@ -13,8 +13,10 @@ CONF_BYTESIZE = "bytesize"
 CONF_RETRIES = "retries"
 CONF_RECONNECT_DELAY = "reconnect_delay"
 CONF_RECONNECT_DELAY_MAX = "reconnect_delay_max"
+CONF_DEVICE_ID = "device_id"
 
 DEFAULT_SCAN_INTERVAL = 15
+DEFAULT_DEVICE_ID = 0x04
 
 # model constants, needs to be lowercase otherwise hassfest checks fails...
 MODEL_PV1800 = "pv1800"  # Base model

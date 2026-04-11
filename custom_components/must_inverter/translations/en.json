@@ -50,12 +50,14 @@
         "title": "PyModbus advanced settings",
         "description": "Leave this section unchanged unless you are seeing connection issues or need to adjust the modbus connection settings.",
         "data": {
+          "device_id": "Device ID",
           "timeout": "Timeout (seconds)",
           "retries": "Retries",
           "reconnect_delay": "Reconnect Delay (seconds)",
           "reconnect_delay_max": "Max Reconnect Delay (seconds)"
         },
         "data_description": {
+          "device_id": "The Modbus device ID (slave address) of the inverter. Default is 4 (0x04). Use this option only when there are multiple inverters connected to the same serial port (such as in cases of inverters running in parallel)",
           "timeout": "Timeout for connecting and receiving data.",
           "retries": "Max number of retries per request.",
           "reconnect_delay": "Minimum delay before reconnecting. Set to 0 to disable reconnecting.",
@@ -114,12 +116,14 @@
         "title": "PyModbus advanced settings",
         "description": "Leave this section unchanged unless you are seeing connection issues or need to adjust the modbus connection settings.",
         "data": {
+          "device_id": "Device ID",
           "timeout": "Timeout (seconds)",
           "retries": "Retries",
           "reconnect_delay": "Reconnect Delay (seconds)",
           "reconnect_delay_max": "Max Reconnect Delay (seconds)"
         },
         "data_description": {
+          "device_id": "The Modbus device ID (slave address) of the inverter. Default is 4 (0x04). Use this option only when there are multiple inverters connected to the same serial port (such as in cases of inverters running in parallel)",
           "timeout": "Timeout for connecting and receiving data.",
           "retries": "Max number of retries per request.",
           "reconnect_delay": "Minimum delay before reconnecting. Set to 0 to disable reconnecting.",

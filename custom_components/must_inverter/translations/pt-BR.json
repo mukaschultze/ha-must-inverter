@@ -50,12 +50,14 @@
         "title": "Configurações avançadas do PyModbus",
         "description": "Deixe esta seção inalterada, a menos que você esteja tendo problemas de conexão ou precise ajustar as configurações de conexão do modbus.",
         "data": {
+          "device_id": "ID do dispositivo",
           "timeout": "Timeout (segundos)",
           "retries": "Tentativas",
           "reconnect_delay": "Delay de reconexão (segundos)",
           "reconnect_delay_max": "Delay máximo de reconexão (segundos)"
         },
         "data_description": {
+          "device_id": "O ID do dispositivo Modbus (slave address) do inversor. O padrão é 4 (0x04). Use esta opção somente quando existirem mais de um inversor conectados à mesma porta serial (como nos casos de inversores em paralelo)",
           "timeout": "Tempo limite para conectar e receber dados.",
           "retries": "Número máximo de tentativas por solicitação.",
           "reconnect_delay": "Delay mínimo antes de reconectar. Defina como 0 para desativar a reconexão.",
@@ -114,12 +116,14 @@
         "title": "Configurações avançadas do PyModbus",
         "description": "Deixe esta seção inalterada, a menos que você esteja tendo problemas de conexão ou precise ajustar as configurações de conexão do modbus.",
         "data": {
+          "device_id": "ID do dispositivo",
           "timeout": "Timeout (segundos)",
           "retries": "Tentativas",
           "reconnect_delay": "Delay de reconexão (segundos)",
           "reconnect_delay_max": "Delay máximo de reconexão (segundos)"
         },
         "data_description": {
+          "device_id": "O ID do dispositivo Modbus (slave address) do inversor. O padrão é 4 (0x04). Use esta opção somente quando existirem mais de um inversor conectados à mesma porta serial (como nos casos de inversores em paralelo)",
           "timeout": "Tempo limite para conectar e receber dados.",
           "retries": "Número máximo de tentativas por solicitação.",
           "reconnect_delay": "Delay mínimo antes de reconectar. Defina como 0 para desativar a reconexão.",
