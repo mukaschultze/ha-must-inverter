@@ -80,24 +80,33 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         # Initialize inverter with model-specific sensors
         inverter = MustInverter(hass, entry)
 
-        successConnecting = await inverter.connect()
+        try:
+            successConnecting = await inverter.connect()
 
-        if not successConnecting:
-            raise ConfigEntryNotReady("Unable to connect to modbus device")
+            if not successConnecting:
+                raise ConfigEntryNotReady("Unable to connect to modbus device")
 
-        successReading = await inverter._async_refresh_modbus_data()
+            successReading = await inverter._async_refresh_modbus_data()
 
-        if not successReading:
-            raise ConfigEntryNotReady("Unable to read from modbus device")
+            if not successReading:
+                raise ConfigEntryNotReady("Unable to read from modbus device")
 
-        model = inverter.model
-        sensors = get_sensors_for_model(model)
-        _LOGGER.debug("Setting up Must Inverter with model: %s", model)
+            model = inverter.model
+            sensors = get_sensors_for_model(model)
+            _LOGGER.debug("Setting up Must Inverter with model: %s", model)
 
-        # Store sensors to be used by platforms
-        hass.data[DOMAIN][entry.entry_id] = {"inverter": inverter, "sensors": sensors}
+            # Store sensors to be used by platforms
+            hass.data[DOMAIN][entry.entry_id] = {"inverter": inverter, "sensors": sensors}
 
-        await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
+            await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
+        except BaseException:
+            # A failed setup must never leave the serial port open: the leaked
+            # client keeps holding the exclusive port lock inside the running
+            # process, so every setup retry then fails with "Could not
+            # exclusively lock port" until Home Assistant is restarted.
+            inverter.close()
+            hass.data[DOMAIN].pop(entry.entry_id, None)
+            raise
 
         # Removing register monitor as we've found all needed registers
         # If you need to add it back, uncomment the following lines and set the ranges to scan in register_monitor.py
@@ -391,6 +400,12 @@ class MustInverter:
         self.registers = read
         self._reading = False
         # _LOGGER.debug("Data: %s", self.data)
+
+        if "InverterSerialNumber" not in self.data:
+            # No register range could be read at all (e.g. the inverter is
+            # powered off) - report failure instead of raising KeyError below.
+            _LOGGER.warning("no data could be read from the inverter")
+            return False
 
         if self.data["InverterSerialNumber"] == 0xFFFFFFFF or self.data["InverterSerialNumber"] == 0:
             ir.async_create_issue(
