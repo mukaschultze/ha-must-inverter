@@ -300,7 +300,7 @@ RANGES = {
     "InverterOutputVoltageSet":       lambda data: Range(220,   240,    1   ),
     "InverterOutputFrequencySet":     lambda data: Range(50,    60,     10  ),
     "InverterMaxDischargerCurrent":   lambda data: Range(1,     13,     0.1 ),
-    "GridMaxChargerCurrentSet":       lambda data: Range(20,    30,     10  ),
+    "GridMaxChargerCurrentSet":       lambda data: Range(20,    data["RatedCurrent"] * 0.1,    1),
     "MaxCombineChargerCurrent":       lambda data: Range(1,     80,     1   ),
     "InverterBatteryVoltageC":        lambda data: Range(0,     0xFFFF, 1   ),
     "InverterVoltageC":               lambda data: Range(0,     0xFFFF, 1   ),
