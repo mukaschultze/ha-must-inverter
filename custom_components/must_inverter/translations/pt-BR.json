@@ -23,10 +23,10 @@
         "description": "Configure os parâmetros da conexão serial para o seu inversor. Os valores padrão devem funcionar para a maioria dos modelos.",
         "data": {
           "device": "Porta serial",
-          "baudrate": "Baud rate",
-          "parity": "Paridade",
-          "stopbits": "Stop bits",
-          "bytesize": "Byte size"
+          "baudrate": "Taxa de transmissão (Baud rate)",
+          "parity": "Paridade (Parity)",
+          "stopbits": "Bits de parada (Stop bits)",
+          "bytesize": "Bits de dados (Byte size)"
         },
         "data_description": {
           "device": "A porta USB onde o inversor está conectado, ou um proxy serial ESPHome ligado à porta RS485 do inversor. Escolha Inserir manualmente para um servidor serial, por exemplo socket://192.168.1.10:4001 ou rfc2217://192.168.1.10:4001."
@@ -50,8 +50,8 @@
         "title": "Configurações avançadas do Modbus",
         "description": "Deixe esta seção inalterada, a menos que você esteja tendo problemas de conexão ou precise ajustar as configurações de conexão do modbus. A conexão é testada ao enviar.",
         "data": {
-          "device_id": "ID do dispositivo",
-          "timeout": "Timeout (segundos)"
+          "device_id": "ID do dispositivo (Device ID)",
+          "timeout": "Tempo limite (Timeout), em segundos"
         },
         "data_description": {
           "device_id": "O ID do dispositivo Modbus (slave address) do inversor. O padrão é 4 (0x04). Use esta opção somente quando existirem mais de um inversor conectados à mesma porta serial (como nos casos de inversores em paralelo)",
@@ -87,10 +87,10 @@
         "description": "Configure os parâmetros da conexão serial para o seu inversor. Os valores padrão devem funcionar para a maioria dos modelos.",
         "data": {
           "device": "Porta serial",
-          "baudrate": "Baud rate",
-          "parity": "Paridade",
-          "stopbits": "Stop bits",
-          "bytesize": "Byte size"
+          "baudrate": "Taxa de transmissão (Baud rate)",
+          "parity": "Paridade (Parity)",
+          "stopbits": "Bits de parada (Stop bits)",
+          "bytesize": "Bits de dados (Byte size)"
         },
         "data_description": {
           "device": "A porta USB onde o inversor está conectado, ou um proxy serial ESPHome ligado à porta RS485 do inversor. Escolha Inserir manualmente para um servidor serial, por exemplo socket://192.168.1.10:4001 ou rfc2217://192.168.1.10:4001."
@@ -114,8 +114,8 @@
         "title": "Configurações avançadas do Modbus",
         "description": "Deixe esta seção inalterada, a menos que você esteja tendo problemas de conexão ou precise ajustar as configurações de conexão do modbus. A conexão é testada ao enviar.",
         "data": {
-          "device_id": "ID do dispositivo",
-          "timeout": "Timeout (segundos)"
+          "device_id": "ID do dispositivo (Device ID)",
+          "timeout": "Tempo limite (Timeout), em segundos"
         },
         "data_description": {
           "device_id": "O ID do dispositivo Modbus (slave address) do inversor. O padrão é 4 (0x04). Use esta opção somente quando existirem mais de um inversor conectados à mesma porta serial (como nos casos de inversores em paralelo)",
@@ -161,9 +161,9 @@
     },
     "parity": {
       "options": {
-        "n": "Nenhuma",
-        "e": "Par",
-        "o": "Ímpar"
+        "n": "Nenhuma (None)",
+        "e": "Par (Even)",
+        "o": "Ímpar (Odd)"
       }
     },
     "mode": {
