@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import logging
-import voluptuous as vol
+import probatio as vol
 import time
 
 from homeassistant import data_entry_flow

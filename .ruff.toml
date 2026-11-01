@@ -1,6 +1,6 @@
 # The contents of this file is based on https://github.com/home-assistant/core/blob/dev/pyproject.toml
 
-target-version = "py313"
+target-version = "py314"
 line-length = 120
 
 [lint]
@@ -38,6 +38,11 @@ ignore = [
     "D411",  # Missing blank line before section
     "E501",  # line too long
     "E731",  # do not assign a lambda expression, use a def
+    "D101",  # do not assign a lambda expression, use a def
+    "D103",  # do not assign a lambda expression, use a def
+    "D102",  # do not assign a lambda expression, use a def
+    "D107",  # do not assign a lambda expression, use a def
+    "D100",  # do not assign a lambda expression, use a def
 ]
 
 [lint.flake8-pytest-style]

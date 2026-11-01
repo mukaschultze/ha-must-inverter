@@ -6,3 +6,7 @@ logger:
   default: info
   logs:
     custom_components.must_inverter: debug
+    homeassistant.components.modbus: debug
+    homeassistant.components.esphome.serial_proxy: debug
+    modbus_connection: debug
+    tmodbus: debug

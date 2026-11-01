@@ -3,11 +3,12 @@
   "name": "Must Inverter",
   "codeowners": ["@mukaschultze"],
   "config_flow": true,
-  "dependencies": [],
+  "dependencies": ["modbus", "usb"],
   "documentation": "https://github.com/mukaschultze/ha-must-inverter",
   "integration_type": "device",
   "iot_class": "local_polling",
   "issue_tracker": "https://github.com/mukaschultze/ha-must-inverter/issues",
-  "requirements": ["pymodbus>=3.10.0", "aiofiles==24.1.0"],
+  "loggers": ["modbus_connection", "tmodbus"],
+  "requirements": ["aiofiles==24.1.0"],
   "version": "0.0.1"
 }
