@@ -38,6 +38,11 @@ ignore = [
     "D411",  # Missing blank line before section
     "E501",  # line too long
     "E731",  # do not assign a lambda expression, use a def
+    "D100",  # Missing docstring in public module
+    "D101",  # Missing docstring in public class
+    "D102",  # Missing docstring in public method
+    "D103",  # Missing docstring in public function
+    "D107",  # Missing docstring in __init__
 ]
 
 [lint.flake8-pytest-style]
