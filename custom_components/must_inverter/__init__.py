@@ -1,3 +1,5 @@
+"""The Must Inverter integration."""
+
 import asyncio
 import logging
 import contextlib
@@ -8,7 +10,7 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.exceptions import ConfigEntryNotReady
-from homeassistant.helpers import issue_registry as ir
+from homeassistant.helpers import config_validation as cv, issue_registry as ir
 from homeassistant.helpers.event import async_track_time_interval
 from pymodbus.client import AsyncModbusSerialClient, AsyncModbusTcpClient, AsyncModbusUdpClient
 
@@ -65,6 +67,9 @@ PLATFORMS = [
     Platform.TIME,
 ]
 _LOGGER = logging.getLogger(__name__)
+
+# Only set up from config entries, there is no YAML configuration
+CONFIG_SCHEMA = cv.config_entry_only_config_schema(DOMAIN)
 
 
 async def async_setup(hass, config):
@@ -384,7 +389,7 @@ class MustInverter:
             except asyncio.exceptions.CancelledError:
                 _LOGGER.warning("cancelled modbus read")
                 raise
-            except:
+            except Exception:
                 _LOGGER.error("error reading modbus data at address %s", start, exc_info=True)
 
         _LOGGER.debug("finished reading modbus data, %s", read)
