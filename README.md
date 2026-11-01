@@ -42,6 +42,10 @@ found online. Use it at your own risk.
 
 ## Installation
 
+> [!IMPORTANT]
+> Requires **Home Assistant 2026.10 or newer**. The integration talks to the inverter through Home Assistant's shared
+> Modbus connections, which also enables ESPHome serial proxies.
+
 ### HACS (Home Assistant Community Store)
 
 If you have HACS just search for `Must Inverter` and install it from there. Or alternatively, [click here](https://my.home-assistant.io/redirect/hacs_repository/?owner=mukaschultze&repository=ha-must-inverter&category=integration).
@@ -73,9 +77,55 @@ After a correct installation, your configuration directory should look like this
 2. Navigate to "Configuration" -> "Integrations."
 3. Click the "+" button to add a new integration.
 4. Search for "Must Inverter" and select it.
-5. Enter the required configuration for your serial setup (USB, TCP, or UDP).
+5. Enter the required configuration for your serial setup (USB, TCP, or UDP). The connection is tested before the
+   integration is added.
 
 ![image](https://github.com/mukaschultze/ha-must-inverter/assets/13923364/92fa79ea-9e4a-4028-8563-9a4fa88a2cfa)
+
+### Connection types
+
+- **USB or Serial**: pick the port from the dropdown. It lists the USB ports plugged into the Home Assistant host and
+  any ESPHome serial proxies. The defaults (19200 baud, 8N1, device ID 4) work for most models.
+- **Serial device servers**: choose _Enter manually_ in the port dropdown and type a URL. Use `socket://<ip>:<port>`
+  for raw TCP bridges (`ser2net`, transparent RS485-to-Wi-Fi converters such as the PW-11), with the baud rate set on
+  the bridge itself, or `rfc2217://<ip>:<port>` for bridges that support RFC 2217.
+- **TCP / UDP**: for Modbus TCP gateways (e.g. [mbusd](https://github.com/3cky/mbusd) running next to the inverter, or
+  a converter in Modbus TCP gateway mode).
+
+### ESPHome serial proxy
+
+Since Home Assistant 2026.5 an ESPHome device can share its serial port with Home Assistant over the network. That
+lets you put a small ESP32 with an RS485 transceiver next to the inverter instead of running a USB cable to the Home
+Assistant host.
+
+1. Wire the RS485 transceiver to the inverter's RS485 (RJ45) port, using the pinout from your inverter's manual.
+2. Flash the ESPHome device with a `uart` and a `serial_proxy` (pins are an example, adjust them to your board):
+
+   ```yaml
+   uart:
+     - id: rs485_uart
+       tx_pin: GPIO16
+       rx_pin: GPIO17
+       baud_rate: 19200
+
+   api:
+
+   serial_proxy:
+     - id: inverter_port
+       uart_id: rs485_uart
+       name: Must Inverter
+       port_type: RS485
+       rts_pin: GPIO18 # DE/RE of the transceiver, if it has no automatic direction control
+   ```
+
+   See the [ESPHome serial proxy docs](https://esphome.io/components/serial_proxy/) for the full set of options.
+
+3. Add the ESPHome device to Home Assistant, then add Must Inverter, choose **USB or Serial** and pick the port listed
+   under **Serial proxies**. Home Assistant applies the baud rate and other serial settings to the proxy, so there's no
+   need to change them in ESPHome.
+
+A wired network connection to the proxy is recommended. If the proxy is offline when Home Assistant starts, the
+integration keeps retrying until the ESPHome device is back.
 
 <!---->
 

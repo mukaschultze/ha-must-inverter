@@ -1,12 +1,23 @@
 import logging
-import voluptuous as vol
+import probatio as vol
 
 from collections.abc import Mapping
 
 from typing import Any
-from homeassistant.helpers.schema_config_entry_flow import SchemaConfigFlowHandler, SchemaFlowStep, SchemaFlowFormStep
+from urllib.parse import parse_qs, urlparse
+from homeassistant.components.modbus import async_get_temporary_unit
+from homeassistant.config_entries import ConfigEntryState
+from homeassistant.exceptions import ConfigEntryNotReady, HomeAssistantError
+from homeassistant.helpers.schema_config_entry_flow import (
+    SchemaCommonFlowHandler,
+    SchemaConfigFlowHandler,
+    SchemaFlowError,
+    SchemaFlowFormStep,
+    SchemaFlowStep,
+    SchemaOptionsFlowHandler,
+)
 
-from homeassistant.helpers.selector import selector, SelectSelectorMode
+from homeassistant.helpers.selector import selector, SelectSelectorMode, SerialPortSelector
 from homeassistant.const import (
     CONF_NAME,
     CONF_DEVICE,
@@ -17,32 +28,65 @@ from homeassistant.const import (
     CONF_PORT,
     CONF_TIMEOUT,
 )
+from modbus_connection import ModbusError
 
+from .connection import create_modbus_params
 from .const import (
     DOMAIN,
     DEFAULT_SCAN_INTERVAL,
     DEFAULT_DEVICE_ID,
+    DEFAULT_TIMEOUT,
+    DEFAULT_BAUDRATE,
+    DEFAULT_PARITY,
+    DEFAULT_STOPBITS,
+    DEFAULT_BYTESIZE,
     SUPPORTED_MODELS,
     CONF_BAUDRATE,
     CONF_PARITY,
     CONF_STOPBITS,
     CONF_BYTESIZE,
-    CONF_RETRIES,
-    CONF_RECONNECT_DELAY,
-    CONF_RECONNECT_DELAY_MAX,
     CONF_DEVICE_ID,
 )
 
 _LOGGER = logging.getLogger(__name__)
 
+# Registers read to check the inverter is answering, valid for every supported model
+PROBE_ADDRESS = 20001
+PROBE_COUNT = 3
+
 
 SERIAL_SCHEMA = vol.Schema(
     {
-        vol.Required(CONF_DEVICE, default="/dev/ttyUSB0"): str,
-        vol.Required(CONF_BAUDRATE, default=19200): int,
-        vol.Required(CONF_PARITY, default="N"): str,
-        vol.Required(CONF_STOPBITS, default=1): int,
-        vol.Required(CONF_BYTESIZE, default=8): int,
+        # Lists local ports and ESPHome serial proxies, and accepts socket:// and
+        # rfc2217:// device server URLs when entered manually
+        vol.Required(CONF_DEVICE): SerialPortSelector(),
+        vol.Required(CONF_BAUDRATE, default=DEFAULT_BAUDRATE): vol.Coerce(int),
+        vol.Required(CONF_PARITY, default=DEFAULT_PARITY): selector(
+            {
+                "select": {
+                    "mode": SelectSelectorMode.LIST,
+                    "translation_key": CONF_PARITY,
+                    # Lowercase as hassfest requires for translated options
+                    "options": ["n", "e", "o"],
+                }
+            }
+        ),
+        vol.Required(CONF_STOPBITS, default=DEFAULT_STOPBITS): selector(
+            {
+                "select": {
+                    "mode": SelectSelectorMode.LIST,
+                    "options": ["1", "2"],
+                }
+            }
+        ),
+        vol.Required(CONF_BYTESIZE, default=DEFAULT_BYTESIZE): selector(
+            {
+                "select": {
+                    "mode": SelectSelectorMode.LIST,
+                    "options": ["7", "8"],
+                }
+            }
+        ),
     }
 )
 
@@ -87,13 +131,53 @@ COMMON_SCHEMA = vol.Schema(
 
 MODBUS_SCHEMA = vol.Schema(
     {
-        vol.Required(CONF_TIMEOUT, default=2.0): vol.Coerce(float),
-        vol.Required(CONF_RETRIES, default=3): int,
-        vol.Required(CONF_RECONNECT_DELAY, default=0.3): vol.Coerce(float),
-        vol.Required(CONF_RECONNECT_DELAY_MAX, default=1.0): vol.Coerce(float),
+        vol.Required(CONF_TIMEOUT, default=DEFAULT_TIMEOUT): vol.Coerce(float),
         vol.Required(CONF_DEVICE_ID, default=DEFAULT_DEVICE_ID): int,
     }
 )
+
+
+async def validate_connection(handler: SchemaCommonFlowHandler, user_input: dict[str, Any]) -> dict[str, Any]:
+    """Check the inverter answers over the connection settings entered in the previous steps."""
+    flow = handler.parent_handler
+    hass = flow.hass
+    options = {**handler.options, **user_input}
+
+    try:
+        params = create_modbus_params(options)
+    except ValueError as ex:
+        _LOGGER.warning("invalid connection settings: %s", ex)
+        raise SchemaFlowError("cannot_connect") from ex
+
+    # A loaded entry holds the port with its current settings, and one port can't be
+    # shared over different settings. Unload it while probing the new ones.
+    entry = flow.config_entry if isinstance(flow, SchemaOptionsFlowHandler) else None
+    relinking = False
+    if entry is not None and entry.state in (ConfigEntryState.LOADED, ConfigEntryState.SETUP_RETRY):
+        current = create_modbus_params(entry.options)
+        if current.endpoint == params.endpoint and current != params:
+            relinking = await hass.config_entries.async_unload(entry.entry_id)
+
+    try:
+        async with async_get_temporary_unit(hass, params, options[CONF_DEVICE_ID]) as unit:
+            unit.require_timeout(options[CONF_TIMEOUT])
+            await unit.read_holding_registers(PROBE_ADDRESS, PROBE_COUNT)
+    except ConfigEntryNotReady as ex:
+        # The ESPHome integration providing the serial proxy has not loaded yet
+        _LOGGER.warning("serial port not ready: %s", ex)
+        raise SchemaFlowError("cannot_connect") from ex
+    except HomeAssistantError as ex:
+        _LOGGER.warning("serial port in use: %s", ex)
+        raise SchemaFlowError("port_in_use") from ex
+    except (ModbusError, OSError) as ex:
+        _LOGGER.warning("unable to talk to the inverter: %s", ex)
+        raise SchemaFlowError("cannot_connect") from ex
+    finally:
+        if relinking:
+            # Set back up with the stored options, saving the new ones reloads it
+            await hass.config_entries.async_setup(entry.entry_id)
+
+    return user_input
 
 
 # needs to be async, probably a bug in HA
@@ -109,7 +193,7 @@ CONFIG_FLOW: Mapping[str, SchemaFlowStep] = {
     "serial": SchemaFlowFormStep(schema=SERIAL_SCHEMA, next_step="modbus"),
     "tcp": SchemaFlowFormStep(schema=TCP_SCHEMA, next_step="modbus"),
     "udp": SchemaFlowFormStep(schema=UDP_SCHEMA, next_step="modbus"),
-    "modbus": SchemaFlowFormStep(schema=MODBUS_SCHEMA),
+    "modbus": SchemaFlowFormStep(schema=MODBUS_SCHEMA, validate_user_input=validate_connection),
 }
 
 OPTIONS_FLOW: Mapping[str, SchemaFlowStep] = {
@@ -121,6 +205,9 @@ OPTIONS_FLOW: Mapping[str, SchemaFlowStep] = {
 class MustInverterConfigFlow(SchemaConfigFlowHandler, domain=DOMAIN):
     """Handle a config flow for Must Inverter."""
 
+    VERSION = 1
+    MINOR_VERSION = 2
+
     config_flow = CONFIG_FLOW
     options_flow = OPTIONS_FLOW
 
@@ -130,6 +217,11 @@ class MustInverterConfigFlow(SchemaConfigFlowHandler, domain=DOMAIN):
         mode = options.get(CONF_MODE)
 
         if mode == "serial":
-            return options.get(CONF_NAME) or options.get(CONF_DEVICE)
+            device = options.get(CONF_DEVICE, "")
+            if device.startswith("esphome-hass://"):
+                # esphome-hass://esphome/<entry_id>?port_name=<name>
+                port_name = parse_qs(urlparse(device).query).get("port_name")
+                device = port_name[0] if port_name else "ESPHome serial proxy"
+            return options.get(CONF_NAME) or device
         else:
             return options.get(CONF_NAME) or options.get(CONF_HOST)

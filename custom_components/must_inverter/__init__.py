@@ -1,40 +1,39 @@
+"""The Must Inverter integration."""
+
 import asyncio
 import logging
 import contextlib
 
 from datetime import timedelta
 
+from homeassistant.components.modbus import async_get_unit
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant, callback
-from homeassistant.exceptions import ConfigEntryNotReady
+from homeassistant.exceptions import ConfigEntryError, ConfigEntryNotReady, HomeAssistantError
 from homeassistant.helpers import issue_registry as ir
 from homeassistant.helpers.event import async_track_time_interval
-from pymodbus.client import AsyncModbusSerialClient, AsyncModbusTcpClient, AsyncModbusUdpClient
+from modbus_connection import ModbusConnectionError, ModbusError, ModbusTimeoutError
 
 from homeassistant.const import (
     CONF_NAME,
-    CONF_DEVICE,
     CONF_MODEL,
     CONF_SCAN_INTERVAL,
-    CONF_MODE,
-    CONF_HOST,
-    CONF_PORT,
     CONF_TIMEOUT,
 )
 
+from .connection import create_modbus_params
 from .const import (
     DOMAIN,
-    CONF_BAUDRATE,
+    CONF_BYTESIZE,
     CONF_PARITY,
     CONF_STOPBITS,
-    CONF_BYTESIZE,
-    CONF_RETRIES,
-    CONF_RECONNECT_DELAY,
-    CONF_RECONNECT_DELAY_MAX,
     CONF_DEVICE_ID,
     DEFAULT_SCAN_INTERVAL,
     DEFAULT_DEVICE_ID,
+    DEFAULT_STOPBITS,
+    DEFAULT_TIMEOUT,
+    LEGACY_OPTIONS,
     get_sensors_for_model,
     MODEL_PV1900,
     MODEL_PH1100,
@@ -78,13 +77,13 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         entry.async_on_unload(entry.add_update_listener(async_reload_entry))
 
         # Initialize inverter with model-specific sensors
-        inverter = MustInverter(hass, entry)
+        try:
+            inverter = MustInverter(hass, entry)
+        except HomeAssistantError as ex:
+            # Another integration holds the same port with different link settings
+            raise ConfigEntryError(str(ex)) from ex
 
-        successConnecting = await inverter.connect()
-
-        if not successConnecting:
-            raise ConfigEntryNotReady("Unable to connect to modbus device")
-
+        # The shared connection is opened on demand by the first read
         successReading = await inverter._async_refresh_modbus_data()
 
         if not successReading:
@@ -120,7 +119,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         # hass.data[DOMAIN][entry.entry_id]["monitor_task"] = monitor_task
 
         return True
-    except ConfigEntryNotReady as ex:
+    except (ConfigEntryNotReady, ConfigEntryError) as ex:
         raise ex
     except Exception as ex:
         _LOGGER.exception("Error setting up modbus device", exc_info=True)
@@ -148,41 +147,46 @@ async def async_reload_entry(hass: HomeAssistant, entry: ConfigEntry) -> None:
     await hass.config_entries.async_reload(entry.entry_id)
 
 
+async def async_migrate_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
+    """Migrate old config entries."""
+    if entry.version > 1:
+        return False
+
+    if entry.minor_version < 2:
+        # 1.2 moved from pymodbus to Home Assistant's shared modbus connections:
+        # retries and reconnect delays are no longer configurable, and the serial
+        # framing settings are stored as the string values of their select fields
+        options = {k: v for k, v in entry.options.items() if k not in LEGACY_OPTIONS}
+
+        if CONF_PARITY in options:
+            options[CONF_PARITY] = str(options[CONF_PARITY]).lower()
+        if CONF_BYTESIZE in options:
+            options[CONF_BYTESIZE] = str(int(options[CONF_BYTESIZE]))
+        if CONF_STOPBITS in options:
+            stopbits = options[CONF_STOPBITS]
+            if stopbits not in (1, 2, "1", "2"):
+                _LOGGER.warning("unsupported stop bits %s, falling back to %s", stopbits, DEFAULT_STOPBITS)
+                stopbits = DEFAULT_STOPBITS
+            options[CONF_STOPBITS] = str(stopbits)
+
+        hass.config_entries.async_update_entry(entry, options=options, minor_version=2)
+        _LOGGER.debug("migrated config entry %s to version 1.2", entry.entry_id)
+
+    return True
+
+
 class MustInverter:
     def __init__(self, hass, entry: ConfigEntry):
         self._hass = hass
         self._callbacks = []  # Store callbacks separately
         self._entry = entry
-        # Check both data and options
 
-        common = {
-            "timeout": entry.options[CONF_TIMEOUT],
-            "retries": entry.options[CONF_RETRIES],
-            "reconnect_delay": entry.options[CONF_RECONNECT_DELAY],
-            "reconnect_delay_max": entry.options[CONF_RECONNECT_DELAY_MAX],
-        }
-
-        match entry.options[CONF_MODE]:
-            case "serial":
-                self._client = AsyncModbusSerialClient(
-                    entry.options[CONF_DEVICE],
-                    baudrate=entry.options[CONF_BAUDRATE],
-                    stopbits=entry.options[CONF_STOPBITS],
-                    bytesize=entry.options[CONF_BYTESIZE],
-                    parity=entry.options[CONF_PARITY],
-                    **common,
-                )
-            case "tcp":
-                self._client = AsyncModbusTcpClient(entry.options[CONF_HOST], port=entry.options[CONF_PORT], **common)
-            case "udp":
-                self._client = AsyncModbusUdpClient(entry.options[CONF_HOST], port=entry.options[CONF_PORT], **common)
-            case _:
-                raise Exception("Invalid mode")
-
-        self._client.rts = False
-        self._client.dtr = False
-        self._lock = asyncio.Lock()
+        # The connection is owned by the modbus integration and shared with any
+        # other integration talking to the same port. It connects on demand,
+        # reconnects by itself and is closed once the last entry using it unloads.
         self._device_id = entry.options.get(CONF_DEVICE_ID, DEFAULT_DEVICE_ID)
+        self._unit = async_get_unit(hass, entry, create_modbus_params(entry.options), self._device_id)
+        self._unit.require_timeout(entry.options.get(CONF_TIMEOUT, DEFAULT_TIMEOUT))
         self._scan_interval = timedelta(seconds=entry.options.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL))
         self._reading = False
         self.registers = {}
@@ -206,20 +210,17 @@ class MustInverter:
             """stop the interval timer upon removal of last sensor"""
             self._unsub_interval_method()
             self._unsub_interval_method = None
-            self.close()
 
     async def _async_refresh_modbus_data(self, now=None):
-        if not await self._check_and_reopen():
-            # if not connected, skip
-            _LOGGER.warning("not connected, skipping refresh")
-            return False
-
         try:
             update_result = await self.read_modbus_data()
 
             if update_result:
                 for update_callback in self._callbacks:
                     update_callback()
+        except ConfigEntryNotReady as ex:
+            _LOGGER.warning("modbus connection not ready: %s", ex)
+            update_result = False
         except Exception:
             _LOGGER.exception("error reading inverter data", exc_info=True)
             update_result = False
@@ -244,49 +245,16 @@ class MustInverter:
     def has_extra_registers(self):
         return self.model == MODEL_PV1900
 
-    def close(self):
-        _LOGGER.info("closing modbus client")
-        self._client.close()
-
-    async def _check_and_reopen(self):
-        if not self._client.connected:
-            _LOGGER.info("modbus client is not connected, trying to reconnect")
-            return await self.connect()
-
-        return self._client.connected
-
-    async def connect(self):
-        result = False
-
-        _LOGGER.debug("connecting to %s:%s", self._client.comm_params.host, self._client.comm_params.port)
-
-        async with self._lock:
-            result = await self._client.connect()
-
-        if result:
-            _LOGGER.info(
-                "successfully connected to %s:%s", self._client.comm_params.host, self._client.comm_params.port
-            )
-        else:
-            _LOGGER.warning(
-                "not able to connect to %s:%s", self._client.comm_params.host, self._client.comm_params.port
-            )
-        return result
-
     async def write_modbus_data(self, address, value):
-        await self._check_and_reopen()
-
         _LOGGER.debug("writing modbus data: %s %s", address, value)
-        async with self._lock:
-            response = await self._client.write_register(address=address, value=value, device_id=self._device_id)
 
-        if response.isError():
-            _LOGGER.error("error writing modbus data: %s", response)
-        else:
-            _LOGGER.debug("successfully wrote modbus data: %s %s", address, value)
+        try:
+            await self._unit.write_register(address, value)
+        except ModbusError as ex:
+            _LOGGER.error("error writing modbus data at address %s: %s", address, ex)
+            raise HomeAssistantError(f"Error writing {value} to register {address}: {ex}") from ex
 
-        # await self._async_refresh_modbus_data()
-        return response
+        _LOGGER.debug("successfully wrote modbus data: %s %s", address, value)
 
     async def read_modbus_data(self):
         _LOGGER.debug("reading modbus data")
@@ -334,62 +302,68 @@ class MustInverter:
 
         read = {}
 
-        for register in registersAddresses:
-            if self.has_extra_registers:
-                # Add a small delay between reading standard and PV19-specific registers
-                # to prevent any potential issues
-                await asyncio.sleep(0.1)
+        try:
+            for register in registersAddresses:
+                if self.has_extra_registers:
+                    # Add a small delay between reading standard and PV19-specific registers
+                    # to prevent any potential issues
+                    await asyncio.sleep(0.1)
 
-            start = register[0]
-            end = register[1]
-            count = end - start + 1
+                start = register[0]
+                end = register[1]
+                count = end - start + 1
 
-            try:
-                _LOGGER.debug("reading modbus data from %s to %s (%s)", start, end, count)
+                try:
+                    _LOGGER.debug("reading modbus data from %s to %s (%s)", start, end, count)
 
-                if not await self._check_and_reopen():
-                    break
+                    registers = await self._unit.read_holding_registers(start, count)
 
-                async with self._lock:
-                    response = await self._client.read_holding_registers(
-                        address=start, count=count, device_id=self._device_id
-                    )
-                if response.isError():
-                    _LOGGER.error("error reading modbus data at address %s: %s", start, response)
-                elif len(response.registers) != count:
-                    _LOGGER.warning(
-                        "wrong number of registers read at address %s, expected %s, got %s - this usually is caused by concurrent access to modbus (usb/wifi/rs485), please remove other devices",
-                        start,
-                        count,
-                        len(response.registers),
-                    )
-                    # Log the actual values received
-                    _LOGGER.debug("Received registers (wrong): %s", response.registers)
+                    if len(registers) != count:
+                        _LOGGER.warning(
+                            "wrong number of registers read at address %s, expected %s, got %s - this usually is caused by concurrent access to modbus (usb/wifi/rs485), please remove other devices",
+                            start,
+                            count,
+                            len(registers),
+                        )
+                        # Log the actual values received
+                        _LOGGER.debug("Received registers (wrong): %s", registers)
 
-                    ir.async_create_issue(
-                        self._hass,
-                        DOMAIN,
-                        "mismatched_registers",
-                        is_fixable=False,
-                        severity=ir.IssueSeverity.ERROR,
-                        translation_key="mismatched_registers",
-                        is_persistent=False,
-                        learn_more_url="https://github.com/mukaschultze/ha-must-inverter/issues/47",
-                    )
-                else:
-                    _LOGGER.debug("Correctly read %s registers from start %s", count, start)
-                    for i in range(count):
-                        read[start + i] = response.registers[i]
-                    self.data.update(register[2](read))
-            except asyncio.exceptions.CancelledError:
-                _LOGGER.warning("cancelled modbus read")
-                raise
-            except:
-                _LOGGER.error("error reading modbus data at address %s", start, exc_info=True)
+                        ir.async_create_issue(
+                            self._hass,
+                            DOMAIN,
+                            "mismatched_registers",
+                            is_fixable=False,
+                            severity=ir.IssueSeverity.ERROR,
+                            translation_key="mismatched_registers",
+                            is_persistent=False,
+                            learn_more_url="https://github.com/mukaschultze/ha-must-inverter/issues/47",
+                        )
+                    else:
+                        _LOGGER.debug("Correctly read %s registers from start %s", count, start)
+                        for i in range(count):
+                            read[start + i] = registers[i]
+                        self.data.update(register[2](read))
+                except asyncio.exceptions.CancelledError:
+                    _LOGGER.warning("cancelled modbus read")
+                    raise
+                except (ModbusConnectionError, ModbusTimeoutError) as ex:
+                    # The link is down or the inverter is not answering, the
+                    # remaining ranges would fail the same way. The connection
+                    # is re-established by the next poll.
+                    _LOGGER.warning("unable to read modbus data at address %s: %s", start, ex)
+                    return False
+                except ModbusError as ex:
+                    _LOGGER.error("error reading modbus data at address %s: %s", start, ex)
+                except ConfigEntryNotReady:
+                    # Raised while the ESPHome integration providing a serial proxy has not loaded yet
+                    raise
+                except Exception:
+                    _LOGGER.error("error reading modbus data at address %s", start, exc_info=True)
+        finally:
+            self._reading = False
 
         _LOGGER.debug("finished reading modbus data, %s", read)
         self.registers = read
-        self._reading = False
         # _LOGGER.debug("Data: %s", self.data)
 
         if self.data["InverterSerialNumber"] == 0xFFFFFFFF or self.data["InverterSerialNumber"] == 0:
