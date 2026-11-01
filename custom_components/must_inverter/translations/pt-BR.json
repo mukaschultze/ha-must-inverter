@@ -22,14 +22,14 @@
         "title": "USB ou serial",
         "description": "Configure os parâmetros da conexão serial para o seu inversor. Os valores padrão devem funcionar para a maioria dos modelos.",
         "data": {
-          "device": "Caminho do dispositivo USB ou Serial",
+          "device": "Porta serial",
           "baudrate": "Baud rate",
-          "parity": "Paridade (‘E’ven, ‘O’dd or ‘N’one)",
-          "stopbits": "Stop bits (1, 1.5, 2)",
-          "bytesize": "Byte size (7, 8)"
+          "parity": "Paridade",
+          "stopbits": "Stop bits",
+          "bytesize": "Byte size"
         },
         "data_description": {
-          "device": "O caminho para o dispositivo USB ou Serial a ser usado para a conexão, geralmente /dev/ttyUSB0 ou /dev/ttyS0."
+          "device": "A porta USB onde o inversor está conectado, ou um proxy serial ESPHome ligado à porta RS485 do inversor. Escolha Inserir manualmente para um servidor serial, por exemplo socket://192.168.1.10:4001 ou rfc2217://192.168.1.10:4001."
         }
       },
       "tcp": {
@@ -47,23 +47,21 @@
         }
       },
       "modbus": {
-        "title": "Configurações avançadas do PyModbus",
-        "description": "Deixe esta seção inalterada, a menos que você esteja tendo problemas de conexão ou precise ajustar as configurações de conexão do modbus.",
+        "title": "Configurações avançadas do Modbus",
+        "description": "Deixe esta seção inalterada, a menos que você esteja tendo problemas de conexão ou precise ajustar as configurações de conexão do modbus. A conexão é testada ao enviar.",
         "data": {
           "device_id": "ID do dispositivo",
-          "timeout": "Timeout (segundos)",
-          "retries": "Tentativas",
-          "reconnect_delay": "Delay de reconexão (segundos)",
-          "reconnect_delay_max": "Delay máximo de reconexão (segundos)"
+          "timeout": "Timeout (segundos)"
         },
         "data_description": {
           "device_id": "O ID do dispositivo Modbus (slave address) do inversor. O padrão é 4 (0x04). Use esta opção somente quando existirem mais de um inversor conectados à mesma porta serial (como nos casos de inversores em paralelo)",
-          "timeout": "Tempo limite para conectar e receber dados.",
-          "retries": "Número máximo de tentativas por solicitação.",
-          "reconnect_delay": "Delay mínimo antes de reconectar. Defina como 0 para desativar a reconexão.",
-          "reconnect_delay_max": "Delay máximo antes de reconectar. O Pymodbus dobra o delay após cada tentativa de conexão mal-sucedida."
+          "timeout": "Tempo máximo de espera pela resposta do inversor."
         }
       }
+    },
+    "error": {
+      "cannot_connect": "Não foi possível ler os dados do inversor. Verifique o cabo, a porta serial e as configurações de conexão.",
+      "port_in_use": "Esta porta já está em uso por outra integração com configurações seriais diferentes."
     }
   },
   "options": {
@@ -88,14 +86,14 @@
         "title": "USB ou serial",
         "description": "Configure os parâmetros da conexão serial para o seu inversor. Os valores padrão devem funcionar para a maioria dos modelos.",
         "data": {
-          "device": "Caminho do dispositivo USB ou Serial",
+          "device": "Porta serial",
           "baudrate": "Baud rate",
-          "parity": "Paridade (‘E’ven, ‘O’dd or ‘N’one)",
-          "stopbits": "Stop bits (1, 1.5, 2)",
-          "bytesize": "Byte size (7, 8)"
+          "parity": "Paridade",
+          "stopbits": "Stop bits",
+          "bytesize": "Byte size"
         },
         "data_description": {
-          "device": "O caminho para o dispositivo USB ou Serial a ser usado para a conexão, geralmente /dev/ttyUSB0 ou /dev/ttyS0."
+          "device": "A porta USB onde o inversor está conectado, ou um proxy serial ESPHome ligado à porta RS485 do inversor. Escolha Inserir manualmente para um servidor serial, por exemplo socket://192.168.1.10:4001 ou rfc2217://192.168.1.10:4001."
         }
       },
       "tcp": {
@@ -113,23 +111,21 @@
         }
       },
       "modbus": {
-        "title": "Configurações avançadas do PyModbus",
-        "description": "Deixe esta seção inalterada, a menos que você esteja tendo problemas de conexão ou precise ajustar as configurações de conexão do modbus.",
+        "title": "Configurações avançadas do Modbus",
+        "description": "Deixe esta seção inalterada, a menos que você esteja tendo problemas de conexão ou precise ajustar as configurações de conexão do modbus. A conexão é testada ao enviar.",
         "data": {
           "device_id": "ID do dispositivo",
-          "timeout": "Timeout (segundos)",
-          "retries": "Tentativas",
-          "reconnect_delay": "Delay de reconexão (segundos)",
-          "reconnect_delay_max": "Delay máximo de reconexão (segundos)"
+          "timeout": "Timeout (segundos)"
         },
         "data_description": {
           "device_id": "O ID do dispositivo Modbus (slave address) do inversor. O padrão é 4 (0x04). Use esta opção somente quando existirem mais de um inversor conectados à mesma porta serial (como nos casos de inversores em paralelo)",
-          "timeout": "Tempo limite para conectar e receber dados.",
-          "retries": "Número máximo de tentativas por solicitação.",
-          "reconnect_delay": "Delay mínimo antes de reconectar. Defina como 0 para desativar a reconexão.",
-          "reconnect_delay_max": "Delay máximo antes de reconectar. O Pymodbus dobra o delay após cada tentativa de conexão mal-sucedida."
+          "timeout": "Tempo máximo de espera pela resposta do inversor."
         }
       }
+    },
+    "error": {
+      "cannot_connect": "Não foi possível ler os dados do inversor. Verifique o cabo, a porta serial e as configurações de conexão.",
+      "port_in_use": "Esta porta já está em uso por outra integração com configurações seriais diferentes."
     }
   },
   "issues": {
@@ -161,6 +157,13 @@
         "autodetect": "Detecção automática",
         "pv1800": "Série PV1800",
         "pv1900": "Série PV1900"
+      }
+    },
+    "parity": {
+      "options": {
+        "n": "Nenhuma",
+        "e": "Par",
+        "o": "Ímpar"
       }
     },
     "mode": {

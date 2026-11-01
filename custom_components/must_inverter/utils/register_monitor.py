@@ -7,6 +7,8 @@ import asyncio
 import aiofiles
 import io
 
+from modbus_connection import ModbusConnectionError, ModbusError, ModbusTimeoutError
+
 _LOGGER = logging.getLogger(__name__)
 
 
@@ -47,30 +49,25 @@ class RegisterMonitor:
                     _LOGGER.debug(f"Scanning range {start}-{end}")
                     count = end - start + 1
 
-                    if not await inverter._check_and_reopen():
-                        _LOGGER.warning("Modbus connection check failed")
+                    try:
+                        registers = await inverter._unit.read_holding_registers(start, count)
+                    except (ModbusConnectionError, ModbusTimeoutError) as e:
+                        _LOGGER.warning(f"Modbus connection failed: {e}")
                         break
-
-                    async with inverter._lock:
-                        response = await inverter._client.read_holding_registers(
-                            address=start, count=count, device_id=inverter._device_id
-                        )
-
-                    if response.isError():
-                        _LOGGER.warning(f"Error reading range {start}-{end}: {response}")
+                    except ModbusError as e:
+                        _LOGGER.warning(f"Error reading range {start}-{end}: {e}")
                         continue
 
-                    if len(response.registers) != count:
+                    if len(registers) != count:
                         _LOGGER.warning(
-                            f"Wrong number of registers read at {start}, "
-                            f"expected {count}, got {len(response.registers)}"
+                            f"Wrong number of registers read at {start}, expected {count}, got {len(registers)}"
                         )
                         continue
 
                     # Process the response
                     for i in range(count):
                         reg = start + i
-                        value = response.registers[i]
+                        value = registers[i]
                         if value not in (None, 0):  # Skip null or zero values
                             all_values[f"REG_{reg}"] = value
                             interesting_values[reg] = value

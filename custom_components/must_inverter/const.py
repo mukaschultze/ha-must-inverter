@@ -10,13 +10,18 @@ CONF_BAUDRATE = "baudrate"
 CONF_PARITY = "parity"
 CONF_STOPBITS = "stopbits"
 CONF_BYTESIZE = "bytesize"
-CONF_RETRIES = "retries"
-CONF_RECONNECT_DELAY = "reconnect_delay"
-CONF_RECONNECT_DELAY_MAX = "reconnect_delay_max"
 CONF_DEVICE_ID = "device_id"
+
+# Options from the pymodbus era, stripped by the 1.2 config entry migration
+LEGACY_OPTIONS = ("retries", "reconnect_delay", "reconnect_delay_max")
 
 DEFAULT_SCAN_INTERVAL = 15
 DEFAULT_DEVICE_ID = 0x04
+DEFAULT_TIMEOUT = 2.0
+DEFAULT_BAUDRATE = 19200
+DEFAULT_PARITY = "n"
+DEFAULT_STOPBITS = "1"
+DEFAULT_BYTESIZE = "8"
 
 # model constants, needs to be lowercase otherwise hassfest checks fails...
 MODEL_PV1800 = "pv1800"  # Base model
