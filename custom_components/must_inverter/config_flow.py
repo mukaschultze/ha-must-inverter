@@ -6,6 +6,7 @@ from collections.abc import Mapping
 from typing import Any
 from urllib.parse import parse_qs, urlparse
 from homeassistant.components.modbus import async_get_temporary_unit
+from homeassistant.components.modbus.connection import async_get_connection_info
 from homeassistant.config_entries import ConfigEntryState
 from homeassistant.exceptions import ConfigEntryNotReady, HomeAssistantError
 from homeassistant.helpers.schema_config_entry_flow import (
@@ -131,7 +132,8 @@ COMMON_SCHEMA = vol.Schema(
 
 MODBUS_SCHEMA = vol.Schema(
     {
-        vol.Required(CONF_TIMEOUT, default=DEFAULT_TIMEOUT): vol.Coerce(float),
+        # The shared connection rejects negative timeouts
+        vol.Required(CONF_TIMEOUT, default=DEFAULT_TIMEOUT): vol.All(vol.Coerce(float), vol.Range(min=0.1)),
         vol.Required(CONF_DEVICE_ID, default=DEFAULT_DEVICE_ID): int,
     }
 )
@@ -158,10 +160,18 @@ async def validate_connection(handler: SchemaCommonFlowHandler, user_input: dict
         if current.endpoint == params.endpoint and current != params:
             relinking = await hass.config_entries.async_unload(entry.entry_id)
 
+    # A timeout required on a unit stays on the connection after the probe, and raising
+    # it drops the link. Only require it on a connection nobody else holds: that one is
+    # closed when the probe releases it, so the requirement goes with it.
+    in_use = any(info.endpoint == params.endpoint for info in async_get_connection_info(hass))
+
+    succeeded = False
     try:
         async with async_get_temporary_unit(hass, params, options[CONF_DEVICE_ID]) as unit:
-            unit.require_timeout(options[CONF_TIMEOUT])
+            if not in_use:
+                unit.require_timeout(options[CONF_TIMEOUT])
             await unit.read_holding_registers(PROBE_ADDRESS, PROBE_COUNT)
+        succeeded = True
     except ConfigEntryNotReady as ex:
         # The ESPHome integration providing the serial proxy has not loaded yet
         _LOGGER.warning("serial port not ready: %s", ex)
@@ -173,8 +183,9 @@ async def validate_connection(handler: SchemaCommonFlowHandler, user_input: dict
         _LOGGER.warning("unable to talk to the inverter: %s", ex)
         raise SchemaFlowError("cannot_connect") from ex
     finally:
-        if relinking:
-            # Set back up with the stored options, saving the new ones reloads it
+        if relinking and not succeeded:
+            # The new settings won't be saved, set the entry back up with the stored ones.
+            # On success, saving the changed options reloads it (options_flow_reloads).
             await hass.config_entries.async_setup(entry.entry_id)
 
     return user_input
@@ -210,6 +221,8 @@ class MustInverterConfigFlow(SchemaConfigFlowHandler, domain=DOMAIN):
 
     config_flow = CONFIG_FLOW
     options_flow = OPTIONS_FLOW
+    # Reload whenever saved options change, even if the entry isn't loaded at that point
+    options_flow_reloads = True
 
     def async_config_entry_title(self, options: Mapping[str, Any]) -> str:
         """Return config entry title."""

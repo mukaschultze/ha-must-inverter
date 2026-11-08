@@ -76,9 +76,8 @@ async def async_setup(hass, config):
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up the must inverter component."""
+    # Options changes reload the entry through the options flow (options_flow_reloads)
     try:
-        entry.async_on_unload(entry.add_update_listener(async_reload_entry))
-
         # Initialize inverter with model-specific sensors
         try:
             inverter = MustInverter(hass, entry)
@@ -145,11 +144,6 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     return unload_ok
 
 
-async def async_reload_entry(hass: HomeAssistant, entry: ConfigEntry) -> None:
-    """Update listener, called when the config entry options are changed."""
-    await hass.config_entries.async_reload(entry.entry_id)
-
-
 async def async_migrate_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Migrate old config entries."""
     if entry.version > 1:
@@ -192,6 +186,8 @@ class MustInverter:
         self._unit.require_timeout(entry.options.get(CONF_TIMEOUT, DEFAULT_TIMEOUT))
         self._scan_interval = timedelta(seconds=entry.options.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL))
         self._reading = False
+        # Whether the last poll read the inverter
+        self.available = False
         self.registers = {}
         self.data = {}
 
@@ -215,18 +211,29 @@ class MustInverter:
             self._unsub_interval_method = None
 
     async def _async_refresh_modbus_data(self, now=None):
+        if self._reading:
+            # Not a failed poll, so it leaves availability as it is
+            _LOGGER.warning(
+                "skipping reading modbus data, previous read still in progress, make sure your scan interval is not too low"
+            )
+            return False
+
         try:
             update_result = await self.read_modbus_data()
-
-            if update_result:
-                for update_callback in self._callbacks:
-                    update_callback()
         except ConfigEntryNotReady as ex:
             _LOGGER.warning("modbus connection not ready: %s", ex)
             update_result = False
         except Exception:
             _LOGGER.exception("error reading inverter data", exc_info=True)
             update_result = False
+
+        # Entities go unavailable while the inverter can't be read, rather than
+        # showing the last values it reported. Refresh them on every good poll
+        # and whenever availability flips.
+        if update_result or self.available:
+            self.available = update_result
+            for update_callback in self._callbacks:
+                update_callback()
 
         return update_result
 
@@ -262,11 +269,6 @@ class MustInverter:
     async def read_modbus_data(self):
         _LOGGER.debug("reading modbus data")
 
-        if self._reading:
-            _LOGGER.warning(
-                "skipping reading modbus data, previous read still in progress, make sure your scan interval is not too low"
-            )
-            return False
         self._reading = True
 
         # Reading all the control messages at once (ranges 20016-20100 and/or
@@ -366,8 +368,21 @@ class MustInverter:
             self._reading = False
 
         _LOGGER.debug("finished reading modbus data, %s", read)
+
+        if not read:
+            # Every range failed in this poll. self.data still holds the previous
+            # poll's values, so don't report success and refresh entities with stale data.
+            _LOGGER.warning("no data could be read from the inverter")
+            return False
+
         self.registers = read
         # _LOGGER.debug("Data: %s", self.data)
+
+        if "InverterSerialNumber" not in self.data:
+            # Partial first read: entities are keyed by the serial number, so the
+            # inverter can't be set up until the range holding it has been read.
+            _LOGGER.warning("the inverter serial number could not be read")
+            return False
 
         if self.data["InverterSerialNumber"] == 0xFFFFFFFF or self.data["InverterSerialNumber"] == 0:
             ir.async_create_issue(

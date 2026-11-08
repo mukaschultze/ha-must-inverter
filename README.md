@@ -107,6 +107,9 @@ Assistant host.
        tx_pin: GPIO16
        rx_pin: GPIO17
        baud_rate: 19200
+       # DE/RE of the transceiver: switches the UART to RS485 half-duplex mode.
+       # Omit it for transceivers with automatic direction control.
+       flow_control_pin: GPIO18
 
    api:
 
@@ -115,7 +118,6 @@ Assistant host.
        uart_id: rs485_uart
        name: Must Inverter
        port_type: RS485
-       rts_pin: GPIO18 # DE/RE of the transceiver, if it has no automatic direction control
    ```
 
    See the [ESPHome serial proxy docs](https://esphome.io/components/serial_proxy/) for the full set of options.

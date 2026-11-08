@@ -47,5 +47,5 @@ class MustInverterButton(ButtonEntity):
 
     @property
     def available(self) -> dict[str, Any] | None:
-        return True
+        return self._inverter.available
         # return self._key in self._inverter.data
