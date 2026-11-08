@@ -3,6 +3,7 @@ from typing import Any
 
 from homeassistant.components.button import ButtonEntity
 from homeassistant.const import Platform
+from homeassistant.core import callback
 
 from .const import DOMAIN, Sensor
 from .__init__ import MustInverter
@@ -38,6 +39,16 @@ class MustInverterButton(ButtonEntity):
         self._attr_device_class = sensor_info.device_class
         self._attr_entity_registry_enabled_default = sensor_info.enabled
 
+    async def async_added_to_hass(self):
+        self._inverter.async_add_must_inverter_sensor(self._inverter_data_updated)
+
+    async def async_will_remove_from_hass(self) -> None:
+        self._inverter.async_remove_must_inverter_sensor(self._inverter_data_updated)
+
+    @callback
+    def _inverter_data_updated(self):
+        self.async_write_ha_state()
+
     async def async_press(self):
         await self._inverter.write_modbus_data(self._address, 1)
 
@@ -47,5 +58,5 @@ class MustInverterButton(ButtonEntity):
 
     @property
     def available(self) -> dict[str, Any] | None:
-        return True
+        return self._inverter.available
         # return self._key in self._inverter.data

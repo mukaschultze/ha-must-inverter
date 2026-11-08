@@ -59,4 +59,4 @@ class MustInverterBinarySensor(BinarySensorEntity):
 
     @property
     def available(self) -> dict[str, Any] | None:
-        return self._key in self._inverter.data
+        return self._inverter.available and self._key in self._inverter.data

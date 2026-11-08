@@ -103,7 +103,7 @@ class MustInverterSwitch(SwitchEntity):
 
     @property
     def available(self) -> dict[str, Any] | None:
-        return self._key in self._inverter.data
+        return self._inverter.available and self._key in self._inverter.data
 
 
 class MustInverterSettingsSwitch(SwitchEntity):
@@ -171,4 +171,4 @@ class MustInverterSettingsSwitch(SwitchEntity):
 
     @property
     def available(self) -> dict[str, Any] | None:
-        return "SystemSetting" in self._inverter.data
+        return self._inverter.available and "SystemSetting" in self._inverter.data

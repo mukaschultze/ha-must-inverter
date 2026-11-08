@@ -22,14 +22,14 @@
         "title": "USB or serial",
         "description": "Configure the serial parameters for your inverter. The default values should work for most models.",
         "data": {
-          "device": "USB or Serial device path",
+          "device": "Serial port",
           "baudrate": "Baud rate",
-          "parity": "Parity (‘E’ven, ‘O’dd or ‘N’one)",
-          "stopbits": "Stop bits (1, 1.5, 2)",
-          "bytesize": "Byte size (7, 8)"
+          "parity": "Parity",
+          "stopbits": "Stop bits",
+          "bytesize": "Byte size"
         },
         "data_description": {
-          "device": "The path to the USB or Serial device to use for the connection, usually /dev/ttyUSB0 or /dev/ttyS0."
+          "device": "The USB port the inverter is plugged into, or an ESPHome serial proxy wired to the inverter's RS485 port. Choose Enter manually for a serial device server, e.g. socket://192.168.1.10:4001 or rfc2217://192.168.1.10:4001."
         }
       },
       "tcp": {
@@ -47,23 +47,21 @@
         }
       },
       "modbus": {
-        "title": "PyModbus advanced settings",
-        "description": "Leave this section unchanged unless you are seeing connection issues or need to adjust the modbus connection settings.",
+        "title": "Modbus advanced settings",
+        "description": "Leave this section unchanged unless you are seeing connection issues or need to adjust the modbus connection settings. The connection is tested when you submit.",
         "data": {
           "device_id": "Device ID",
-          "timeout": "Timeout (seconds)",
-          "retries": "Retries",
-          "reconnect_delay": "Reconnect Delay (seconds)",
-          "reconnect_delay_max": "Max Reconnect Delay (seconds)"
+          "timeout": "Timeout (seconds)"
         },
         "data_description": {
           "device_id": "The Modbus device ID (slave address) of the inverter. Default is 4 (0x04). Use this option only when there are multiple inverters connected to the same serial port (such as in cases of inverters running in parallel)",
-          "timeout": "Timeout for connecting and receiving data.",
-          "retries": "Max number of retries per request.",
-          "reconnect_delay": "Minimum delay before reconnecting. Set to 0 to disable reconnecting.",
-          "reconnect_delay_max": "Maximum delay before reconnecting. Pymodbus doubles the delay after each unsuccessful connection attempt."
+          "timeout": "How long to wait for the inverter to answer a request."
         }
       }
+    },
+    "error": {
+      "cannot_connect": "Unable to read from the inverter. Check the cable, the serial port and the connection settings.",
+      "port_in_use": "This port is already used by another integration with different serial settings."
     }
   },
   "options": {
@@ -88,14 +86,14 @@
         "title": "USB or serial",
         "description": "Configure the serial parameters for your inverter. The default values should work for most models.",
         "data": {
-          "device": "USB or Serial device path",
+          "device": "Serial port",
           "baudrate": "Baud rate",
-          "parity": "Parity (‘E’ven, ‘O’dd or ‘N’one)",
-          "stopbits": "Stop bits (1, 1.5, 2)",
-          "bytesize": "Byte size (7, 8)"
+          "parity": "Parity",
+          "stopbits": "Stop bits",
+          "bytesize": "Byte size"
         },
         "data_description": {
-          "device": "The path to the USB or Serial device to use for the connection, usually /dev/ttyUSB0 or /dev/ttyS0."
+          "device": "The USB port the inverter is plugged into, or an ESPHome serial proxy wired to the inverter's RS485 port. Choose Enter manually for a serial device server, e.g. socket://192.168.1.10:4001 or rfc2217://192.168.1.10:4001."
         }
       },
       "tcp": {
@@ -113,23 +111,21 @@
         }
       },
       "modbus": {
-        "title": "PyModbus advanced settings",
-        "description": "Leave this section unchanged unless you are seeing connection issues or need to adjust the modbus connection settings.",
+        "title": "Modbus advanced settings",
+        "description": "Leave this section unchanged unless you are seeing connection issues or need to adjust the modbus connection settings. The connection is tested when you submit.",
         "data": {
           "device_id": "Device ID",
-          "timeout": "Timeout (seconds)",
-          "retries": "Retries",
-          "reconnect_delay": "Reconnect Delay (seconds)",
-          "reconnect_delay_max": "Max Reconnect Delay (seconds)"
+          "timeout": "Timeout (seconds)"
         },
         "data_description": {
           "device_id": "The Modbus device ID (slave address) of the inverter. Default is 4 (0x04). Use this option only when there are multiple inverters connected to the same serial port (such as in cases of inverters running in parallel)",
-          "timeout": "Timeout for connecting and receiving data.",
-          "retries": "Max number of retries per request.",
-          "reconnect_delay": "Minimum delay before reconnecting. Set to 0 to disable reconnecting.",
-          "reconnect_delay_max": "Maximum delay before reconnecting. Pymodbus doubles the delay after each unsuccessful connection attempt."
+          "timeout": "How long to wait for the inverter to answer a request."
         }
       }
+    },
+    "error": {
+      "cannot_connect": "Unable to read from the inverter. Check the cable, the serial port and the connection settings.",
+      "port_in_use": "This port is already used by another integration with different serial settings."
     }
   },
   "issues": {
@@ -162,6 +158,13 @@
         "pv1800": "PV1800 Series",
         "pv1900": "PV1900 Series",
         "ph1100": "PH1100 Series"
+      }
+    },
+    "parity": {
+      "options": {
+        "n": "None",
+        "e": "Even",
+        "o": "Odd"
       }
     },
     "mode": {

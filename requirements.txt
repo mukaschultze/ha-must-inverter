@@ -1,5 +1,12 @@
 colorlog==6.9.0
-homeassistant==2025.1.4
-pip>=21.0,<25.1
-ruff==0.11.7
+homeassistant==2026.10.0
+ruff==0.16.9
 aiofiles==25.1.0
+# Pinned to Home Assistant 2026.10.0 requirements_all.txt, so imports resolve in the
+# editor and the shared modbus connections and ESPHome serial proxies work in
+# scripts/develop. Home Assistant installs the rest of the integrations' requirements
+# at runtime.
+modbus-connection[tmodbus]==4.12.3
+tmodbus==0.6.2
+serialx==1.11.0
+aioesphomeapi==46.6.0
