@@ -160,17 +160,35 @@ async def validate_connection(handler: SchemaCommonFlowHandler, user_input: dict
         if current.endpoint == params.endpoint and current != params:
             relinking = await hass.config_entries.async_unload(entry.entry_id)
 
-    # A timeout required on a unit stays on the connection after the probe, and raising
-    # it drops the link. Only require it on a connection nobody else holds: that one is
-    # closed when the probe releases it, so the requirement goes with it.
-    in_use = any(info.endpoint == params.endpoint for info in async_get_connection_info(hass))
+    # The connection's timeout is the largest one its units ask for, recorded per unit
+    # id and kept after the probe releases the unit. Probe with the submitted timeout,
+    # then put back what the unit had before: the loaded entry's own timeout, or nothing.
+    # Leave it alone when another entry holds the same unit id, as it is that entry's.
+    holders = {
+        entry_id
+        for info in async_get_connection_info(hass)
+        if info.endpoint == params.endpoint
+        for entry_id, unit_ids in info.units.items()
+        if options[CONF_DEVICE_ID] in unit_ids
+    }
+    own_entry_id = entry.entry_id if entry is not None else None
+    held_elsewhere = bool(holders - {own_entry_id})
 
     succeeded = False
     try:
         async with async_get_temporary_unit(hass, params, options[CONF_DEVICE_ID]) as unit:
-            if not in_use:
+            if not held_elsewhere:
                 unit.require_timeout(options[CONF_TIMEOUT])
-            await unit.read_holding_registers(PROBE_ADDRESS, PROBE_COUNT)
+                if unit.connected:
+                    # A live link keeps the timeout it was opened with, and a raised one only
+                    # schedules its teardown. Drop it now so the probe reconnects with it.
+                    await unit.disconnect()
+            try:
+                await unit.read_holding_registers(PROBE_ADDRESS, PROBE_COUNT)
+            finally:
+                if not held_elsewhere:
+                    held_by_entry = own_entry_id in holders
+                    unit.require_timeout(entry.options.get(CONF_TIMEOUT, DEFAULT_TIMEOUT) if held_by_entry else None)
         succeeded = True
     except ConfigEntryNotReady as ex:
         # The ESPHome integration providing the serial proxy has not loaded yet
